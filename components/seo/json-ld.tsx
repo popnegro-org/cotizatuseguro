@@ -69,3 +69,51 @@ export function webPageSchema(opts: {
     inLanguage: "es-AR"
   };
 }
+
+export function articleSchema(opts: {
+  siteUrl: string;
+  path: string;
+  headline: string;
+  description: string;
+  datePublished?: string;
+  dateModified?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline,
+    description: opts.description,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${opts.siteUrl}${opts.path}`
+    },
+    author: {
+      "@type": "Person",
+      "@id": `${opts.siteUrl}/#advisor`,
+      name: "Agustín Montes"
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${opts.siteUrl}/#advisor`,
+      name: "Agustín Montes"
+    },
+    inLanguage: "es-AR",
+    datePublished: opts.datePublished || "2026-11-03",
+    dateModified: opts.dateModified || "2026-11-03"
+  };
+}
+
+export function faqPageSchema(faqs: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a
+      }
+    }))
+  };
+}

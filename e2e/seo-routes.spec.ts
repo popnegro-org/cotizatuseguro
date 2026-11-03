@@ -4,6 +4,13 @@ const routes = [
   "/sobre-agustin-montes",
   "/seguros-en-mendoza",
   "/recursos",
+  "/recursos/seguro-auto-mendoza",
+  "/recursos/factores-precio-seguro-auto",
+  "/recursos/rc-vs-todo-riesgo",
+  "/recursos/datos-para-cotizar-hogar",
+  "/recursos/riesgos-consorcios",
+  "/recursos/documentacion-caucion-alquiler",
+  "/recursos/elegir-cobertura-bicicleta",
   "/seguros/auto",
   "/seguros/moto",
   "/seguros/hogar",
@@ -29,4 +36,12 @@ test("product CTA deep-links to form product query", async ({ page }) => {
   const cta = page.locator('main a[href*="producto=auto"]').first();
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", /producto=auto/);
+});
+
+test("GEO article CTA deep-links to related product", async ({ page }) => {
+  await page.goto("/recursos/seguro-auto-mendoza");
+  const cta = page.locator('main a[href*="producto=auto"]').first();
+  await expect(cta).toBeVisible();
+  await expect(cta).toHaveAttribute("href", /producto=auto/);
+  await expect(page.locator("script[type='application/ld+json']").first()).toBeAttached();
 });
