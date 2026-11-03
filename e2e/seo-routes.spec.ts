@@ -25,6 +25,8 @@ for (const route of routes) {
 
 test("product CTA deep-links to form product query", async ({ page }) => {
   await page.goto("/seguros/auto");
-  const cta = page.getByRole("link", { name: /solicitar cotización/i }).first();
+  // Prefer the in-page product CTA (header links to /#cotizar without producto).
+  const cta = page.locator('main a[href*="producto=auto"]').first();
+  await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", /producto=auto/);
 });
