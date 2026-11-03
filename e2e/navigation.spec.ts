@@ -37,8 +37,9 @@ test("mobile menu expands products, closes with Escape and restores focus", asyn
   await page.goto("/seguros/auto");
 
   const header = page.locator("header.site-header");
-  const toggle = header.getByRole("button", { name: "Abrir menú" });
+  const toggle = header.locator(".menu-toggle");
   await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveAccessibleName("Abrir menú");
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
 
@@ -48,10 +49,11 @@ test("mobile menu expands products, closes with Escape and restores focus", asyn
   await expect(autoLink).toHaveAttribute("aria-current", "page");
 
   await page.keyboard.press("Escape");
-  await expect(header.getByRole("button", { name: "Abrir menú" })).toHaveAttribute("aria-expanded", "false");
-  await expect(header.getByRole("button", { name: "Abrir menú" })).toBeFocused();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(toggle).toHaveAccessibleName("Abrir menú");
+  await expect(toggle).toBeFocused();
 
-  await header.getByRole("button", { name: "Abrir menú" }).click();
+  await toggle.click();
   await page.getByRole("navigation", { name: "Menú móvil" }).getByText("Seguros", { exact: true }).click();
   await page.getByRole("navigation", { name: "Menú móvil" }).getByRole("link", { name: "Moto", exact: true }).click();
   await expect(page).toHaveURL(/\/seguros\/moto$/);
