@@ -27,6 +27,8 @@ test("shared navigation exposes every product route and institutional destinatio
   ]);
 
   assert.match(navigation, /products\.map\(\(product\) =>/);
+  assert.match(navigation, /src="\/iso-am\.svg"/);
+  assert.doesNotMatch(navigation, /🛡/);
   assert.match(navigation, /href=\{"\/seguros\/" \+ product\.slug\}/);
   assert.match(navigation, /onProductClick\?\.\(product\.formId\)/);
   assert.match(navigation, /onMobileQuoteClick/);
