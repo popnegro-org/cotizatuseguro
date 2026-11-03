@@ -27,9 +27,8 @@ test("shared navigation exposes every product route and institutional destinatio
 
   assert.match(navigation, /products\.map\(\(product\) =>/);
   assert.match(navigation, /href=\{"\/seguros\/" \+ product\.slug\}/);
-  for (const slug of ["auto", "moto", "hogar", "consorcio", "bicicleta", "caucion-alquiler"]) {
-    assert.ok(sitemap.includes("/seguros/" + slug), "Missing product URL in sitemap: " + slug);
-  }
+  assert.ok(sitemap.includes("const productEntries = products.map"), "Sitemap should derive product URLs from the shared catalog");
+  assert.ok(sitemap.includes("/seguros/${product.slug}"), "Sitemap should expose each product detail route");
   for (const path of ["/seguros-en-mendoza", "/sobre-agustin-montes", "/recursos", "/privacidad"]) {
     assert.ok(navigation.includes(path), "Missing navigation destination: " + path);
   }
