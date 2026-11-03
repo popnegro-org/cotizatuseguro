@@ -92,7 +92,7 @@ export function SiteHeader({
           <div className="mobile-nav-panel" id="mobile-nav">
             <nav className="mobile-nav" aria-label="Menú móvil">
               <details className="site-nav-dropdown">
-                <summary className="site-nav-trigger">Seguros</summary>
+                <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
                 <div className="site-nav-dropdown-menu">
                   <ProductLinks activePath={activePath} onNavigate={() => setMenuOpen(false)} />
                 </div>
