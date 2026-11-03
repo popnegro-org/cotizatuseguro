@@ -63,7 +63,22 @@
   padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff;
 }
 .seo-resource-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.seo-resource-card h3 a { color: var(--navy); text-decoration: none; }
+.seo-resource-card h3 a:hover { color: var(--blue); text-decoration: underline; }
 .seo-resource-card p { margin: 0 0 12px; color: var(--muted); font-size: .94rem; }
+.seo-resource-link {
+  display: inline-flex; margin-top: 4px; font-weight: 700; color: var(--blue);
+  text-decoration: none; font-size: .92rem;
+}
+.seo-resource-link:hover { text-decoration: underline; }
+.seo-article-block { margin-bottom: 28px; }
+.seo-article-block h2 { margin-bottom: 12px; }
+.seo-related { margin-top: 22px; }
+.seo-related h3 { margin: 0 0 10px; font-size: 1rem; }
+.seo-related ul { margin: 0; padding-left: 1.1em; }
+.seo-related li { margin-bottom: 8px; }
+.seo-related a { color: var(--blue); text-decoration: none; font-size: .9rem; }
+.seo-related a:hover { text-decoration: underline; }
 .footer-inner { display: flex; flex-direction: column; gap: 12px; }
 .footer-nav { display: flex; flex-wrap: wrap; gap: 14px; }
 .footer-nav a { color: var(--blue); text-decoration: none; font-size: .88rem; font-weight: 600; }
