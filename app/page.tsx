@@ -1,5 +1,6 @@
 "use client";
 
+import { SiteFooter, SiteHeader } from "../components/site-navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 type Product = "auto" | "moto" | "hogar" | "consorcio" | "bicicletas" | "caucion_alquiler";
@@ -107,7 +108,6 @@ export default function Home() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [consent, setConsent] = useState<"unknown" | "accepted" | "rejected">("unknown");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showConsent, setShowConsent] = useState(false);
   const [formStep, setFormStep] = useState<1 | 2>(1);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -356,33 +356,15 @@ export default function Home() {
 
   return (
     <>
-      <a className="skip-link" href="#cotizar">Ir a cotizar</a>
-      <header className="site-header"><div className="container header-inner">
-        <a className="brand" href="#" aria-label="Agustín Montes, inicio"><span className="brand-mark" aria-hidden="true">🛡</span><span className="brand-copy">COTIZA TU SEGURO<small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small></span></a>
-        <nav className="main-nav" aria-label="Navegación principal">
-          <a href="#seguros">Coberturas</a><a href="#aseguradoras">Respaldo</a><a href="#como-funciona">Cómo funciona</a><a href="#faq">Preguntas frecuentes</a>
-        </nav>
-        <div className="header-actions">
-          <a className="header-cta" href="#cotizar" onClick={() => track("cta_click", { cta_location: "header" })}>Solicitar cotización <span aria-hidden="true">→</span></a>
-          <button type="button" className={`menu-toggle${menuOpen ? " is-open" : ""}`} aria-expanded={menuOpen} aria-controls="mobile-nav" aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} onClick={() => setMenuOpen((o) => !o)}>
-            <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-      {menuOpen && (
-        <div className="mobile-nav-panel" id="mobile-nav">
-          <nav className="mobile-nav" aria-label="Menú móvil">
-            <a href="#seguros" onClick={() => setMenuOpen(false)}>Coberturas</a>
-            <a href="#aseguradoras" onClick={() => setMenuOpen(false)}>Respaldo</a>
-            <a href="#como-funciona" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
-            <a href="#faq" onClick={() => setMenuOpen(false)}>Preguntas frecuentes</a>
-            <a className="mobile-nav-cta" href="#cotizar" onClick={() => { setMenuOpen(false); track("cta_click", { cta_location: "mobile_nav" }); }}>Solicitar cotización</a>
-          </nav>
-        </div>
-      )}
-      </header>
+      <SiteHeader
+        activePath="/"
+        quoteHref="#cotizar"
+        onQuoteClick={() => track("cta_click", { cta_location: "header" })}
+        onMobileQuoteClick={() => track("cta_click", { cta_location: "mobile_nav" })}
+        onProductClick={(productId) => track("insurance_product_select", { insurance_product: productId })}
+      />
 
-      <main>
+      <main id="contenido-principal">
         <section className="hero"><div className="container hero-grid">
           <div>
             <span className="eyebrow">Productor asesor · Mendoza</span>
@@ -570,11 +552,11 @@ export default function Home() {
         </div></div></section>
       </main>
 
-      <footer className="site-footer"><div className="container footer-layout">
-        <div className="footer-about"><a className="brand footer-brand" href="#"><span className="brand-mark" aria-hidden="true">🛡</span><span className="brand-copy">COTIZA TU SEGURO<small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small></span></a><p>Asesoramiento personalizado en seguros patrimoniales y de personas, con atención en Mendoza.</p></div>
-        <div className="footer-column"><strong>Coberturas</strong>{products.map((p) => <a key={p.id} href="#cotizar" onClick={() => chooseProduct(p.id)}>{p.title}</a>)}</div>
-        <div className="footer-column"><strong>Navegación</strong><a href="#seguros">Coberturas</a><a href="#aseguradoras">Respaldo asegurador</a><a href="#como-funciona">Cómo funciona</a><a href="#faq">Preguntas frecuentes</a><a href="/privacidad">Política de privacidad</a></div>
-      </div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Agustín Montes · Mendoza, Argentina</span><a href="/privacidad">Términos y privacidad</a></div></footer>
+      <SiteFooter
+        quoteHref="#cotizar"
+        onQuoteClick={() => track("cta_click", { cta_location: "footer" })}
+        onProductClick={(productId) => track("insurance_product_select", { insurance_product: productId })}
+      />
 
       {!(consent === "unknown" && showConsent) && (
         <a className="floating-cta" href="#cotizar" onClick={() => track("cta_click", { cta_location: "floating_cta" })}><span aria-hidden="true">↓</span> Ir a cotizar</a>
