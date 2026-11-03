@@ -19,7 +19,7 @@ function ProductLinks({ onNavigate, activePath }: { onNavigate?: () => void; act
   return (
     <>
       {products.map((product) => (
-        <Link key={product.slug} href={\`/seguros/\${product.slug}\`} onClick={onNavigate}>
+        <Link key={product.slug} href={"/seguros/" + product.slug} aria-current={activePath === "/seguros/" + product.slug ? "page" : undefined} onClick={onNavigate}>
           {product.shortTitle}
         </Link>
       ))}
