@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { products, type FormProductId } from "../content/site";
@@ -75,7 +76,7 @@ export function SiteHeader({
       <header className="site-header">
         <div className="container header-inner">
           <Link className="brand" href="/" aria-label="CotizaTuSeguro, inicio">
-            <span className="brand-mark" aria-hidden="true">🛡</span>
+            <span className="brand-mark" aria-hidden="true"><Image src="/iso-am.svg" alt="" width={100} height={73} priority unoptimized /></span>
             <span className="brand-copy">
               COTIZA TU SEGURO
               <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
@@ -145,7 +146,7 @@ export function SiteFooter({
       <div className="container footer-layout">
         <div className="footer-about">
           <Link className="brand footer-brand" href="/" aria-label="CotizaTuSeguro, inicio">
-            <span className="brand-mark" aria-hidden="true">🛡</span>
+            <span className="brand-mark" aria-hidden="true"><Image src="/iso-am.svg" alt="" width={100} height={73} priority unoptimized /></span>
             <span className="brand-copy">
               COTIZA TU SEGURO
               <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
