@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SiteFooter, SiteHeader } from "../../components/site-navigation";
 
 export const metadata: Metadata = {
   title: "Política de Privacidad | CotizaTuSeguro",
@@ -16,14 +17,7 @@ export const metadata: Metadata = {
   },
 };
 
-const products = [
-  { id: "auto", title: "Autos" },
-  { id: "moto", title: "Motos" },
-  { id: "hogar", title: "Hogar" },
-  { id: "consorcio", title: "Consorcio" },
-  { id: "bicicletas", title: "Bicicleta" },
-  { id: "caucion_alquiler", title: "Caución alquiler" },
-] as const;
+
 
 const sections = [
   {
@@ -169,36 +163,9 @@ const sections = [
 export default function PrivacyPage() {
   return (
     <div className="legal-shell">
-      <a className="skip-link" href="#contenido">
-        Ir al contenido
-      </a>
+      <SiteHeader activePath="/privacidad" quoteHref="/#cotizar" />
 
-      <header className="site-header">
-        <div className="container header-inner">
-          <Link className="brand" href="/" aria-label="CotizaTuSeguro, inicio">
-            <span className="brand-mark" aria-hidden="true">
-              🛡
-            </span>
-            <span className="brand-copy">
-              COTIZA TU SEGURO
-              <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
-            </span>
-          </Link>
-          <nav className="main-nav" aria-label="Navegación principal">
-            <Link href="/#seguros">Coberturas</Link>
-            <Link href="/#aseguradoras">Respaldo</Link>
-            <Link href="/#como-funciona">Cómo funciona</Link>
-            <Link href="/#faq">Preguntas frecuentes</Link>
-          </nav>
-          <div className="header-actions">
-            <Link className="header-cta" href="/#cotizar">
-              Solicitar cotización <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <main id="contenido">
+      <main id="contenido-principal">
         <section className="legal-hero">
           <div className="container legal-hero-inner">
             <p className="eyebrow">Información legal</p>
@@ -277,49 +244,7 @@ export default function PrivacyPage() {
         </section>
       </main>
 
-      <footer className="site-footer">
-        <div className="container footer-layout">
-          <div className="footer-about">
-            <Link className="brand footer-brand" href="/">
-              <span className="brand-mark" aria-hidden="true">
-                🛡
-              </span>
-              <span className="brand-copy">
-                COTIZA TU SEGURO
-                <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
-              </span>
-            </Link>
-            <p>
-              Asesoramiento personalizado en seguros patrimoniales y de personas,
-              con atención en Mendoza.
-            </p>
-            <p className="ssn-note">
-              Productor Asesor de Seguros · Consultá la información de matrícula y
-              habilitación antes de contratar.
-            </p>
-          </div>
-          <div className="footer-column">
-            <strong>Coberturas</strong>
-            {products.map((p) => (
-              <Link key={p.id} href={`/#cotizar`}>
-                {p.title}
-              </Link>
-            ))}
-          </div>
-          <div className="footer-column">
-            <strong>Navegación</strong>
-            <Link href="/#seguros">Coberturas</Link>
-            <Link href="/#aseguradoras">Respaldo asegurador</Link>
-            <Link href="/#como-funciona">Cómo funciona</Link>
-            <Link href="/#faq">Preguntas frecuentes</Link>
-            <Link href="/privacidad">Política de privacidad</Link>
-          </div>
-        </div>
-        <div className="container footer-bottom">
-          <span>© {new Date().getFullYear()} Agustín Montes · Mendoza, Argentina</span>
-          <Link href="/privacidad">Términos y privacidad</Link>
-        </div>
-      </footer>
+      <SiteFooter quoteHref="/#cotizar" />
     </div>
   );
 }
