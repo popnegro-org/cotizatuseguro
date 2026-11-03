@@ -276,19 +276,32 @@ test('la política de privacidad ofrece índice navegable y anclas estables', as
   await expect(page.locator('#seccion-1 h2')).toContainText('Responsable del tratamiento');
 });
 
-test('la cabecera de privacidad conserva el CTA sin desbordar en móvil', async ({ page }) => {
-  for (const width of [320, 390, 560, 768, 900]) {
+test('la navegación compartida conserva el CTA accesible y no desborda en móvil', async ({ page }) => {
+  for (const width of [320, 390, 560, 768, 900, 901, 1024]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/privacidad');
     const header = page.locator('header.site-header');
-    const cta = header.getByRole('link', { name: /solicitar cotización/i });
-    await expect(cta).toBeVisible();
+
+    if (width <= 900) {
+      const toggle = header.getByRole('button', { name: 'Abrir menú' });
+      await expect(toggle).toBeVisible();
+      await toggle.click();
+      const mobileNav = page.getByRole('navigation', { name: 'Menú móvil' });
+      const cta = mobileNav.getByRole('link', { name: /solicitar cotización/i });
+      await expect(cta).toBeVisible();
+      await expect(cta).toHaveAttribute('href', '/#cotizar');
+    } else {
+      const cta = header.getByRole('link', { name: /solicitar cotización/i });
+      await expect(cta).toBeVisible();
+      await expect(cta).toHaveAttribute('href', '/#cotizar');
+    }
+
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
       document: document.documentElement.scrollWidth,
-      ctaRight: document.querySelector('header .header-cta')?.getBoundingClientRect().right ?? 0,
+      header: document.querySelector('header.site-header')?.scrollWidth ?? 0,
     }));
     expect(dimensions.document, `privacy at ${width}px overflows to ${dimensions.document}px`).toBeLessThanOrEqual(dimensions.viewport);
-    expect(dimensions.ctaRight, `privacy header CTA exceeds ${width}px viewport`).toBeLessThanOrEqual(width);
+    expect(dimensions.header, `privacy header overflows at ${width}px`).toBeLessThanOrEqual(dimensions.viewport);
   }
 });
