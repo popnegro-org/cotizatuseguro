@@ -360,6 +360,8 @@ export default function Home() {
         activePath="/"
         quoteHref="#cotizar"
         onQuoteClick={() => track("cta_click", { cta_location: "header" })}
+        onMobileQuoteClick={() => track("cta_click", { cta_location: "mobile_nav" })}
+        onProductClick={(productId) => track("insurance_product_select", { insurance_product: productId })}
       />
 
       <main id="contenido-principal">
@@ -553,6 +555,7 @@ export default function Home() {
       <SiteFooter
         quoteHref="#cotizar"
         onQuoteClick={() => track("cta_click", { cta_location: "footer" })}
+        onProductClick={(productId) => track("insurance_product_select", { insurance_product: productId })}
       />
 
       {!(consent === "unknown" && showConsent) && (
