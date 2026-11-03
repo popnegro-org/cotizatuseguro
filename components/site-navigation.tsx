@@ -81,7 +81,7 @@ export function SiteHeader({
             </Link>
             <button
               type="button"
-              className={"menu-toggle" + (menuOpen ? " is-open" : "")}\`}
+              className={"menu-toggle" + (menuOpen ? " is-open" : "")}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav"
               aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
