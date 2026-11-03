@@ -45,13 +45,22 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusOnCloseRef = useRef(false);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) {
+      if (restoreFocusOnCloseRef.current) {
+        restoreFocusOnCloseRef.current = false;
+        menuButtonRef.current?.focus();
+      }
+      return;
+    }
+
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
+        restoreFocusOnCloseRef.current = true;
         setMenuOpen(false);
-        menuButtonRef.current?.focus();
       }
     };
     window.addEventListener("keydown", closeOnEscape);
