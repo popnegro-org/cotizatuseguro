@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./seo-pages.css";
 
 const productionSiteUrl = "https://cotizatuseguro.com.ar";
 const socialImagePath = "https://cotizatuseguro.com.ar/opengraph-image.jpeg";
