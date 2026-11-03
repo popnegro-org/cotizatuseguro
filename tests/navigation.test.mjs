@@ -20,13 +20,18 @@ test("homepage, SEO pages and privacy share the same site navigation", async () 
 });
 
 test("shared navigation exposes every product route and institutional destination", async () => {
-  const [navigation, sitemap] = await Promise.all([
+  const [navigation, sitemap, home] = await Promise.all([
     read("../components/site-navigation.tsx"),
-    read("../app/sitemap.ts")
+    read("../app/sitemap.ts"),
+    read("../app/page.tsx")
   ]);
 
   assert.match(navigation, /products\.map\(\(product\) =>/);
   assert.match(navigation, /href=\{"\/seguros\/" \+ product\.slug\}/);
+  assert.match(navigation, /onProductClick\?\.\(product\.formId\)/);
+  assert.match(navigation, /onMobileQuoteClick/);
+  assert.match(home, /cta_location: "mobile_nav"/);
+  assert.match(home, /cta_location: "footer"/);
   assert.ok(sitemap.includes("const productEntries = products.map"), "Sitemap should derive product URLs from the shared catalog");
   assert.ok(sitemap.includes("/seguros/${product.slug}"), "Sitemap should expose each product detail route");
   for (const path of ["/seguros-en-mendoza", "/sobre-agustin-montes", "/recursos", "/privacidad"]) {
