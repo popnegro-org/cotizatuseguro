@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { resourceSeeds } from "../../content/resources";
+import Link from "next/link";
+import { resources } from "../../content/resources";
 import { SITE_URL } from "../../content/site";
 import { Breadcrumb } from "../../components/seo/breadcrumb";
 import { CtaQuote } from "../../components/seo/cta-quote";
@@ -11,7 +12,7 @@ const path = "/recursos";
 export const metadata: Metadata = {
   title: "Recursos y guías de seguros | CotizaTuSeguro Mendoza",
   description:
-    "Guías orientativas sobre seguros en Mendoza: auto, hogar, consorcio, caución y más. Contenido para entender coberturas antes de cotizar.",
+    "Guías orientativas sobre seguros en Mendoza: auto, hogar, consorcio, caución y bicicleta. Contenido para entender coberturas antes de cotizar.",
   alternates: { canonical: path },
   openGraph: {
     title: "Recursos | CotizaTuSeguro",
@@ -63,23 +64,20 @@ export default function RecursosPage() {
         <div className="container">
           <h2>Temas frecuentes</h2>
           <ul className="seo-resource-list">
-            {resourceSeeds.map((item) => (
+            {resources.map((item) => (
               <li key={item.slug}>
                 <article className="seo-resource-card">
-                  <h3>{item.question}</h3>
-                  <p>
-                    Contenido en preparación. Mientras tanto, podés solicitar una
-                    cotización y te orientamos según tu caso.
-                  </p>
-                  <CtaQuote label="Cotizar ahora" />
+                  <h3>
+                    <Link href={`/recursos/${item.slug}`}>{item.question}</Link>
+                  </h3>
+                  <p>{item.answer}</p>
+                  <Link className="seo-resource-link" href={`/recursos/${item.slug}`}>
+                    Leer guía completa
+                  </Link>
                 </article>
               </li>
             ))}
           </ul>
-          <p className="seo-note">
-            Próximamente publicaremos guías completas para cada tema (GEO content).
-            Si tenés una consulta puntual, usá el formulario o escribinos por WhatsApp.
-          </p>
         </div>
       </section>
     </SiteChrome>
