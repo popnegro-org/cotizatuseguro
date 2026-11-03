@@ -97,6 +97,7 @@ export function SiteHeader({
               Solicitar cotización <span aria-hidden="true">→</span>
             </Link>
             <button
+              ref={menuButtonRef}
               type="button"
               className={"menu-toggle" + (menuOpen ? " is-open" : "")}
               aria-expanded={menuOpen}
