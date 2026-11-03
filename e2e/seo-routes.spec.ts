@@ -1,0 +1,32 @@
+import { expect, test } from "@playwright/test";
+
+const routes = [
+  "/sobre-agustin-montes",
+  "/seguros-en-mendoza",
+  "/recursos",
+  "/seguros/auto",
+  "/seguros/moto",
+  "/seguros/hogar",
+  "/seguros/consorcio",
+  "/seguros/bicicleta",
+  "/seguros/caucion-alquiler"
+];
+
+for (const route of routes) {
+  test(`SEO route ${route} renders shell and H1`, async ({ page }) => {
+    const response = await page.goto(route);
+    expect(response?.ok()).toBeTruthy();
+    await expect(page.locator("header.site-header")).toBeVisible();
+    await expect(page.locator("footer.site-footer")).toBeVisible();
+    await expect(page.locator("h1")).toBeVisible();
+    await expect(page.getByRole("link", { name: /solicitar cotización/i }).first()).toBeVisible();
+  });
+}
+
+test("product CTA deep-links to form product query", async ({ page }) => {
+  await page.goto("/seguros/auto");
+  // Prefer the in-page product CTA (header links to /#cotizar without producto).
+  const cta = page.locator('main a[href*="producto=auto"]').first();
+  await expect(cta).toBeVisible();
+  await expect(cta).toHaveAttribute("href", /producto=auto/);
+});

@@ -1,0 +1,80 @@
+/* SEO shell — product & institutional pages */
+.seo-shell .main-nav.seo-nav { display: flex; gap: 18px; align-items: center; }
+.seo-shell .main-nav.seo-nav a { text-decoration: none; font-size: .9rem; color: var(--ink); font-weight: 600; }
+.seo-shell .main-nav.seo-nav a[aria-current="page"] { color: var(--blue); }
+.seo-breadcrumb { margin: 0 0 14px; font-size: .85rem; color: var(--muted); }
+.seo-breadcrumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.seo-breadcrumb a { color: var(--blue); text-decoration: none; }
+.seo-breadcrumb a:hover { text-decoration: underline; }
+.seo-breadcrumb-sep { opacity: .55; margin: 0 2px; }
+.seo-hero {
+  padding: 40px 0 36px;
+  background: radial-gradient(ellipse at 80% 10%, #e6f1fb 0, transparent 40%),
+    linear-gradient(120deg, #f5f9fd 0%, #fff 60%);
+  border-bottom: 1px solid #e7eef4;
+}
+.seo-hero-inner { max-width: 820px; }
+.seo-kicker { margin: 0 0 8px; font-size: .82rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); }
+.seo-hero h1 { margin: 0 0 14px; font-size: clamp(1.9rem, 4vw, 2.75rem); line-height: 1.12; letter-spacing: -.02em; }
+.seo-lead { margin: 0 0 20px; font-size: 1.08rem; color: var(--muted); max-width: 62ch; }
+.seo-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.button-secondary {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 18px; border-radius: 999px; border: 1px solid var(--line);
+  background: #fff; color: var(--ink); font-weight: 700; text-decoration: none; font-size: .92rem;
+}
+.button-secondary:hover { border-color: var(--blue); color: var(--blue); }
+.seo-section h2 { margin: 0 0 16px; font-size: 1.35rem; letter-spacing: -.02em; }
+.seo-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: start; }
+.seo-list { margin: 0 0 16px; padding-left: 1.2em; }
+.seo-list li { margin-bottom: 8px; }
+.seo-note { color: var(--muted); font-size: .92rem; }
+.seo-aside {
+  padding: 22px 24px; border: 1px solid var(--line); border-radius: 16px;
+  background: #f8fafc;
+}
+.seo-aside h2 { font-size: 1.1rem; }
+.seo-aside p { margin: 0 0 14px; color: var(--muted); font-size: .95rem; }
+.seo-faq-list { display: flex; flex-direction: column; gap: 10px; }
+.seo-faq-item {
+  border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: #fff;
+}
+.seo-faq-item summary { cursor: pointer; font-weight: 700; list-style: none; }
+.seo-faq-item summary::-webkit-details-marker { display: none; }
+.seo-faq-item p { margin: 10px 0 0; color: var(--muted); }
+.seo-product-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;
+}
+.seo-product-grid a {
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px;
+  text-decoration: none; background: #fff; min-height: 88px;
+}
+.seo-product-grid a:hover { border-color: var(--blue); box-shadow: 0 4px 14px #102b2710; }
+.seo-product-grid-large { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.seo-product-grid-large a { min-height: 120px; }
+.seo-product-icon { font-size: 1.4rem; }
+.seo-product-desc { font-size: .82rem; color: var(--muted); line-height: 1.4; }
+.seo-prose { max-width: 720px; }
+.seo-prose p { margin: 0 0 14px; }
+.seo-resource-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.seo-resource-card {
+  padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: #fff;
+}
+.seo-resource-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.seo-resource-card p { margin: 0 0 12px; color: var(--muted); font-size: .94rem; }
+.footer-inner { display: flex; flex-direction: column; gap: 12px; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: 14px; }
+.footer-nav a { color: var(--blue); text-decoration: none; font-size: .88rem; font-weight: 600; }
+.footer-nav a:hover { text-decoration: underline; }
+.footer-note { margin: 0; font-size: .8rem; max-width: 62ch; }
+@media (max-width: 900px) {
+  .seo-grid { grid-template-columns: 1fr; }
+  .seo-shell .main-nav.seo-nav { display: none; }
+}
+@media (max-width: 560px) {
+  .seo-hero { padding: 28px 0 24px; }
+  .seo-actions { flex-direction: column; align-items: stretch; }
+  .seo-actions .header-cta, .seo-actions .button-secondary { justify-content: center; }
+}
