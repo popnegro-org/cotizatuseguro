@@ -2,24 +2,30 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { products } from "../content/site";
+import { products, type FormProductId } from "../content/site";
 
 type SiteHeaderProps = {
   activePath?: string;
   quoteHref?: string;
   onQuoteClick?: () => void;
+  onMobileQuoteClick?: () => void;
+  onProductClick?: (productId: FormProductId) => void;
 };
 
 type SiteFooterProps = {
   quoteHref?: string;
   onQuoteClick?: () => void;
+  onProductClick?: (productId: FormProductId) => void;
 };
 
-function ProductLinks({ onNavigate, activePath }: { onNavigate?: () => void; activePath?: string }) {
+function ProductLinks({ onNavigate, activePath, onProductClick }: { onNavigate?: () => void; activePath?: string; onProductClick?: (productId: FormProductId) => void }) {
   return (
     <>
       {products.map((product) => (
-        <Link key={product.slug} href={"/seguros/" + product.slug} aria-current={activePath === "/seguros/" + product.slug ? "page" : undefined} onClick={onNavigate}>
+        <Link key={product.slug} href={"/seguros/" + product.slug} aria-current={activePath === "/seguros/" + product.slug ? "page" : undefined} onClick={() => {
+          onProductClick?.(product.formId);
+          onNavigate?.();
+        }}>
           {product.shortTitle}
         </Link>
       ))}
@@ -33,7 +39,9 @@ function ProductLinks({ onNavigate, activePath }: { onNavigate?: () => void; act
 export function SiteHeader({
   activePath,
   quoteHref = "/#cotizar",
-  onQuoteClick
+  onQuoteClick,
+  onMobileQuoteClick,
+  onProductClick
 }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -68,7 +76,7 @@ export function SiteHeader({
           <nav className="main-nav" aria-label="Navegación principal">
             <details className="site-nav-dropdown">
               <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
-              <div className="site-nav-dropdown-menu"><ProductLinks activePath={activePath} /></div>
+              <div className="site-nav-dropdown-menu"><ProductLinks activePath={activePath} onProductClick={onProductClick} /></div>
             </details>
             <Link href="/seguros-en-mendoza" aria-current={isCurrent("/seguros-en-mendoza") ? "page" : undefined}>Seguros en Mendoza</Link>
             <Link href="/sobre-agustin-montes" aria-current={isCurrent("/sobre-agustin-montes") ? "page" : undefined}>Sobre Agustín</Link>
@@ -98,7 +106,7 @@ export function SiteHeader({
               <details className="site-nav-dropdown">
                 <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
                 <div className="site-nav-dropdown-menu">
-                  <ProductLinks activePath={activePath} onNavigate={() => setMenuOpen(false)} />
+                  <ProductLinks activePath={activePath} onProductClick={onProductClick} onNavigate={() => setMenuOpen(false)} />
                 </div>
               </details>
               <Link href="/seguros-en-mendoza" aria-current={isCurrent("/seguros-en-mendoza") ? "page" : undefined} onClick={() => setMenuOpen(false)}>Seguros en Mendoza</Link>
@@ -106,7 +114,8 @@ export function SiteHeader({
               <Link href="/recursos" aria-current={isCurrent("/recursos") ? "page" : undefined} onClick={() => setMenuOpen(false)}>Recursos</Link>
               <Link className="mobile-nav-cta" href={quoteHref} onClick={() => {
                 setMenuOpen(false);
-                onQuoteClick?.();
+                if (onMobileQuoteClick) onMobileQuoteClick();
+                else onQuoteClick?.();
               }}>Solicitar cotización</Link>
             </nav>
           </div>
@@ -118,7 +127,8 @@ export function SiteHeader({
 
 export function SiteFooter({
   quoteHref = "/#cotizar",
-  onQuoteClick
+  onQuoteClick,
+  onProductClick
 }: SiteFooterProps) {
   return (
     <footer className="site-footer">
@@ -137,7 +147,7 @@ export function SiteFooter({
 
         <nav className="footer-column" aria-label="Coberturas">
           <strong>Seguros</strong>
-          <ProductLinks />
+          <ProductLinks onProductClick={onProductClick} />
         </nav>
 
         <nav className="footer-column" aria-label="Información institucional">
