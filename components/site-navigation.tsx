@@ -15,7 +15,7 @@ type SiteFooterProps = {
   onQuoteClick?: () => void;
 };
 
-function ProductLinks({ onNavigate }: { onNavigate?: () => void }) {
+function ProductLinks({ onNavigate, activePath }: { onNavigate?: () => void; activePath?: string }) {
   return (
     <>
       {products.map((product) => (
@@ -63,8 +63,8 @@ export function SiteHeader({
 
           <nav className="main-nav" aria-label="Navegación principal">
             <details className="site-nav-dropdown">
-              <summary className="site-nav-trigger">Seguros</summary>
-              <div className="site-nav-dropdown-menu"><ProductLinks /></div>
+              <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
+              <div className="site-nav-dropdown-menu"><ProductLinks activePath={activePath} /></div>
             </details>
             <Link href="/seguros-en-mendoza" aria-current={isCurrent("/seguros-en-mendoza") ? "page" : undefined}>Seguros en Mendoza</Link>
             <Link href="/sobre-agustin-montes" aria-current={isCurrent("/sobre-agustin-montes") ? "page" : undefined}>Sobre Agustín</Link>
@@ -94,7 +94,7 @@ export function SiteHeader({
               <details className="site-nav-dropdown">
                 <summary className="site-nav-trigger">Seguros</summary>
                 <div className="site-nav-dropdown-menu">
-                  <ProductLinks onNavigate={() => setMenuOpen(false)} />
+                  <ProductLinks activePath={activePath} onNavigate={() => setMenuOpen(false)} />
                 </div>
               </details>
               <Link href="/seguros-en-mendoza" aria-current={isCurrent("/seguros-en-mendoza") ? "page" : undefined} onClick={() => setMenuOpen(false)}>Seguros en Mendoza</Link>
