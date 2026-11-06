@@ -83,9 +83,9 @@ test("homepage derives all product cards and form options from the shared catalo
   assert.match(home, /import \{ products, type FormProductId \} from "\.\.\/content\/site"/);
   assert.match(home, /const landingProducts = products\.map/);
   assert.doesNotMatch(home, /const products\s*:/);
-  assert.equal((catalogue.match(/landingDescription:/g) || []).length, 6);
-  assert.equal((catalogue.match(/landingShortDescription:/g) || []).length, 6);
-  assert.equal((catalogue.match(/category: "(?:VEHÍCULOS|VIVIENDA|EDIFICIOS|MOVILIDAD|GARANTÍAS)"/g) || []).length, 6);
+  assert.equal((catalogue.match(/^    landingDescription:/gm) || []).length, 6);
+  assert.equal((catalogue.match(/^    landingShortDescription:/gm) || []).length, 6);
+  assert.equal((catalogue.match(/^    category: "(?:VEHÍCULOS|VIVIENDA|EDIFICIOS|MOVILIDAD|GARANTÍAS)"/gm) || []).length, 6);
 });
 
 test("resource catalogue slugs are unique and related links resolve", () => {
