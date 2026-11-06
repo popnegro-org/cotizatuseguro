@@ -117,7 +117,7 @@ export default async function ResourceArticlePage({ params }: Props) {
             </section>
 
 
-            {article.references?.length ? (
+            {article.references.length ? (
               <section className="seo-article-block seo-sources" aria-labelledby="official-sources">
                 <h2 id="official-sources">Fuentes oficiales para ampliar</h2>
                 <ul>
