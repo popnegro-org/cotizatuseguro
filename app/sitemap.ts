@@ -1,21 +1,26 @@
 import type { MetadataRoute } from "next";
-import { products } from "../content/site";
-
-const productionSiteUrl = "https://cotizatuseguro.com.ar";
+import { resources } from "../content/resources";
+import { products, SITE_URL } from "../content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const productEntries = products.map((product) => ({
-    url: `${productionSiteUrl}/seguros/${product.slug}`,
+    url: `${SITE_URL}/seguros/${product.slug}`,
     changeFrequency: "monthly" as const,
     priority: 0.8
   }));
+  const resourceEntries = resources.map((resource) => ({
+    url: `${SITE_URL}/recursos/${resource.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.6
+  }));
 
   return [
-    { url: productionSiteUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${productionSiteUrl}/seguros-en-mendoza`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${productionSiteUrl}/sobre-agustin-montes`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${productionSiteUrl}/recursos`, changeFrequency: "weekly", priority: 0.7 },
+    { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE_URL}/seguros-en-mendoza`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE_URL}/sobre-agustin-montes`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/recursos`, changeFrequency: "monthly", priority: 0.7 },
     ...productEntries,
-    { url: `${productionSiteUrl}/privacidad`, changeFrequency: "yearly", priority: 0.3 }
+    ...resourceEntries,
+    { url: `${SITE_URL}/privacidad`, changeFrequency: "yearly", priority: 0.3 }
   ];
 }
