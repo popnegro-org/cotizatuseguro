@@ -22,3 +22,13 @@ test("README retry batch documentation matches the route limit", () => {
   assert.match(route, /const RETRY_BATCH_SIZE = 3;/);
   assert.match(readme, /procesa como máximo \*\*3 solicitudes\*\*/);
 });
+
+
+test("lead retry scheduler stays gated and requires a server-side secret", () => {
+  const workflow = readFileSync(path.join(root, ".github/workflows/lead-retry.yml"), "utf8");
+  assert.match(workflow, /vars\.LEAD_RETRY_ENABLED == 'true'/);
+  assert.match(workflow, /secrets\.LEAD_RETRY_SECRET/);
+  assert.match(workflow, /if \[ -z "\$\{LEAD_RETRY_SECRET\}" \]/);
+  assert.match(workflow, /--max-time 60/);
+  assert.match(workflow, /https:\/\/cotizatuseguro\.com\.ar\/api\/leads\/retry/);
+});
