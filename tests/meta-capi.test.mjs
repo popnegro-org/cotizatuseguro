@@ -1,7 +1,7 @@
 import test, { afterEach, mock } from "node:test";
 import assert from "node:assert/strict";
 import { sendMetaLeadEvent, __setMetaCapiForTests } from "../app/api/leads/meta-capi.ts";
-import { GET as getHealth } from "../app/api/health/route.ts";
+import { getHealthIntegrations } from "../app/api/health/config.ts";
 
 const previousPixel = process.env.META_PIXEL_ID;
 const previousPublicPixel = process.env.NEXT_PUBLIC_META_PIXEL_ID;
@@ -129,25 +129,37 @@ test("returns failed on upstream HTTP errors without throwing", async () => {
 });
 
 
-test("health uses the same public Pixel ID fallback as Meta CAPI", async () => {
-  delete process.env.META_PIXEL_ID;
-  process.env.NEXT_PUBLIC_META_PIXEL_ID = "1635609034873051";
-  process.env.META_CAPI_ACCESS_TOKEN = "test-capi-token";
 
-  const response = await getHealth();
-  const body = await response.json();
-  assert.equal(response.status, 200);
-  assert.equal(body.integrations.metaPixelConfigured, true);
-  assert.equal(body.integrations.metaCapiConfigured, true);
+test("health uses the same public Pixel ID fallback as Meta CAPI", () => {
+  const integrations = getHealthIntegrations({
+    NEXT_PUBLIC_META_PIXEL_ID: " 1635609034873051 ",
+    META_CAPI_ACCESS_TOKEN: " test-capi-token "
+  });
+  assert.equal(integrations.metaPixelConfigured, true);
+  assert.equal(integrations.metaCapiConfigured, true);
 });
 
-test("health does not report Meta CAPI configured without an access token", async () => {
-  delete process.env.META_PIXEL_ID;
-  process.env.NEXT_PUBLIC_META_PIXEL_ID = "1635609034873051";
-  delete process.env.META_CAPI_ACCESS_TOKEN;
+test("health does not report Meta CAPI configured without an access token", () => {
+  const integrations = getHealthIntegrations({
+    NEXT_PUBLIC_META_PIXEL_ID: "1635609034873051"
+  });
+  assert.equal(integrations.metaPixelConfigured, true);
+  assert.equal(integrations.metaCapiConfigured, false);
+});
 
-  const response = await getHealth();
-  const body = await response.json();
-  assert.equal(body.integrations.metaPixelConfigured, true);
-  assert.equal(body.integrations.metaCapiConfigured, false);
+test("health prefers the private Pixel ID and trims configuration values", () => {
+  const integrations = getHealthIntegrations({
+    META_PIXEL_ID: " 1635609034873051 ",
+    NEXT_PUBLIC_META_PIXEL_ID: "different-public-id",
+    META_CAPI_ACCESS_TOKEN: "token",
+    HUBSPOT_ACCESS_TOKEN: " ",
+    NEXT_PUBLIC_GTM_ID: "GTM-TEST"
+  });
+  assert.deepEqual(integrations, {
+    hubspotConfigured: false,
+    whatsappConfigured: false,
+    gtmConfigured: true,
+    metaPixelConfigured: true,
+    metaCapiConfigured: true
+  });
 });
