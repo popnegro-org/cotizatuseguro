@@ -31,4 +31,7 @@ test("lead retry scheduler stays gated and requires a server-side secret", () =>
   assert.match(workflow, /if \[ -z "\$\{LEAD_RETRY_SECRET\}" \]/);
   assert.match(workflow, /--max-time 60/);
   assert.match(workflow, /https:\/\/cotizatuseguro\.com\.ar\/api\/leads\/retry/);
+  const readme = readFileSync(path.join(root, "README.md"), "utf8");
+  assert.match(readme, /LEAD_RETRY_ENABLED=true/);
+  assert.match(readme, /secret de GitHub Actions `LEAD_RETRY_SECRET`/);
 });
