@@ -73,7 +73,7 @@ test("JSON-LD serialization escapes script-closing characters", () => {
     description: "</script><script>alert(1)</script>"
   });
   assert.doesNotMatch(serialized, /<\/?script/i);
-  assert.match(serialized, /\\u003c\\/script>/);
+  assert.ok(serialized.includes("\\u003c/script>"));
 });
 
 
