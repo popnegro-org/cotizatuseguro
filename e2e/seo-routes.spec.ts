@@ -41,7 +41,7 @@ test("product CTA deep-links to form product query", async ({ page }) => {
   await page.goto("/seguros/auto");
   const cta = page.locator('main a[href*="producto=auto"]').first();
   await expect(cta).toBeVisible();
-  await expect(cta).toHaveAttribute("href", /producto=auto/);
+  await expect(cta).toHaveAttribute("href", "/?producto=auto#cotizar");
 });
 
 
@@ -52,5 +52,7 @@ test("resource guide exposes official references and a contextual product CTA", 
     "href",
     "https://www.argentina.gob.ar/normativa/nacional/ley-24449-818/actualizacion"
   );
-  await expect(page.locator('main a[href*="producto=auto"]').first()).toBeVisible();
+  const cta = page.locator('main a[href*="producto=auto"]').first();
+  await expect(cta).toBeVisible();
+  await expect(cta).toHaveAttribute("href", "/?producto=auto#cotizar");
 });
