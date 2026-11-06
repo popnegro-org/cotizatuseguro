@@ -42,5 +42,10 @@ export const article: ResourceArticle = {
         a: "No siempre. Un precio bajo con límites estrechos o muchas exclusiones puede no resolver el riesgo que querés cubrir. Compará condiciones, no solo la cuota."
       }
     ],
+    references: [
+      { label: "SSN — Seguro automotor", url: "https://www.argentina.gob.ar/node/494955" },
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: ["seguro-auto-mendoza", "rc-vs-todo-riesgo"]
   };
