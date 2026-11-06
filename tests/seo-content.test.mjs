@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 
 const root = path.resolve(import.meta.dirname, "..");
 
-test("content/site exports six products with formId mapping", async () => {
+test("content/site exports six products with formId mapping", () => {
   const source = readFileSync(path.join(root, "content/site.ts"), "utf8");
   assert.match(source, /slug: "auto"/);
   assert.match(source, /formId: "bicicletas"/);
@@ -15,12 +15,13 @@ test("content/site exports six products with formId mapping", async () => {
   assert.equal(slugCount, 6);
 });
 
-test("sitemap.ts lists product and local routes", () => {
+test("sitemap includes product, local, institutional and resource routes", () => {
   const source = readFileSync(path.join(root, "app/sitemap.ts"), "utf8");
   assert.match(source, /seguros-en-mendoza/);
   assert.match(source, /sobre-agustin-montes/);
   assert.match(source, /\/recursos/);
-  assert.match(source, /seguros\/\$\{product\.slug\}/);
+  assert.match(source, /resources\.map/);
+  assert.match(source, /products\.map/);
 });
 
 test("product routes exist for each SEO slug", () => {
@@ -30,4 +31,34 @@ test("product routes exist for each SEO slug", () => {
     const source = readFileSync(file, "utf8");
     assert.match(source, new RegExp(`slug = "${slug}"`));
   }
+});
+
+test("resource catalogue exposes seven complete articles and stable slugs", () => {
+  const catalogue = readFileSync(path.join(root, "content/resources.ts"), "utf8");
+  assert.equal((catalogue.match(/from "\.\/resources\//g) || []).length, 7);
+  const slugs = [
+    "seguro-auto-mendoza",
+    "factores-precio-seguro-auto",
+    "rc-vs-todo-riesgo",
+    "datos-para-cotizar-hogar",
+    "riesgos-consorcios",
+    "documentacion-caucion-alquiler",
+    "elegir-cobertura-bicicleta"
+  ];
+  for (const slug of slugs) {
+    const file = path.join(root, "content/resources", `${slug}.ts`);
+    const source = readFileSync(file, "utf8");
+    assert.match(source, /answer:/);
+    assert.match(source, /sections:/);
+    assert.match(source, /faqs:/);
+    assert.match(source, /formId:/);
+  }
+});
+
+test("resource article route is statically generated and includes canonical metadata", () => {
+  const source = readFileSync(path.join(root, "app/recursos/[slug]/page.tsx"), "utf8");
+  assert.match(source, /generateStaticParams/);
+  assert.match(source, /getAllResourceSlugs/);
+  assert.match(source, /alternates: \{ canonical: path \}/);
+  assert.match(source, /"@type": "Article"/);
 });
