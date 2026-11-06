@@ -46,5 +46,11 @@ export const article: ResourceArticle = {
         a: "Sí, al vencimiento o según las condiciones de cada contrato. Un productor puede ayudarte a comparar renovación versus alternativas nuevas."
       }
     ],
+    references: [
+      { label: "Ley 24.449, artículo 68 — Seguro obligatorio", url: "https://www.argentina.gob.ar/normativa/nacional/ley-24449-818/actualizacion" },
+      { label: "SSN — Seguro automotor", url: "https://www.argentina.gob.ar/node/494955" },
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: ["factores-precio-seguro-auto", "rc-vs-todo-riesgo"]
   };
