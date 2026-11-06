@@ -116,6 +116,22 @@ export default async function ResourceArticlePage({ params }: Props) {
               </div>
             </section>
 
+
+            {article.references?.length ? (
+              <section className="seo-article-block seo-sources" aria-labelledby="official-sources">
+                <h2 id="official-sources">Fuentes oficiales para ampliar</h2>
+                <ul>
+                  {article.references.map((reference) => (
+                    <li key={reference.url}>
+                      <a href={reference.url} target="_blank" rel="noopener noreferrer">
+                        {reference.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
             <p className="seo-note">
               Este contenido es orientativo y no constituye una oferta de seguro ni
               garantiza cobertura. Las condiciones definitivas dependen de cada
