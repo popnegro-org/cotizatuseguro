@@ -42,5 +42,9 @@ export const article: ResourceArticle = {
         a: "Ubicación, superficie aproximada, material de construcción, uso de áreas comunes y, cuando aplica, detalles de instalaciones relevantes."
       }
     ],
+    references: [
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: ["datos-para-cotizar-hogar"]
   };
