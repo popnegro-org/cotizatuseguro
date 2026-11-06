@@ -52,6 +52,8 @@ test("resource catalogue exposes seven complete articles and stable slugs", () =
     assert.match(source, /answer:/);
     assert.match(source, /sections:/);
     assert.match(source, /faqs:/);
+    assert.match(source, /references:/);
+    assert.match(source, /https:\/\/www\.argentina\.gob\.ar/);
     assert.match(source, /formId:/);
   }
 });
