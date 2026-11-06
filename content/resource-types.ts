@@ -9,6 +9,6 @@ export type ResourceArticle = {
   answer: string;
   sections: { heading: string; body: string[] }[];
   faqs: { q: string; a: string }[];
-  references?: { label: string; url: string }[];
+  references: { label: string; url: string }[];
   relatedSlugs?: string[];
 };
