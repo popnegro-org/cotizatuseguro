@@ -305,3 +305,37 @@ test('la navegación compartida conserva el CTA accesible y no desborda en móvi
     expect(dimensions.header, `privacy header overflows at ${width}px`).toBeLessThanOrEqual(dimensions.viewport);
   }
 });
+
+
+test('el banner de consentimiento permanece en el flujo y no tapa el hero en desktop y mobile', async ({ page }) => {
+  for (const width of [320, 390, 560, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/');
+    await waitForConsentBanner(page);
+
+    const layout = await page.evaluate(() => {
+      const banner = document.querySelector<HTMLElement>('.consent-banner');
+      const hero = document.querySelector<HTMLElement>('.hero');
+      if (!banner || !hero) throw new Error('Consent banner or hero is missing');
+      const bannerRect = banner.getBoundingClientRect();
+      const heroRect = hero.getBoundingClientRect();
+      return {
+        position: getComputedStyle(banner).position,
+        bannerBottom: bannerRect.bottom,
+        heroTop: heroRect.top,
+        bannerWidth: bannerRect.width,
+        viewportWidth: document.documentElement.clientWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        parentTag: banner.parentElement?.tagName,
+      };
+    });
+
+    expect(layout.position, `banner must stay in document flow at ${width}px`).not.toBe('fixed');
+    expect(layout.parentTag).toBe('BODY');
+    expect(layout.heroTop, `hero must start after the banner at ${width}px`).toBeGreaterThanOrEqual(layout.bannerBottom);
+    expect(layout.bannerWidth).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(layout.documentWidth, `page overflows horizontally at ${width}px`).toBeLessThanOrEqual(layout.viewportWidth);
+    await expect(page.getByRole('button', { name: 'Rechazar' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Aceptar' })).toBeVisible();
+  }
+});
