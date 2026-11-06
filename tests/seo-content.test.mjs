@@ -1,3 +1,4 @@
+import { serializeJsonLd } from "../components/seo/serialize-json-ld.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import path from "node:path";
@@ -61,4 +62,14 @@ test("resource article route is statically generated and includes canonical meta
   assert.match(source, /getAllResourceSlugs/);
   assert.match(source, /alternates: \{ canonical: path \}/);
   assert.match(source, /"@type": "Article"/);
+});
+
+
+test("JSON-LD serialization escapes script-closing characters", () => {
+  const serialized = serializeJsonLd({
+    headline: "Coberturas",
+    description: "</script><script>alert(1)</script>"
+  });
+  assert.doesNotMatch(serialized, /<\/?script/i);
+  assert.match(serialized, /\\u003c\\/script>/);
 });
