@@ -73,6 +73,6 @@ test("homepage derives product cards from the shared catalogue", () => {
   const catalogue = readFileSync(path.join(root, "content/site.ts"), "utf8");
   assert.ok(home.includes("const landingProducts = products.map"));
   assert.ok(!home.includes("const products :"));
-  assert.equal((catalogue.match(/landingDescription:/g) || []).length, 6);
-  assert.equal((catalogue.match(/landingShortDescription:/g) || []).length, 6);
+  assert.equal(catalogue.split("\n").filter((line) => line.startsWith("    landingDescription:")).length, 6);
+  assert.equal(catalogue.split("\n").filter((line) => line.startsWith("    landingShortDescription:")).length, 6);
 });
