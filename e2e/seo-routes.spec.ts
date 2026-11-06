@@ -9,7 +9,14 @@ const routes = [
   "/seguros/hogar",
   "/seguros/consorcio",
   "/seguros/bicicleta",
-  "/seguros/caucion-alquiler"
+  "/seguros/caucion-alquiler",
+  "/recursos/seguro-auto-mendoza",
+  "/recursos/factores-precio-seguro-auto",
+  "/recursos/rc-vs-todo-riesgo",
+  "/recursos/datos-para-cotizar-hogar",
+  "/recursos/riesgos-consorcios",
+  "/recursos/documentacion-caucion-alquiler",
+  "/recursos/elegir-cobertura-bicicleta"
 ];
 
 for (const route of routes) {
@@ -23,9 +30,15 @@ for (const route of routes) {
   });
 }
 
+test("resource cards link to full guides", async ({ page }) => {
+  await page.goto("/recursos");
+  const links = page.locator('a[href^="/recursos/"]');
+  await expect(links).toHaveCount(14);
+  await expect(links.first()).toBeVisible();
+});
+
 test("product CTA deep-links to form product query", async ({ page }) => {
   await page.goto("/seguros/auto");
-  // Prefer the in-page product CTA (header links to /#cotizar without producto).
   const cta = page.locator('main a[href*="producto=auto"]').first();
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", /producto=auto/);
