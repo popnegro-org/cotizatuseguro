@@ -42,5 +42,10 @@ export const article: ResourceArticle = {
         a: "En muchos casos sí, al renovar o mediante endoso, sujeto a aceptación de la compañía y a las reglas del producto."
       }
     ],
+    references: [
+      { label: "SSN — Seguro automotor", url: "https://www.argentina.gob.ar/node/494955" },
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: ["seguro-auto-mendoza", "factores-precio-seguro-auto"]
   };
