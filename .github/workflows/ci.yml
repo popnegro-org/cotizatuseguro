@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Report CI toolchain versions
+        run: |
+          node --version
+          npm --version
       - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm test
