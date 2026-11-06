@@ -67,7 +67,7 @@ test("homepage content clarifies the quote is not a policy or guaranteed coverag
   assert.match(page, /no implica la emisión de una póliza ni garantiza la aprobación/);
   assert.ok(page.includes('import { products, type FormProductId } from "../content/site"'));
   assert.match(siteContent, /La aprobación y los requisitos dependen de la evaluación del proveedor/);
-  assert.match(page, /condiciones de cada póliza/);
+  assert.match(siteContent, /condiciones de cada póliza/);
   assert.match(page, /¿De qué depende el precio de un seguro\?/);
   assert.match(page, /¿La solicitud garantiza que me otorguen la cobertura\?/);
   assert.doesNotMatch(page, /Superintendencia de Seguros de la Nación|registro oficial de la SSN|matrícula|habilitación profesional/i);
