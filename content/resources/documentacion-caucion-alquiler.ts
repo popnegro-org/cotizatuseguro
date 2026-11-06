@@ -42,5 +42,9 @@ export const article: ResourceArticle = {
         a: "Es una alternativa frecuente al depósito en efectivo o a la garantía de un tercero, sujeta a aceptación del locador y del proveedor de la caución."
       }
     ],
+    references: [
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: []
   };
