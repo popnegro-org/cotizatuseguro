@@ -26,7 +26,7 @@ Configurar variables reales en `.env.local` para desarrollo y en Vercel para cad
 - `NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER`: número internacional de WhatsApp Business, solo dígitos.
 - `NEXT_PUBLIC_GTM_ID`: contenedor GTM, cargado tras aceptar medición.
 - `NEXT_PUBLIC_SITE_URL`: URL pública usada como origen de eventos Meta CAPI; la URL canónica del sitio se define en metadata y sitemap.
-- `META_PIXEL_ID` y `META_CAPI_ACCESS_TOKEN`: configuración server-side de Meta Conversions API (opcional). Si falta cualquiera de las dos, el lead sigue funcionando y el evento server-side no se envía.
+- `META_PIXEL_ID` (o `NEXT_PUBLIC_META_PIXEL_ID` como fallback) y `META_CAPI_ACCESS_TOKEN`: configuración server-side de Meta Conversions API (opcional). Si falta el Pixel ID o el token, el lead sigue funcionando y el evento server-side no se envía.
 - `NEXT_PUBLIC_META_PIXEL_ID`: alternativa pública para identificar el Pixel del navegador y, como fallback, el Pixel ID de CAPI. El token CAPI nunca debe usar el prefijo `NEXT_PUBLIC_`.
 
 ## Captación y entrega de leads
@@ -34,7 +34,9 @@ La API valida cada solicitud y primero la guarda en Upstash (retención de 30 d�
 
 Los errores transitorios (HTTP 429/5xx, timeout o red) quedan en `pending` y se reintentan con backoff exponencial, limitado a 60 segundos. Los rechazos permanentes (por ejemplo, HTTP 4xx distinto de 429 o credencial ausente) pasan a `failed`, se retiran de la cola automática y la API responde `202` con `status: "needs_review"`; deben reconciliarse manualmente.
 
-El proceso programado debe llamar `POST /api/leads/retry` con `Authorization: Bearer <LEAD_RETRY_SECRET>`. Cada ejecución procesa como máximo **3 solicitudes** de forma secuencial para conservar margen dentro del límite de 60 segundos de la función, considerando reconciliación, entrega a HubSpot y envío best-effort a Meta. La configuración y validación del scheduler es un paso operativo separado; no se debe asumir que está activo por la sola existencia del endpoint.
+El workflow `.github/workflows/lead-retry.yml` intenta llamar `POST /api/leads/retry` cada 5 minutos, pero solo ejecuta el job cuando la variable de repositorio `LEAD_RETRY_ENABLED=true`. Requiere el secret de GitHub Actions `LEAD_RETRY_SECRET`, con el mismo valor que el secret de Vercel. Si falta el secret o la variable no está habilitada, no se procesa la cola. No activar el scheduler hasta validar Preview, autorización, persistencia y recuperación con datos sintéticos.
+
+Cada ejecución procesa como máximo **3 solicitudes** de forma secuencial para conservar margen dentro del límite de 60 segundos de la función, considerando reconciliación, entrega a HubSpot y envío best-effort a Meta.
 
 Si Upstash no está configurado o falla la persistencia, el lead no se envía a HubSpot y la API responde `503`.
 
@@ -49,6 +51,8 @@ La página `/recursos` publica siete guías orientativas con páginas estáticas
 
 El catálogo `content/site.ts` es la fuente única para las seis categorías comerciales: landing, navegación de cotización y páginas SEO consumen los mismos identificadores, categorías y descripciones de producto.
 
+
+## Meta Conversions API
 
 Cuando un lead queda `sent`, el servidor puede enviar un evento `Lead` a Meta con `event_id = requestId`. La integración es best-effort: un fallo de Meta no revierte la entrega a HubSpot ni modifica la respuesta del formulario. Ver [docs/meta-conversions-api.md](docs/meta-conversions-api.md).
 
