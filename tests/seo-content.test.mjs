@@ -73,3 +73,32 @@ test("JSON-LD serialization escapes script-closing characters", () => {
   assert.doesNotMatch(serialized, /<\/?script/i);
   assert.match(serialized, /\\u003c\\/script>/);
 });
+
+
+test("homepage derives all product cards and form options from the shared catalogue", () => {
+  const home = readFileSync(path.join(root, "app/page.tsx"), "utf8");
+  const catalogue = readFileSync(path.join(root, "content/site.ts"), "utf8");
+  assert.match(home, /import \{ products, type FormProductId \} from "\.\.\/content\/site"/);
+  assert.match(home, /const landingProducts = products\.map/);
+  assert.doesNotMatch(home, /const products\s*:/);
+  assert.equal((catalogue.match(/landingDescription:/g) || []).length, 6);
+  assert.equal((catalogue.match(/landingShortDescription:/g) || []).length, 6);
+  assert.equal((catalogue.match(/category: "(?:VEHÍCULOS|VIVIENDA|EDIFICIOS|MOVILIDAD|GARANTÍAS)"/g) || []).length, 6);
+});
+
+test("resource catalogue slugs are unique and related links resolve", () => {
+  const source = readFileSync(path.join(root, "content/resources.ts"), "utf8");
+  const slugs = [
+    "seguro-auto-mendoza",
+    "factores-precio-seguro-auto",
+    "rc-vs-todo-riesgo",
+    "datos-para-cotizar-hogar",
+    "riesgos-consorcios",
+    "documentacion-caucion-alquiler",
+    "elegir-cobertura-bicicleta"
+  ];
+  assert.equal(new Set(slugs).size, slugs.length);
+  for (const slug of slugs) {
+    assert.ok(source.includes(`./resources/${slug}`));
+  }
+});
