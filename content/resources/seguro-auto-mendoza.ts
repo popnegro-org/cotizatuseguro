@@ -8,7 +8,7 @@ export const article: ResourceArticle = {
       "Guía orientativa sobre seguros de auto en Mendoza: responsabilidad civil, robo, daños y cómo cotizar. Asesoramiento de Agustín Montes.",
     formId: "auto",
     answer:
-      "En la práctica, un auto en Mendoza suele cotizarse al menos con responsabilidad civil (daños a terceros) y, según el valor y el uso del vehículo, con coberturas de robo, incendio y daños parciales o totales. No existe una única póliza obligatoria igual para todos: las condiciones, exclusiones y precios dependen de cada compañía y de la evaluación del riesgo.",
+      "La Ley 24.449, artículo 68, exige que los automotores, acoplados y semiacoplados cuenten con seguro para cubrir daños eventuales a terceros, transportados o no; la misma obligación alcanza a las motocicletas. La autoridad aseguradora fija las condiciones del seguro obligatorio. Las coberturas adicionales sobre el propio vehículo —como robo, incendio o daños— dependen de la propuesta y de las condiciones de cada póliza.",
     sections: [
       {
         heading: "Responsabilidad civil: el núcleo habitual",
@@ -35,7 +35,7 @@ export const article: ResourceArticle = {
     faqs: [
       {
         q: "¿Es obligatorio tener seguro de auto en Argentina?",
-        a: "La circulación y la responsabilidad frente a terceros están reguladas por normas nacionales y provinciales. En la práctica, la responsabilidad civil es el punto de partida más consultado. Te conviene verificar la normativa vigente y las exigencias de tu caso particular."
+        a: "Sí. El artículo 68 de la Ley 24.449 exige que los automotores y las motocicletas cuenten con seguro que cubra daños eventuales a terceros, transportados o no, bajo las condiciones fijadas por la autoridad aseguradora. El artículo 40 también exige llevar el comprobante del seguro vigente. Revisá la normativa y las condiciones aplicables a tu vehículo."
       },
       {
         q: "¿Cuánto tarda una cotización?",
