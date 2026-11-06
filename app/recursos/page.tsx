@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { resourceSeeds } from "../../content/resources";
+import Link from "next/link";
+import { resources } from "../../content/resources";
 import { SITE_URL } from "../../content/site";
 import { Breadcrumb } from "../../components/seo/breadcrumb";
 import { CtaQuote } from "../../components/seo/cta-quote";
@@ -11,11 +12,11 @@ const path = "/recursos";
 export const metadata: Metadata = {
   title: "Recursos y guías de seguros | CotizaTuSeguro Mendoza",
   description:
-    "Guías orientativas sobre seguros en Mendoza: auto, hogar, consorcio, caución y más. Contenido para entender coberturas antes de cotizar.",
+    "Guías orientativas sobre seguros de auto, hogar, consorcio, caución y bicicleta. Información práctica para entender coberturas antes de cotizar.",
   alternates: { canonical: path },
   openGraph: {
     title: "Recursos | CotizaTuSeguro",
-    description: "Respuestas claras a preguntas frecuentes sobre seguros en Mendoza.",
+    description: "Guías prácticas y respuestas a preguntas frecuentes sobre seguros.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "website"
@@ -29,7 +30,7 @@ export default function RecursosPage() {
       path,
       name: "Recursos y guías de seguros",
       description:
-        "Contenido orientativo sobre seguros en Mendoza para entender coberturas antes de cotizar."
+        "Contenido orientativo sobre seguros para entender coberturas y preparar una cotización."
     }),
     breadcrumbList(
       [
@@ -49,9 +50,10 @@ export default function RecursosPage() {
           <p className="seo-kicker">Guías orientativas</p>
           <h1>Recursos sobre seguros</h1>
           <p className="seo-lead">
-            Respuestas claras a preguntas frecuentes sobre coberturas en Mendoza.
-            El contenido es orientativo y no reemplaza el asesoramiento personalizado
-            ni las condiciones de cada póliza.
+            Información práctica para comprender conceptos, preparar los datos de
+            una cotización y conocer qué aspectos revisar en cada propuesta. El
+            contenido no reemplaza las condiciones de cada póliza ni el asesoramiento
+            aplicado a una situación particular.
           </p>
           <div className="seo-actions">
             <CtaQuote />
@@ -61,25 +63,22 @@ export default function RecursosPage() {
 
       <section className="section seo-section">
         <div className="container">
-          <h2>Temas frecuentes</h2>
+          <h2>Guías disponibles</h2>
           <ul className="seo-resource-list">
-            {resourceSeeds.map((item) => (
+            {resources.map((item) => (
               <li key={item.slug}>
                 <article className="seo-resource-card">
-                  <h3>{item.question}</h3>
-                  <p>
-                    Contenido en preparación. Mientras tanto, podés solicitar una
-                    cotización y te orientamos según tu caso.
-                  </p>
-                  <CtaQuote label="Cotizar ahora" />
+                  <h3>
+                    <Link href={`/recursos/${item.slug}`}>{item.question}</Link>
+                  </h3>
+                  <p>{item.answer}</p>
+                  <Link className="seo-resource-link" href={`/recursos/${item.slug}`}>
+                    Leer guía completa
+                  </Link>
                 </article>
               </li>
             ))}
           </ul>
-          <p className="seo-note">
-            Próximamente publicaremos guías completas para cada tema (GEO content).
-            Si tenés una consulta puntual, usá el formulario o escribinos por WhatsApp.
-          </p>
         </div>
       </section>
     </SiteChrome>

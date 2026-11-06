@@ -11,6 +11,10 @@ export type ProductSeo = {
   formId: FormProductId;
   title: string;
   shortTitle: string;
+  landingTitle: string;
+  landingDescription: string;
+  landingShortDescription: string;
+  category: "VEHÍCULOS" | "VIVIENDA" | "EDIFICIOS" | "MOVILIDAD" | "GARANTÍAS";
   metaDescription: string;
   h1: string;
   intro: string;
@@ -27,6 +31,10 @@ export const products: ProductSeo[] = [
     formId: "auto",
     title: "Seguro de auto en Mendoza",
     shortTitle: "Auto",
+    landingTitle: "Autos",
+    landingDescription: "Consultá alternativas de responsabilidad civil, robo y daños. La cobertura disponible depende de la propuesta y de las condiciones de la póliza.",
+    landingShortDescription: "Consultá por responsabilidad civil, robo y daños.",
+    category: "VEHÍCULOS",
     metaDescription:
       "Cotizá seguro de auto en Mendoza con Agustín Montes. Compará responsabilidad civil, robo y daños con compañías líderes. Respuesta por WhatsApp.",
     h1: "Seguro de auto en Mendoza",
@@ -59,6 +67,10 @@ export const products: ProductSeo[] = [
     formId: "moto",
     title: "Seguro de moto en Mendoza",
     shortTitle: "Moto",
+    landingTitle: "Motos",
+    landingDescription: "Solicitá alternativas para tu moto o ciclomotor. Los servicios adicionales, como auxilio mecánico, dependen del producto y sus condiciones.",
+    landingShortDescription: "Alternativas según el tipo de moto y cobertura.",
+    category: "VEHÍCULOS",
     metaDescription:
       "Cotizá seguro de moto o ciclomotor en Mendoza. Opciones de RC, robo y daños según tipo de moto. Asesoramiento de Agustín Montes.",
     h1: "Seguro de moto en Mendoza",
@@ -87,6 +99,10 @@ export const products: ProductSeo[] = [
     formId: "hogar",
     title: "Seguro de hogar en Mendoza",
     shortTitle: "Hogar",
+    landingTitle: "Hogar",
+    landingDescription: "Consultá por opciones relacionadas con incendio, robo de contenidos, daños por agua y responsabilidad civil, según las condiciones de cada póliza.",
+    landingShortDescription: "Consultá por riesgos del hogar.",
+    category: "VIVIENDA",
     metaDescription:
       "Cotizá seguro de hogar en Mendoza: incendio, robo de contenidos, daños por agua y responsabilidad civil. Asesoramiento personalizado.",
     h1: "Seguro de hogar en Mendoza",
@@ -115,6 +131,10 @@ export const products: ProductSeo[] = [
     formId: "consorcio",
     title: "Seguro de consorcio en Mendoza",
     shortTitle: "Consorcio",
+    landingTitle: "Consorcio",
+    landingDescription: "Solicitá una evaluación para el edificio, las áreas comunes y las características del consorcio. Las coberturas dependen de la propuesta.",
+    landingShortDescription: "Opciones para edificios y espacios comunes.",
+    category: "EDIFICIOS",
     metaDescription:
       "Seguro de consorcio y edificios en Mendoza. Evaluación de áreas comunes, responsabilidad civil y riesgos del edificio. Asesoramiento para administradores.",
     h1: "Seguro de consorcio en Mendoza",
@@ -143,6 +163,10 @@ export const products: ProductSeo[] = [
     formId: "bicicletas",
     title: "Seguro de bicicleta en Mendoza",
     shortTitle: "Bicicleta",
+    landingTitle: "Bicicleta",
+    landingDescription: "Consultá alternativas para asegurar tu bicicleta y revisá los riesgos, límites y condiciones ofrecidos en cada propuesta.",
+    landingShortDescription: "Alternativas para bicicletas.",
+    category: "MOVILIDAD",
     metaDescription:
       "Cotizá seguro para bicicleta en Mendoza. Coberturas orientadas a robo y daños según valor y uso. Asesoramiento de Agustín Montes.",
     h1: "Seguro de bicicleta en Mendoza",
@@ -171,6 +195,10 @@ export const products: ProductSeo[] = [
     formId: "caucion_alquiler",
     title: "Caución de alquiler en Mendoza",
     shortTitle: "Caución alquiler",
+    landingTitle: "Caución alquiler",
+    landingDescription: "Consultá por una garantía de caución para alquiler de vivienda o comercio. La aprobación y los requisitos dependen de la evaluación del proveedor.",
+    landingShortDescription: "Consulta por caución de alquiler.",
+    category: "GARANTÍAS",
     metaDescription:
       "Cotizá caución de alquiler en Mendoza para vivienda o comercio. Alternativa a depósito o garantía propietaria. Asesoramiento ágil.",
     h1: "Caución de alquiler en Mendoza",

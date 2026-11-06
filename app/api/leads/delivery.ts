@@ -1,4 +1,4 @@
-import { claimLead, getLead, releaseLeadClaim, updateLead, type StoredLead } from "./lead-store.ts";
+import { claimLead, getLead, releaseLeadClaim, retryDelayMs, updateLead, type StoredLead } from "./lead-store.ts";
 import { sendMetaLeadEventSafe } from "./meta-capi.ts";
 
 const HUBSPOT_ENDPOINT = "https://api.hubapi.com/crm/v3/objects/contacts";
@@ -149,7 +149,7 @@ export async function deliverStoredLead(requestId: string): Promise<StoredLead |
     const updated: StoredLead = {
       ...deliveryAttempt,
       status: result.status === "failed" ? "failed" : "pending",
-      nextAttemptAt: result.status === "failed" ? 0 : now + Math.min(60_000, 1_000 * 2 ** Math.max(0, deliveryAttempt.attempts - 1)),
+      nextAttemptAt: result.status === "failed" ? 0 : now + retryDelayMs(deliveryAttempt.attempts),
       updatedAt: now,
       lastErrorCode: result.errorCode
     };

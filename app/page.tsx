@@ -1,23 +1,24 @@
 "use client";
 
 import { SiteFooter, SiteHeader } from "../components/site-navigation";
+import { products, type FormProductId } from "../content/site";
 import { FormEvent, useEffect, useState } from "react";
 
-type Product = "auto" | "moto" | "hogar" | "consorcio" | "bicicletas" | "caucion_alquiler";
+type Product = FormProductId;
 type FormState = {
   name: string; email: string; phone: string; province: string; city: string; product: Product;
   make: string; model: string; year: string; homeSqm: string; location: string; occupancy: string;
   constructionMaterial: string; activity: string; wheelSize: string; bikeMaterial: string;
   insuredAmount: string; monthlyRent: string; contractDuration: string; privacyAccepted: boolean;
 };
-const products: { id: Product; title: string; desc: string; shortDesc: string; icon: string }[] = [
-  { id: "auto", title: "Autos", desc: "Consultá alternativas de responsabilidad civil, robo y daños. La cobertura disponible depende de la propuesta y de las condiciones de la póliza.", shortDesc: "Consultá por responsabilidad civil, robo y daños.", icon: "🚘" },
-  { id: "moto", title: "Motos", desc: "Solicitá alternativas para tu moto o ciclomotor. Los servicios adicionales, como auxilio mecánico, dependen del producto y sus condiciones.", shortDesc: "Alternativas según el tipo de moto y cobertura.", icon: "🏍️" },
-  { id: "hogar", title: "Hogar", desc: "Consultá por opciones relacionadas con incendio, robo de contenidos, daños por agua y responsabilidad civil, según las condiciones de cada póliza.", shortDesc: "Consultá por riesgos del hogar.", icon: "🏡" },
-  { id: "consorcio", title: "Consorcio", desc: "Solicitá una evaluación para el edificio, las áreas comunes y las características del consorcio. Las coberturas dependen de la propuesta.", shortDesc: "Opciones para edificios y espacios comunes.", icon: "🏢" },
-  { id: "bicicletas", title: "Bicicleta", desc: "Consultá alternativas para asegurar tu bicicleta y revisá los riesgos, límites y condiciones ofrecidos en cada propuesta.", shortDesc: "Alternativas para bicicletas.", icon: "🚲" },
-  { id: "caucion_alquiler", title: "Caución alquiler", desc: "Consultá por una garantía de caución para alquiler de vivienda o comercio. La aprobación y los requisitos dependen de la evaluación del proveedor.", shortDesc: "Consulta por caución de alquiler.", icon: "🔑" }
-];
+const landingProducts = products.map((product) => ({
+  id: product.formId,
+  title: product.landingTitle,
+  desc: product.landingDescription,
+  shortDesc: product.landingShortDescription,
+  icon: product.icon,
+  category: product.category
+}));
 
 const companies = [
   "Triunfo",
@@ -307,7 +308,7 @@ export default function Home() {
         return;
       }
       setSuccess("Solicitud registrada. Ahora podés continuar por WhatsApp.");
-      const label = products.find((item) => item.id === form.product)?.title || form.product;
+      const label = landingProducts.find((item) => item.id === form.product)?.title || form.product;
       const detailLabels: Record<string, string> = {
         make: "Marca", model: "Modelo", year: "Año", homeSqm: "Superficie cubierta (m²)",
         location: "Ubicación", occupancy: "Tipo de vivienda",
@@ -374,14 +375,14 @@ export default function Home() {
             <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática en web</li></ul>
           </div>
           <div className="hero-card"><div className="hero-card-top"><strong>Elegí un producto</strong><p>Seleccioná y saltás al formulario de cotización.</p></div>
-            <div className="product-grid">{products.map((p) => <button className={`product-link${form.product === p.id ? " is-selected" : ""}`} key={p.id} onClick={() => chooseProduct(p.id)} type="button" aria-pressed={form.product === p.id}><span className="product-icon" aria-hidden="true">{p.icon}</span><strong>{p.title}</strong><span>{p.shortDesc}</span></button>)}</div>
+            <div className="product-grid">{landingProducts.map((p) => <button className={`product-link${form.product === p.id ? " is-selected" : ""}`} key={p.id} onClick={() => chooseProduct(p.id)} type="button" aria-pressed={form.product === p.id}><span className="product-icon" aria-hidden="true">{p.icon}</span><strong>{p.title}</strong><span>{p.shortDesc}</span></button>)}</div>
           </div>
         </div></section>
 
         <section className="section" id="seguros"><div className="container">
           <div className="section-intro"><span className="eyebrow">Coberturas disponibles</span><h2>Qué podemos cotizar</h2><p>Elegí el producto y el formulario se precarga con los datos del riesgo que necesitamos para cotizar.</p></div>
-          <div className="coverage-grid">{products.map((p, index) => <article className="coverage-card" key={p.id}>
-            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{["VEHÍCULOS","VEHÍCULOS","VIVIENDA","EDIFICIOS","MOVILIDAD","GARANTÍAS"][index]}</span></div>
+          <div className="coverage-grid">{landingProducts.map((p) => <article className="coverage-card" key={p.id}>
+            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{p.category}</span></div>
             <h3>{p.title}</h3><p>{p.desc}</p><button className="coverage-action" type="button" onClick={() => chooseProduct(p.id)}>Cotizar {p.title.toLowerCase()} <span aria-hidden="true">→</span></button>
           </article>)}</div>
         </div></section>
@@ -446,7 +447,7 @@ export default function Home() {
                 <div className="field field-full">
                   <label htmlFor="product">Tipo de seguro *</label>
                   <select id="product" value={form.product} onChange={(e) => setForm({ ...form, product: e.target.value as Product })}>
-                    {products.map((p) => <option value={p.id} key={p.id}>{p.title}</option>)}
+                    {landingProducts.map((p) => <option value={p.id} key={p.id}>{p.title}</option>)}
                   </select>
                 </div>
                 <div className={"field" + (fieldErrors.name ? " has-error" : "")}>
@@ -483,7 +484,7 @@ export default function Home() {
               {formStep === 2 && (
               <div className="form-grid">
                 <div className="field field-full form-step-summary">
-                  <p><strong>{products.find((p) => p.id === form.product)?.title}</strong> · {form.name} · {[form.city, form.province].filter(Boolean).join(", ")}</p>
+                  <p><strong>{landingProducts.find((p) => p.id === form.product)?.title}</strong> · {form.name} · {[form.city, form.province].filter(Boolean).join(", ")}</p>
                   <button type="button" className="link-button" onClick={() => setFormStep(1)}>Editar contacto</button>
                 </div>
                 {(form.product === "auto" || form.product === "moto") && <>

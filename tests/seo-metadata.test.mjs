@@ -17,10 +17,12 @@ test("site metadata pins canonical and Open Graph to the apex domain", async () 
 test("robots and sitemap advertise the same canonical origin and only known routes", async () => {
   const robots = await readFile(new URL("../app/robots.ts", import.meta.url), "utf8");
   const sitemap = await readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8");
-  assert.ok(robots.includes(canonicalOrigin));
-  assert.ok(sitemap.includes(canonicalOrigin));
-  assert.ok(robots.includes("sitemap: `${productionSiteUrl}/sitemap.xml`"));
-  assert.ok(sitemap.includes("`${productionSiteUrl}/privacidad`"));
+  const siteContent = await readFile(new URL("../content/site.ts", import.meta.url), "utf8");
+  assert.ok(siteContent.includes('export const SITE_URL = "' + canonicalOrigin + '"'));
+  assert.ok(robots.includes('const productionSiteUrl = "' + canonicalOrigin + '"'));
+  assert.ok(robots.includes('sitemap: `${productionSiteUrl}/sitemap.xml`'));
+  assert.ok(sitemap.includes('import { products, SITE_URL } from "../content/site"'));
+  assert.ok(sitemap.includes('`${SITE_URL}/privacidad`'));
   assert.doesNotMatch(robots + sitemap, /https:\/\/www\.cotizatuseguro\.com\.ar/);
   assert.doesNotMatch(sitemap, /\/api\//);
 });
@@ -60,10 +62,12 @@ test("homepage includes factual structured data for the site, page, and named pr
 
 test("homepage content clarifies the quote is not a policy or guaranteed coverage", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const siteContent = await readFile(new URL("../content/site.ts", import.meta.url), "utf8");
   assert.match(page, /<h1>Cotizá tu seguro con asesoramiento personalizado\.<\/h1>/);
   assert.match(page, /no implica la emisión de una póliza ni garantiza la aprobación/);
-  assert.match(page, /La aprobación y los requisitos dependen de la evaluación del proveedor/);
-  assert.match(page, /condiciones de cada póliza/);
+  assert.ok(page.includes('import { products, type FormProductId } from "../content/site"'));
+  assert.match(siteContent, /La aprobación y los requisitos dependen de la evaluación del proveedor/);
+  assert.match(siteContent, /condiciones de cada póliza/);
   assert.match(page, /¿De qué depende el precio de un seguro\?/);
   assert.match(page, /¿La solicitud garantiza que me otorguen la cobertura\?/);
   assert.doesNotMatch(page, /Superintendencia de Seguros de la Nación|registro oficial de la SSN|matrícula|habilitación profesional/i);

@@ -8,7 +8,7 @@ export function CtaQuote({
   product?: FormProductId;
   label?: string;
 }) {
-  const href = product ? `/#cotizar?producto=${product}` : "/#cotizar";
+  const href = product ? `/?producto=${product}#cotizar` : "/#cotizar";
   return (
     <Link className="button header-cta" href={href}>
       {label} <span aria-hidden="true">→</span>
