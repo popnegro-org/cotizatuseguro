@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const metaPixelConfigured = Boolean(
-    process.env.META_PIXEL_ID || process.env.NEXT_PUBLIC_META_PIXEL_ID
-  );
+  const pixelId = process.env.META_PIXEL_ID?.trim()
+    || process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim();
+  const metaPixelConfigured = Boolean(pixelId);
   const metaCapiConfigured = Boolean(
-    process.env.META_PIXEL_ID && process.env.META_CAPI_ACCESS_TOKEN
+    pixelId && process.env.META_CAPI_ACCESS_TOKEN?.trim()
   );
 
   return NextResponse.json({
