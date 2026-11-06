@@ -43,7 +43,13 @@ La API utiliza las propiedades personalizadas de HubSpot `insurance_product`, `i
 ## Endpoint
 `POST /api/leads` valida los datos del formulario y registra la solicitud. Por defecto, usa Upstash Redis para aplicar un límite distribuido. `LEADS_RATE_LIMIT_MODE=infrastructure` omite ese límite de aplicación y solo debe activarse después de configurar y probar reglas de rate limiting en Vercel Firewall para `POST /api/leads`; cambiar la variable por sí solo no activa protección.
 
-## Meta Conversions API
+## Contenidos SEO
+
+La página `/recursos` publica siete guías orientativas con páginas estáticas individuales en `/recursos/<slug>`. Cada guía mantiene su contenido, preguntas frecuentes, CTA contextual y referencias oficiales cuando corresponden. Las URLs de recursos se incorporan al sitemap desde el mismo catálogo editorial. Revisar las fuentes y actualizar los textos antes de cambios regulatorios o de producto; no publicar coberturas, requisitos ni disponibilidad no confirmados.
+
+El catálogo `content/site.ts` es la fuente única para las seis categorías comerciales: landing, navegación de cotización y páginas SEO consumen los mismos identificadores, categorías y descripciones de producto.
+
+
 Cuando un lead queda `sent`, el servidor puede enviar un evento `Lead` a Meta con `event_id = requestId`. La integración es best-effort: un fallo de Meta no revierte la entrega a HubSpot ni modifica la respuesta del formulario. Ver [docs/meta-conversions-api.md](docs/meta-conversions-api.md).
 
 La deduplicación con el Pixel requiere que GTM envíe el mismo `eventID` en el evento de navegador. No enviar PII en parámetros de analítica.
