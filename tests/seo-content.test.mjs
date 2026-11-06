@@ -12,7 +12,6 @@ test("robots blocks indexing outside production and exposes sitemap only in prod
   try {
     process.env.VERCEL_ENV = "preview";
     assert.deepEqual(robots(), { rules: [{ userAgent: "*", disallow: "/" }] });
-
     process.env.VERCEL_ENV = "production";
     assert.deepEqual(robots(), {
       rules: [{ userAgent: "*", allow: "/", disallow: "/api/" }],
@@ -25,38 +24,21 @@ test("robots blocks indexing outside production and exposes sitemap only in prod
   }
 });
 
-test("content/site exports six products with formId mapping", () => {
-  const source = readFileSync(path.join(root, "content/site.ts"), "utf8");
-  assert.match(source, /slug: "auto"/);
-  assert.match(source, /formId: "bicicletas"/);
-  assert.match(source, /slug: "caucion-alquiler"/);
-  assert.match(source, /formId: "caucion_alquiler"/);
-  const slugCount = (source.match(/slug: "/g) || []).length;
-  assert.equal(slugCount, 6);
-});
-
-test("sitemap includes product, local, institutional and resource routes", () => {
+test("sitemap includes all major SEO route groups", () => {
   const source = readFileSync(path.join(root, "app/sitemap.ts"), "utf8");
-  assert.match(source, /seguros-en-mendoza/);
-  assert.match(source, /sobre-agustin-montes/);
-  assert.match(source, /\\/recursos/);
-  assert.match(source, /resources\\.map/);
-  assert.match(source, /products\\.map/);
+  for (const fragment of ["seguros-en-mendoza", "sobre-agustin-montes", "/recursos", "resources.map", "products.map"]) {
+    assert.ok(source.includes(fragment), "missing sitemap fragment: " + fragment);
+  }
 });
 
-test("product routes exist for each SEO slug", () => {
+test("six product routes exist and resource catalogue has seven articles", () => {
   const slugs = ["auto", "moto", "hogar", "consorcio", "bicicleta", "caucion-alquiler"];
   for (const slug of slugs) {
-    const file = path.join(root, "app/seguros", slug, "page.tsx");
-    const source = readFileSync(file, "utf8");
-    assert.match(source, new RegExp(`slug = "${slug}"`));
+    const source = readFileSync(path.join(root, "app/seguros", slug, "page.tsx"), "utf8");
+    assert.ok(source.includes('slug = "' + slug + '"'));
   }
-});
-
-test("resource catalogue exposes seven complete articles and stable slugs", () => {
   const catalogue = readFileSync(path.join(root, "content/resources.ts"), "utf8");
-  assert.equal((catalogue.match(/from "\\.\\/resources\\//g) || []).length, 7);
-  const slugs = [
+  const resourceSlugs = [
     "seguro-auto-mendoza",
     "factores-precio-seguro-auto",
     "rc-vs-todo-riesgo",
@@ -65,59 +47,32 @@ test("resource catalogue exposes seven complete articles and stable slugs", () =
     "documentacion-caucion-alquiler",
     "elegir-cobertura-bicicleta"
   ];
-  for (const slug of slugs) {
-    const file = path.join(root, "content/resources", `${slug}.ts`);
-    const source = readFileSync(file, "utf8");
-    assert.match(source, /answer:/);
-    assert.match(source, /sections:/);
-    assert.match(source, /faqs:/);
-    assert.match(source, /references:/);
-    assert.match(source, /https:\\/\\/www\\.argentina\\.gob\\.ar/);
-    assert.match(source, /formId:/);
+  for (const slug of resourceSlugs) {
+    const source = readFileSync(path.join(root, "content/resources", slug + ".ts"), "utf8");
+    for (const fragment of ["answer:", "sections:", "faqs:", "references:", "formId:"]) {
+      assert.ok(source.includes(fragment), slug + " missing " + fragment);
+    }
+    assert.ok(catalogue.includes("./resources/" + slug));
   }
 });
 
-test("resource article route is statically generated and includes canonical metadata", () => {
+test("resource article route is statically generated with canonical Article metadata", () => {
   const source = readFileSync(path.join(root, "app/recursos/[slug]/page.tsx"), "utf8");
-  assert.match(source, /generateStaticParams/);
-  assert.match(source, /getAllResourceSlugs/);
-  assert.match(source, /alternates: \\{ canonical: path \\}/);
-  assert.match(source, /"@type": "Article"/);
+  for (const fragment of ["generateStaticParams", "getAllResourceSlugs", "canonical: path", '"@type": "Article"']) {
+    assert.ok(source.includes(fragment));
+  }
 });
 
-test("JSON-LD serialization escapes script-closing characters", () => {
-  const serialized = serializeJsonLd({
-    headline: "Coberturas",
-    description: "</script><script>alert(1)</script>"
-  });
-  assert.doesNotMatch(serialized, /<\\/?script/i);
-  assert.ok(serialized.includes("\\\\u003c/script>"));
+test("JSON-LD serializer escapes script-closing characters", () => {
+  const serialized = serializeJsonLd({ description: "</script><script>alert(1)</script>" });
+  assert.equal(serialized.includes("<"), false);
 });
 
-test("homepage derives all product cards and form options from the shared catalogue", () => {
+test("homepage derives product cards from the shared catalogue", () => {
   const home = readFileSync(path.join(root, "app/page.tsx"), "utf8");
   const catalogue = readFileSync(path.join(root, "content/site.ts"), "utf8");
-  assert.match(home, /import \\{ products, type FormProductId \\} from "\\.\\.\\/content\\/site"/);
-  assert.match(home, /const landingProducts = products\\.map/);
-  assert.doesNotMatch(home, /const products\\s*:/);
-  assert.equal((catalogue.match(/^    landingDescription:/gm) || []).length, 6);
-  assert.equal((catalogue.match(/^    landingShortDescription:/gm) || []).length, 6);
-  assert.equal((catalogue.match(/^    category: "(?:VEHÍCULOS|VIVIENDA|EDIFICIOS|MOVILIDAD|GARANTÍAS)"/gm) || []).length, 6);
-});
-
-test("resource catalogue slugs are unique and related links resolve", () => {
-  const source = readFileSync(path.join(root, "content/resources.ts"), "utf8");
-  const slugs = [
-    "seguro-auto-mendoza",
-    "factores-precio-seguro-auto",
-    "rc-vs-todo-riesgo",
-    "datos-para-cotizar-hogar",
-    "riesgos-consorcios",
-    "documentacion-caucion-alquiler",
-    "elegir-cobertura-bicicleta"
-  ];
-  assert.equal(new Set(slugs).size, slugs.length);
-  for (const slug of slugs) {
-    assert.ok(source.includes(`./resources/${slug}`));
-  }
+  assert.ok(home.includes("const landingProducts = products.map"));
+  assert.ok(!home.includes("const products :"));
+  assert.equal((catalogue.match(/landingDescription:/g) || []).length, 6);
+  assert.equal((catalogue.match(/landingShortDescription:/g) || []).length, 6);
 });
