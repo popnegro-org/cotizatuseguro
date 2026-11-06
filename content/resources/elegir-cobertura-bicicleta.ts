@@ -42,5 +42,9 @@ export const article: ResourceArticle = {
         a: "Para cotizar no siempre. Para emitir o para un siniestro, la documentación de valor y titularidad puede ser necesaria según la compañía."
       }
     ],
+    references: [
+      { label: "SSN — Sujetos habilitados", url: "https://www.argentina.gob.ar/superintendencia-de-seguros/portal-ciudadano/sujetos-habilitados" },
+      { label: "SSN — ¿Qué es un seguro?", url: "https://www.argentina.gob.ar/node/428978" }
+    ],
     relatedSlugs: []
 };
