@@ -1,3 +1,5 @@
 export function serializeJsonLd(data: Record<string, unknown> | Record<string, unknown>[]): string {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
+  const serialized = JSON.stringify(data);
+  if (serialized === undefined) return "null";
+  return serialized.replace(/</g, "\\u003c");
 }
