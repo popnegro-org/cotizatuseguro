@@ -365,6 +365,16 @@ export default function Home() {
         onProductClick={(productId) => track("insurance_product_select", { insurance_product: productId })}
       />
 
+      {consent === "unknown" && showConsent && (
+        <aside className="consent-banner" aria-label="Preferencias de privacidad">
+          <p>Usamos medición del sitio. Las etiquetas solo se activan si aceptás. <a href="/privacidad">Más info</a>.</p>
+          <div className="consent-actions">
+            <button type="button" onClick={() => acceptConsent("rejected")}>Rechazar</button>
+            <button className="accept" type="button" onClick={() => acceptConsent("accepted")}>Aceptar</button>
+          </div>
+        </aside>
+      )}
+
       <main id="contenido-principal">
         <section className="hero"><div className="container hero-grid">
           <div>
@@ -563,15 +573,7 @@ export default function Home() {
         <a className="floating-cta" href="#cotizar" onClick={() => track("cta_click", { cta_location: "floating_cta" })}><span aria-hidden="true">↓</span> Ir a cotizar</a>
       )}
 
-      {consent === "unknown" && showConsent && (
-        <aside className="consent-banner" aria-label="Preferencias de privacidad">
-          <p>Usamos medición del sitio. Las etiquetas solo se activan si aceptás. <a href="/privacidad">Más info</a>.</p>
-          <div className="consent-actions">
-            <button type="button" onClick={() => acceptConsent("rejected")}>Rechazar</button>
-            <button className="accept" type="button" onClick={() => acceptConsent("accepted")}>Aceptar</button>
-          </div>
-        </aside>
-      )}
+
     </>
   );
 }
