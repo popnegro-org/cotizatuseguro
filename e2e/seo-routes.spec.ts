@@ -43,3 +43,14 @@ test("product CTA deep-links to form product query", async ({ page }) => {
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", /producto=auto/);
 });
+
+
+test("resource guide exposes official references and a contextual product CTA", async ({ page }) => {
+  await page.goto("/recursos/seguro-auto-mendoza");
+  await expect(page.getByRole("heading", { name: "Fuentes oficiales para ampliar" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Ley 24\.449/ })).toHaveAttribute(
+    "href",
+    "https://www.argentina.gob.ar/normativa/nacional/ley-24449-818/actualizacion"
+  );
+  await expect(page.locator('main a[href*="producto=auto"]').first()).toBeVisible();
+});
