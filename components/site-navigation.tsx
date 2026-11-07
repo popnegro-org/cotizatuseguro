@@ -54,14 +54,27 @@ export function SiteHeader({
         restoreFocusOnCloseRef.current = false;
         menuButtonRef.current?.focus();
       }
-      return;
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        event.preventDefault();
-        restoreFocusOnCloseRef.current = true;
-        setMenuOpen(false);
+        // Close open desktop/mobile product dropdowns and return focus to their summary.
+        const openDetails = document.querySelectorAll<HTMLDetailsElement>("header details.site-nav-dropdown[open]");
+        if (openDetails.length) {
+          event.preventDefault();
+          openDetails.forEach((details) => {
+            const summary = details.querySelector("summary");
+            details.open = false;
+            summary?.focus();
+          });
+          return;
+        }
+
+        if (menuOpen) {
+          event.preventDefault();
+          restoreFocusOnCloseRef.current = true;
+          setMenuOpen(false);
+        }
       }
     };
     window.addEventListener("keydown", closeOnEscape);

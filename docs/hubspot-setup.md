@@ -22,7 +22,7 @@ El endpoint envía estas propiedades estándar de contacto:
 
 Antes de probar, confirmar en el portal de HubSpot que existan las propiedades personalizadas con estos **nombres internos** (no solo las etiquetas visibles):
 
-- `insurance_product`: texto o lista desplegable con los valores internos que usa la aplicación (`auto`, `moto`, `hogar`, `comercio`, `bicicletas`, `vida`, `accidentes_personales`, `art`, `consorcio`, `viajes`, `caucion_alquiler`).
+- `insurance_product`: texto o lista desplegable con los valores internos que usa la aplicación (`auto`, `moto`, `hogar`, `comercio`, `bicicleta` (legado: `bicicletas`), `vida`, `accidentes_personales`, `art`, `consorcio`, `viajes`, `caucion_alquiler`).
 - `insurance_request_id`: texto.
 - `insurance_request_details`: texto de varias líneas; la aplicación serializa los detalles específicos del producto en JSON y limita el valor a 900 caracteres.
 - `lead_source`: texto o lista con opción `direct` y las fuentes que la organización use.

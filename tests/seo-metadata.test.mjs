@@ -76,7 +76,9 @@ test("homepage content clarifies the quote is not a policy or guaranteed coverag
 
 test("static internal anchor links on the homepage point to existing IDs", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  const ids = new Set([...page.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]));
+  const quoteForm = await readFile(new URL("../components/quote-form.tsx", import.meta.url), "utf8");
+  const combined = page + "\n" + quoteForm;
+  const ids = new Set([...combined.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]));
   const anchors = [...page.matchAll(/\bhref="#([^"]+)"/g)].map((match) => match[1]).filter(Boolean);
   const missing = [...new Set(anchors.filter((anchor) => !ids.has(anchor)))];
   assert.deepEqual(missing, [], `Missing internal anchor targets: ${missing.join(", ")}`);

@@ -168,7 +168,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   });
 
   const validProducts = [
-    "auto", "moto", "hogar", "consorcio", "bicicletas", "caucion_alquiler"
+    "auto", "moto", "hogar", "consorcio", "bicicleta", "caucion_alquiler"
   ];
   const unsupportedProducts = ["comercio", "vida", "accidentes_personales", "art", "viajes"];
   const capturedPayloads = [];
@@ -177,7 +177,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
     moto: { make: "QA", model: "Test", year: "2024" },
     hogar: { homeSqm: "80", location: "Mendoza", occupancy: "propia" },
     consorcio: { homeSqm: "800", location: "Mendoza", constructionMaterial: "hormigón", activity: "vivienda" },
-    bicicletas: { make: "QA", model: "Test", year: "2024", wheelSize: "29", bikeMaterial: "aluminio", insuredAmount: "500000" },
+    bicicleta: { make: "QA", model: "Test", year: "2024", wheelSize: "29", bikeMaterial: "aluminio", insuredAmount: "500000" },
     caucion_alquiler: { monthlyRent: "250000", contractDuration: "24" }
   };
   const fetchMock = mock.method(globalThis, "fetch", async (url, init) => {
@@ -262,7 +262,7 @@ test("requires contact email, province, and product-specific details before cont
     { name: "QA Test", email: "qa@example.test", phone: "+54 261 555 0101", province: "Mendoza", product: "auto", details: { make: "Fiat", model: "Cronos", year: "2022" } },
     { name: "QA Test", phone: "+54 261 555 0101", province: "Mendoza", city: "Godoy Cruz", product: "auto", details: { make: "Fiat", model: "Cronos", year: "2022" } },
     { name: "QA Test", email: "qa@example.test", phone: "+54 261 555 0101", product: "auto", details: { make: "Fiat", model: "Cronos", year: "2022" } },
-    { name: "QA Test", email: "qa@example.test", phone: "+54 261 555 0101", province: "Mendoza", city: "Godoy Cruz", product: "bicicletas", details: { make: "Trek" } }
+    { name: "QA Test", email: "qa@example.test", phone: "+54 261 555 0101", province: "Mendoza", city: "Godoy Cruz", product: "bicicleta", details: { make: "Trek" } }
   ];
   for (const [index, body] of incompletePayloads.entries()) {
     const request = new NextRequest("https://preview.example.test/api/leads", {

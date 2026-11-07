@@ -33,7 +33,10 @@ export async function sendMetaLeadEvent(lead: StoredLead): Promise<MetaCapiResul
   }
 
   const eventTime = Math.floor((lead.updatedAt || lead.createdAt || Date.now()) / 1000);
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://cotizatuseguro.com.ar").replace(/\/$/, "");
+  const fallbackSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://cotizatuseguro.com.ar").replace(/\/$/, "");
+  const siteUrl = (lead.eventContext?.eventSourceUrl && lead.eventContext.eventSourceUrl.startsWith("https://")
+    ? lead.eventContext.eventSourceUrl
+    : fallbackSiteUrl).replace(/\/$/, "");
 
   const userData: MetaUserData = {};
   const ctx = lead.eventContext;

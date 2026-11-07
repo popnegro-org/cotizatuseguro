@@ -31,7 +31,7 @@ const productCases = [
     forbiddenFields: ["make", "occupancy", "wheelSize", "monthlyRent"],
   },
   {
-    product: "bicicletas",
+    product: "bicicleta",
     label: "Bicicleta",
     requiredFields: ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"],
     forbiddenFields: ["homeSqm", "constructionMaterial", "monthlyRent"],
@@ -150,4 +150,35 @@ test("la solicitud conserva atribución UTM y gclid al registrar el lead", async
     gclid: "GCLID-QA-123",
   });
   await expect(page).toHaveURL(/https:\/\/wa\.me\//);
+});
+
+
+test("changing product on step 2 resets risk fields and shows product-specific labels", async ({ page }) => {
+  await page.goto("/?producto=auto");
+  await page.locator("#cotizar").scrollIntoViewIfNeeded();
+  await page.getByLabel("Nombre y apellido *").fill("QA Producto");
+  await page.getByLabel("WhatsApp *").fill("2615550101");
+  await page.getByLabel("Email *").fill("qa.product@example.test");
+  await page.getByLabel("Provincia *").selectOption("Mendoza");
+  await page.getByLabel("Localidad o departamento *").fill("Capital");
+  await page.getByRole("button", { name: /^continuar/i }).click();
+
+  await page.getByLabel("Marca *").fill("Fiat");
+  await page.getByLabel("Modelo *").fill("Cronos");
+  await page.getByLabel("Año *").fill("2020");
+
+  await page.locator("#product").selectOption("hogar");
+  await expect(page.getByLabel("Metros cuadrados cubiertos *")).toBeVisible();
+  await expect(page.locator("#hogar-homeSqm")).toHaveValue("");
+  await expect(page.locator("#auto-make")).toHaveCount(0);
+});
+
+test("honeypot field is present but not required for a valid submission path", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#cotizar").scrollIntoViewIfNeeded();
+  const honeypot = page.locator("#website");
+  await expect(honeypot).toHaveCount(1);
+  await expect(honeypot).toHaveAttribute("tabindex", "-1");
+  const wrapper = page.locator(".honeypot-field");
+  await expect(wrapper).toHaveAttribute("aria-hidden", "true");
 });

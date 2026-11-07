@@ -42,6 +42,13 @@ Si Upstash no está configurado o falla la persistencia, el lead no se envía a 
 
 La API utiliza las propiedades personalizadas de HubSpot `insurance_product`, `insurance_request_id`, `insurance_request_details`, `lead_source`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid` y `fbclid`. Crear/verificar las propiedades antes de probar el endpoint; HubSpot rechazará propiedades inexistentes.
 
+
+## WhatsApp Business
+
+`NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER` debe contener solo dígitos en formato internacional (ej. `5492615551234`). Si la variable no está configurada, el formulario igual registra el lead y muestra un mensaje de éxito **sin** redirigir a WhatsApp.
+
+El identificador canónico del producto bicicleta en formulario y CRM es `bicicleta`. El valor legado `bicicletas` se acepta en la API y se normaliza a `bicicleta`.
+
 ## Endpoint
 `POST /api/leads` valida los datos del formulario y registra la solicitud. Por defecto, usa Upstash Redis para aplicar un límite distribuido. `LEADS_RATE_LIMIT_MODE=infrastructure` omite ese límite de aplicación y solo debe activarse después de configurar y probar reglas de rate limiting en Vercel Firewall para `POST /api/leads`; cambiar la variable por sí solo no activa protección.
 
