@@ -10,12 +10,13 @@ type FormState = {
   name: string;
   email: string;
   phone: string;
-  province: string;
-  city: string;
   product: Product;
   make: string;
   model: string;
   year: string;
+  version: string;
+  usage: string;
+  rooms: string;
   homeSqm: string;
   location: string;
   occupancy: string;
@@ -34,21 +35,14 @@ const landingProducts = products.map((product) => ({
   title: product.landingTitle
 }));
 
-const provinces = [
-  "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut", "Córdoba", "Corrientes",
-  "Entre Ríos", "Formosa", "Jujuy", "La Pampa", "La Rioja", "Mendoza", "Misiones",
-  "Neuquén", "Río Negro", "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
-  "Santiago del Estero", "Tierra del Fuego", "Tucumán"
-];
-
 const initialForm: FormState = {
-  name: "", email: "", phone: "", province: "", city: "", product: "auto", make: "", model: "", year: "",
-  homeSqm: "", location: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
+  name: "", email: "", phone: "", product: "auto", make: "", model: "", year: "",
+  version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
   bikeMaterial: "", insuredAmount: "", monthlyRent: "", contractDuration: "", privacyAccepted: false
 };
 
 const emptyRiskFields = {
-  make: "", model: "", year: "", homeSqm: "", location: "", occupancy: "",
+  make: "", model: "", year: "", version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "",
   constructionMaterial: "", activity: "", wheelSize: "", bikeMaterial: "",
   insuredAmount: "", monthlyRent: "", contractDuration: ""
 };
@@ -91,39 +85,45 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     selectProduct: chooseProduct
   }));
 
-  function validateStep1(): boolean {
+  function validateRiskStep(): boolean {
     const errors: Record<string, string> = {};
-    if (!form.name.trim() || form.name.trim().split(/\s+/).length < 2) {
-      errors.name = "Ingresá nombre y apellido.";
+    const required = form.product === "auto" || form.product === "moto"
+      ? ["make", "model", "year"]
+      : form.product === "hogar" ? ["occupancy"]
+      : form.product === "consorcio" ? ["homeSqm", "constructionMaterial", "activity"]
+      : form.product === "bicicleta" ? ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"]
+      : ["monthlyRent", "contractDuration"];
+    for (const key of required) {
+      if (!String(form[key as keyof FormState] ?? "").trim()) errors[key] = "Completá este dato para continuar.";
     }
-    const digits = form.phone.replace(/\D/g, "");
-    if (digits.length < 8 || digits.length > 15) {
-      errors.phone = "Ingresá un WhatsApp válido (código de área + número, 8 a 15 dígitos).";
+    if (form.product === "hogar" && !form.homeSqm.trim() && !form.rooms.trim()) {
+      errors.homeSqm = "Indicá los metros aproximados o la cantidad de ambientes.";
     }
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      errors.email = "Ingresá un email válido.";
-    }
-    if (!form.province.trim()) {
-      errors.province = "Seleccioná tu provincia.";
-    }
-    const city = form.city.trim();
-    if (!city) {
-      errors.city = "Ingresá tu localidad o departamento.";
-    } else if (city.length < 2) {
-      errors.city = "Ingresá una localidad o departamento válido (mínimo 2 caracteres).";
+    if (["auto", "moto", "bicicleta"].includes(form.product)) {
+      const year = Number(form.year);
+      if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear() + 1) errors.year = "Ingresá un año válido.";
     }
     setFieldErrors(errors);
-    const firstInvalid = ["name", "phone", "email", "province", "city"].find((key) => errors[key]);
+    const firstInvalid = Object.keys(errors)[0];
     if (firstInvalid) {
-      window.setTimeout(() => document.getElementById(firstInvalid)?.focus(), 0);
+      const productFieldIds: Record<string, string> = {
+        make: form.product + "-make", model: form.product + "-model", year: form.product + "-year",
+        homeSqm: form.product + "-homeSqm", location: form.product + "-location",
+        occupancy: "hogar-occupancy", constructionMaterial: "consorcio-constructionMaterial",
+        activity: "consorcio-activity", wheelSize: "bicicleta-wheelSize",
+        bikeMaterial: "bicicleta-bikeMaterial", insuredAmount: "bicicleta-insuredAmount",
+        monthlyRent: "caucion-monthlyRent", contractDuration: "caucion-contractDuration"
+      };
+      const id = productFieldIds[firstInvalid] || firstInvalid;
+      window.setTimeout(() => document.getElementById(id)?.focus(), 0);
     }
     return Object.keys(errors).length === 0;
   }
 
   function goToStep2() {
     setError("");
-    if (!validateStep1()) {
-      setError("Revisá los datos de contacto para continuar.");
+    if (!validateRiskStep()) {
+      setError("Revisá los datos del riesgo para continuar.");
       return;
     }
     setFormStep(2);
@@ -137,6 +137,18 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     setSuccess("");
     if (formStep === 1) {
       goToStep2();
+      return;
+    }
+    const contactErrors: Record<string, string> = {};
+    if (!form.name.trim() || form.name.trim().split(/\s+/).length < 2) contactErrors.name = "Ingresá nombre y apellido.";
+    const digits = form.phone.replace(/\D/g, "");
+    if (digits.length < 8 || digits.length > 15) contactErrors.phone = "Ingresá un WhatsApp válido (8 a 15 dígitos).";
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) contactErrors.email = "Ingresá un email válido.";
+    if (Object.keys(contactErrors).length) {
+      setFieldErrors(contactErrors);
+      setError("Revisá tus datos de contacto para continuar.");
+      const firstInvalid = Object.keys(contactErrors)[0];
+      window.setTimeout(() => document.getElementById(firstInvalid)?.focus(), 0);
       return;
     }
     if (!event.currentTarget.checkValidity()) {
@@ -160,16 +172,14 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         body: JSON.stringify({
           website: typeof honeypot === "string" ? honeypot : "",
           name: form.name,
-          email: form.email,
+          email: form.email.trim(),
           phone: form.phone.replace(/\D/g, ""),
-          province: form.province,
-          city: form.city.trim(),
           product: form.product,
           details:
             form.product === "auto" || form.product === "moto"
-              ? { make: form.make, model: form.model, year: form.year }
+              ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
               : form.product === "hogar"
-                ? { homeSqm: form.homeSqm, location: form.location, occupancy: form.occupancy }
+                ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
                 : form.product === "consorcio"
                   ? {
                       homeSqm: form.homeSqm,
@@ -235,6 +245,9 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         make: "Marca",
         model: "Modelo",
         year: "Año",
+        version: "Versión o tipo",
+        usage: "Uso",
+        rooms: "Ambientes",
         homeSqm: "Superficie cubierta (m²)",
         location: "Ubicación",
         occupancy: "Tipo de vivienda",
@@ -248,9 +261,9 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
       };
       const detailsByProduct =
         form.product === "auto" || form.product === "moto"
-          ? { make: form.make, model: form.model, year: form.year }
+          ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
           : form.product === "hogar"
-            ? { homeSqm: form.homeSqm, location: form.location, occupancy: form.occupancy }
+            ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
             : form.product === "consorcio"
               ? {
                   homeSqm: form.homeSqm,
@@ -274,19 +287,9 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         .filter(([, value]) => String(value ?? "").trim() !== "")
         .map(([key, value]) => `• ${detailLabels[key] || key}: ${value}`);
       const messageLines = [
-        "Hola, quiero continuar con mi solicitud de cotización de seguro.",
-        "",
-        "DATOS DE LA SOLICITUD",
-        `N.º de solicitud: ${data.requestId}`,
-        `Tipo de seguro: ${label}`,
-        "",
-        "DATOS DEL SOLICITANTE",
-        `Nombre y apellido: ${form.name.trim()}`,
-        `WhatsApp: ${form.phone.trim()}`,
-        `Email: ${form.email.trim()}`,
-        `Provincia: ${form.province.trim()}`,
-        ...(form.city.trim() ? [`Localidad o departamento: ${form.city.trim()}`] : []),
-        ...(detailLines.length ? ["", "DETALLES DEL RIESGO", ...detailLines] : [])
+        "Hola Agustín, completé el formulario de " + label + ".",
+        ...(detailLines.length ? detailLines : ["Resumen del riesgo: pendiente de ampliar."]),
+        "Quedo atento a tu cotización. Gracias!"
       ];
       const message = encodeURIComponent(messageLines.join("\n"));
       await trackAndWait("whatsapp_click", { insurance_product: form.product });
@@ -317,90 +320,83 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
           </aside>
           <div className="quote-card">
             <span className="eyebrow">Formulario de cotización</span>
-            <h2 id="quote-form-title" tabIndex={-1}>¿Qué necesitás asegurar?</h2>
+            <h2 id="quote-form-title" tabIndex={-1}>{formStep === 1 ? "¿Qué necesitás asegurar?" : "¿Cómo te contactamos?"}</h2>
             <ol className="form-stepper" aria-label="Progreso del formulario">
               <li>
                 <span
                   className={formStep === 1 ? "step-pill is-active" : "step-pill is-done"}
                   aria-current={formStep === 1 ? "step" : undefined}
-                  aria-label={formStep === 2 ? "1. Contacto, completado" : undefined}
+                  aria-label={formStep === 2 ? "1. Tu seguro, completado" : undefined}
                 >
-                  1. Contacto
+                  1. Tu seguro
                 </span>
               </li>
               <li className="step-pill-sep" aria-hidden="true">→</li>
               <li>
                 <span className={formStep === 2 ? "step-pill is-active" : "step-pill"} aria-current={formStep === 2 ? "step" : undefined}>
-                  2. Detalle del riesgo
+                  2. Tus datos
                 </span>
               </li>
             </ol>
-            <p className="help">{formStep === 1 ? "Paso 1 de 2 · Datos de contacto y tipo de seguro. En el siguiente paso completás los detalles del bien a asegurar." : "Paso 2 de 2 · Detalles del riesgo, privacidad y registro. Después podrás continuar por WhatsApp; el mensaje no se envía automáticamente."}</p>
+            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abrimos WhatsApp con el resumen de tu solicitud."}</p>
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
-              <div aria-hidden="true" className="honeypot-field"><label htmlFor="website">Dejá este campo vacío</label><input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
+              <div className="honeypot-field" aria-hidden="true"><input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" /></div>
+
+              {formStep === 2 && (
+              <fieldset className="form-grid">
+                <legend className="sr-only">Paso 2: tus datos de contacto</legend>
+                <div className={"field" + (fieldErrors.name ? " has-error" : "")}>
+                  <label htmlFor="name">Nombre y apellido *</label>
+                  <input id="name" name="name" required autoComplete="name" minLength={2} maxLength={100} value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.name; return n; }); }} aria-invalid={!!fieldErrors.name} aria-describedby={fieldErrors.name ? "err-name" : undefined} />
+                  {fieldErrors.name && <span className="field-error" id="err-name">{fieldErrors.name}</span>}
+                </div>
+                <div className={"field" + (fieldErrors.phone ? " has-error" : "")}>
+                  <label htmlFor="phone">WhatsApp *</label>
+                  <input id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" minLength={8} maxLength={30} placeholder="Ej. 261 555 1234" value={form.phone} onChange={(e) => { setForm({ ...form, phone: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.phone; return n; }); }} aria-invalid={!!fieldErrors.phone} aria-describedby={fieldErrors.phone ? "err-phone" : undefined} />
+                  {fieldErrors.phone && <span className="field-error" id="err-phone">{fieldErrors.phone}</span>}
+                </div>
+                <div className={"field field-full" + (fieldErrors.email ? " has-error" : "")}>
+                  <label htmlFor="email">Email (opcional)</label>
+                  <input id="email" name="email" type="email" inputMode="email" autoComplete="email" maxLength={254} value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.email; return n; }); }} aria-invalid={!!fieldErrors.email} aria-describedby={fieldErrors.email ? "err-email" : undefined} />
+                  {fieldErrors.email && <span className="field-error" id="err-email">{fieldErrors.email}</span>}
+                </div>
+                <div className={"field field-full" + (fieldErrors.privacy ? " has-error" : "")}>
+                  <label className="consent-row">
+                    <input id="privacyAccepted" name="privacyAccepted" type="checkbox" checked={form.privacyAccepted} onChange={(e) => { setForm({ ...form, privacyAccepted: e.target.checked }); setFieldErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; }); }} aria-invalid={!!fieldErrors.privacy} aria-describedby={fieldErrors.privacy ? "err-privacy" : undefined} required />
+                    <span>Leí la <a href="/privacidad" target="_blank" rel="noreferrer">política de privacidad</a> y solicito que utilicen estos datos para gestionar mi cotización.</span>
+                  </label>
+                  {fieldErrors.privacy && <span className="field-error" id="err-privacy" role="alert">{fieldErrors.privacy}</span>}
+                </div>
+              </fieldset>
+              )}
 
               {formStep === 1 && (
               <fieldset className="form-grid">
-                <legend className="sr-only">Paso 1: datos de contacto y tipo de seguro</legend>
+                <legend className="sr-only">Paso 1: datos del riesgo</legend>
                 <div className="field field-full">
                   <label htmlFor="product">Tipo de seguro *</label>
                   <select id="product" value={form.product} onChange={(e) => selectProduct(e.target.value as Product)}>
                     {landingProducts.map((p) => <option value={p.id} key={p.id}>{p.title}</option>)}
                   </select>
                 </div>
-                <div className={"field" + (fieldErrors.name ? " has-error" : "")}>
-                  <label htmlFor="name">Nombre y apellido *</label>
-                  <input id="name" name="name" autoComplete="name" minLength={2} maxLength={100} value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.name; return n; }); }} aria-invalid={!!fieldErrors.name} aria-describedby={fieldErrors.name ? "err-name" : undefined} />
-                  {fieldErrors.name && <span className="field-error" id="err-name">{fieldErrors.name}</span>}
-                </div>
-                <div className={"field" + (fieldErrors.phone ? " has-error" : "")}>
-                  <label htmlFor="phone">WhatsApp *</label>
-                  <input id="phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" minLength={8} maxLength={30} placeholder="Ej. 261 555 1234" value={form.phone} onChange={(e) => { setForm({ ...form, phone: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.phone; return n; }); }} aria-invalid={!!fieldErrors.phone} aria-describedby={fieldErrors.phone ? "err-phone" : undefined} />
-                  {fieldErrors.phone && <span className="field-error" id="err-phone">{fieldErrors.phone}</span>}
-                </div>
-                <div className={"field field-full" + (fieldErrors.email ? " has-error" : "")}>
-                  <label htmlFor="email">Email *</label>
-                  <input id="email" name="email" type="email" autoComplete="email" maxLength={254} value={form.email} onChange={(e) => { setForm({ ...form, email: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.email; return n; }); }} aria-invalid={!!fieldErrors.email} aria-describedby={fieldErrors.email ? "err-email" : undefined} />
-                  {fieldErrors.email && <span className="field-error" id="err-email">{fieldErrors.email}</span>}
-                </div>
-                <div className={"field" + (fieldErrors.province ? " has-error" : "")}>
-                  <label htmlFor="province">Provincia *</label>
-                  <select id="province" name="province" autoComplete="address-level1" value={form.province} onChange={(e) => { setForm({ ...form, province: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.province; return n; }); }} aria-invalid={!!fieldErrors.province} aria-describedby={fieldErrors.province ? "err-province" : undefined}>
-                    <option value="">Seleccioná tu provincia</option>
-                    {provinces.map((prov) => <option key={prov} value={prov}>{prov}</option>)}
-                  </select>
-                  {fieldErrors.province && <span className="field-error" id="err-province">{fieldErrors.province}</span>}
-                </div>
-                <div className="field">
-                  <label htmlFor="city">Localidad o departamento *</label>
-                  <input id="city" name="city" autoComplete="address-level2" maxLength={100} placeholder="Ej. Godoy Cruz" value={form.city} onChange={(e) => { setForm({ ...form, city: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.city; return n; }); }} aria-invalid={!!fieldErrors.city} aria-describedby={fieldErrors.city ? "err-city" : undefined} />
-                  {fieldErrors.city && <span className="field-error" id="err-city">{fieldErrors.city}</span>}
-                </div>
-              </fieldset>
-              )}
-
-              {formStep === 2 && (
-              <fieldset className="form-grid">
-                <legend className="sr-only">Paso 2: detalle del riesgo y privacidad</legend>
-                <div className="field field-full form-step-summary">
-                  <p><strong>{landingProducts.find((p) => p.id === form.product)?.title}</strong> · {form.name} · {[form.city, form.province].filter(Boolean).join(", ")}</p>
-                  <button type="button" className="link-button" onClick={() => setFormStep(1)}>Editar contacto</button>
-                </div>
                 {(form.product === "auto" || form.product === "moto") && <>
                   <div className="field"><label htmlFor={`${form.product}-make`}>Marca *</label><input id={`${form.product}-make`} name="make" required maxLength={80} value={form.make} onChange={(e) => setForm({ ...form, make: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor={`${form.product}-model`}>Modelo *</label><input id={`${form.product}-model`} name="model" required maxLength={80} value={form.model} onChange={(e) => setForm({ ...form, model: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor={`${form.product}-year`}>Año *</label><input id={`${form.product}-year`} name="year" required type="number" min="1900" max={new Date().getFullYear()+1} value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor={form.product + "-version"}>Versión o tipo (opcional)</label><input id={form.product + "-version"} name="version" maxLength={100} value={form.version} onChange={(e) => setForm({ ...form, version: e.target.value })} /></div>
+                  <div className="field"><label htmlFor={form.product + "-usage"}>Uso (opcional)</label><select id={form.product + "-usage"} name="usage" value={form.usage} onChange={(e) => setForm({ ...form, usage: e.target.value })}><option value="">Seleccioná una opción</option><option value="particular">Particular</option><option value="comercial">Comercial</option></select></div>
                 </>}
                 {form.product === "hogar" && <>
-                  <div className="field"><label htmlFor="hogar-homeSqm">Metros cuadrados cubiertos *</label><input id="hogar-homeSqm" name="homeSqm" required type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="hogar-location">Ubicación *</label><input id="hogar-location" name="location" required maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor="hogar-homeSqm">Metros aproximados (opcional)</label><input id="hogar-homeSqm" name="homeSqm" type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor="hogar-location">Localidad (opcional)</label><input id="hogar-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor="hogar-rooms">Ambientes (opcional)</label><input id="hogar-rooms" name="rooms" type="number" min="1" max="30" value={form.rooms} onChange={(e) => setForm({ ...form, rooms: e.target.value })} /></div>
                   <div className="field"><label htmlFor="hogar-occupancy">La vivienda es *</label><select id="hogar-occupancy" name="occupancy" required value={form.occupancy} onChange={(e) => setForm({ ...form, occupancy: e.target.value })} aria-required="true"><option value="">Seleccioná una opción</option><option value="propia">Propia</option><option value="alquiler">Alquiler</option></select></div>
                 </>}
                 {form.product === "consorcio" && <>
-                  <div className="field"><label htmlFor="consorcio-homeSqm">Metros cuadrados cubiertos *</label><input id="consorcio-homeSqm" name="homeSqm" required type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="consorcio-location">Ubicación *</label><input id="consorcio-location" name="location" required maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor="consorcio-homeSqm">Metros aproximados *</label><input id="consorcio-homeSqm" name="homeSqm" required type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
+                  <div className="field"><label htmlFor="consorcio-location">Localidad (opcional)</label><input id="consorcio-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-constructionMaterial">Material de construcción *</label><input id="consorcio-constructionMaterial" name="constructionMaterial" required maxLength={100} value={form.constructionMaterial} onChange={(e) => setForm({ ...form, constructionMaterial: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-activity">Actividad *</label><input id="consorcio-activity" name="activity" required maxLength={120} value={form.activity} onChange={(e) => setForm({ ...form, activity: e.target.value })} aria-required="true" /></div>
                 </>}
@@ -416,22 +412,18 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                   <div className="field"><label htmlFor="caucion-monthlyRent">Alquiler mensual (ARS) *</label><input id="caucion-monthlyRent" name="monthlyRent" required type="number" min="1" step="0.01" value={form.monthlyRent} onChange={(e) => setForm({ ...form, monthlyRent: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="caucion-contractDuration">Duración del contrato (meses) *</label><input id="caucion-contractDuration" name="contractDuration" required type="number" min="1" max="120" step="1" value={form.contractDuration} onChange={(e) => setForm({ ...form, contractDuration: e.target.value })} aria-required="true" /></div>
                 </>}
-                <div className={"field field-full" + (fieldErrors.privacy ? " has-error" : "")}>
-                  <label className="consent-row">
-                    <input id="privacyAccepted" name="privacyAccepted" type="checkbox" checked={form.privacyAccepted} onChange={(e) => { setForm({ ...form, privacyAccepted: e.target.checked }); setFieldErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; }); }} aria-invalid={!!fieldErrors.privacy} aria-describedby={fieldErrors.privacy ? "err-privacy" : undefined} required />
-                    <span>Leí la <a href="/privacidad" target="_blank" rel="noreferrer">política de privacidad</a> y solicito que utilicen estos datos para gestionar mi cotización.</span>
-                  </label>
-                  {fieldErrors.privacy && <span className="field-error" id="err-privacy" role="alert">{fieldErrors.privacy}</span>}
-                </div>
               </fieldset>
               )}
 
-              {formStep === 1 ? (
-                <button className="button button-wide" type="submit">Continuar <span aria-hidden="true">→</span></button>
-              ) : (
-                <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Registrando solicitud…" : "Registrar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
-              )}
-              <p className="privacy-note">{formStep === 1 ? "En el siguiente paso completás el detalle del riesgo." : "Tu solicitud se registra antes de abrir WhatsApp. La apertura de WhatsApp no significa que el mensaje haya sido enviado."}</p>
+              <div className="form-actions">
+                {formStep === 2 && <button type="button" className="button-secondary" onClick={() => { setFormStep(1); setError(""); window.setTimeout(() => document.getElementById("quote-form-title")?.focus(), 0); }}>Volver a tu seguro</button>}
+                {formStep === 1 ? (
+                  <button className="button button-wide" type="submit">Continuar <span aria-hidden="true">→</span></button>
+                ) : (
+                  <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
+                )}
+              </div>
+              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abrimos WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
             </form>
           </div>
         </div></section>

@@ -20,10 +20,10 @@ const attributionSchema = z.record(z.string(), z.string().max(500)).optional().d
 const schema = z.object({
   website: z.string().max(200).optional().default(""),
   name: z.string().trim().min(2).max(100).refine((value) => value.split(/\s+/).length >= 2, "Ingresá nombre y apellido"),
-  email: z.string().trim().email().max(254),
+  email: z.string().trim().max(254).optional().default("").refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), "Ingresá un email válido"),
   phone: z.string().trim().min(8).max(30),
-  province: z.string().trim().min(2).max(100),
-  city: z.string().trim().min(2, "Ingresá tu localidad o departamento").max(100),
+  province: z.string().trim().max(100).optional().default(""),
+  city: z.string().trim().max(100).optional().default(""),
   product: z.enum(["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"]),
   details: z.record(z.string(), z.string().trim().max(200)).optional().default({}),
   attribution: attributionSchema
@@ -31,12 +31,13 @@ const schema = z.object({
   const requiredByProduct: Record<string, string[]> = {
     auto: ["make", "model", "year"],
     moto: ["make", "model", "year"],
-    hogar: ["homeSqm", "location", "occupancy"],
-    consorcio: ["homeSqm", "location", "constructionMaterial", "activity"],
+    hogar: ["occupancy"],
+    consorcio: ["homeSqm", "constructionMaterial", "activity"],
     bicicleta: ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"],
     bicicletas: ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"],
     caucion_alquiler: ["monthlyRent", "contractDuration"]
   };
+  if (data.product === "hogar" && !data.details.homeSqm?.trim() && !data.details.rooms?.trim()) ctx.addIssue({ code: "custom", path: ["details", "homeSqm"], message: "Indicá metros aproximados o cantidad de ambientes" });
   for (const key of requiredByProduct[data.product] || []) {
     if (!data.details[key]?.trim()) ctx.addIssue({ code: "custom", path: ["details", key], message: `Falta completar: ${key}` });
   }
@@ -46,10 +47,13 @@ const schema = z.object({
       ctx.addIssue({ code: "custom", path: ["details", "year"], message: "El año no es válido" });
     }
   }
-  for (const key of ["homeSqm", "insuredAmount", "monthlyRent"]) {
+  for (const key of ["homeSqm", "insuredAmount", "monthlyRent", "rooms"]) {
     if (data.details[key] !== undefined && (!Number.isFinite(Number(data.details[key])) || Number(data.details[key]) <= 0)) {
       ctx.addIssue({ code: "custom", path: ["details", key], message: "Ingresá un importe o valor positivo" });
     }
+  }
+  if (data.details.rooms !== undefined && (!Number.isInteger(Number(data.details.rooms)) || Number(data.details.rooms) < 1 || Number(data.details.rooms) > 30)) {
+    ctx.addIssue({ code: "custom", path: ["details", "rooms"], message: "La cantidad de ambientes debe ser de 1 a 30" });
   }
   if (data.details.contractDuration !== undefined) {
     const duration = Number(data.details.contractDuration);
@@ -131,11 +135,8 @@ export async function POST(request: NextRequest) {
   const firstname = nameParts.shift() || data.name;
   const lastname = nameParts.join(" ");
   const properties: Record<string, string> = {
-    email: data.email,
     firstname,
     phone,
-    state: data.province,
-    city: data.city || data.province,
     lifecyclestage: "lead",
     insurance_product: data.product,
     insurance_request_id: requestId,
@@ -143,6 +144,9 @@ export async function POST(request: NextRequest) {
     lead_source: data.attribution.utm_source?.trim() || "direct"
   };
   if (lastname) properties.lastname = lastname;
+  if (data.email) properties.email = data.email;
+  if (data.province) properties.state = data.province;
+  if (data.city) properties.city = data.city;
 
   for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid"] as const) {
     const value = data.attribution[key]?.trim();

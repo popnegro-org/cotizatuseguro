@@ -28,6 +28,7 @@ const companies = [
 export default function Home() {
   const quoteRef = useRef<QuoteFormHandle>(null);
   const [selectedProduct, setSelectedProduct] = useState<FormProductId>("auto");
+  const [hasStartedQuote, setHasStartedQuote] = useState(false);
   const [consent, setConsent] = useState<"unknown" | "accepted" | "rejected">("unknown");
   const [showConsent, setShowConsent] = useState(false);
 
@@ -42,6 +43,7 @@ export default function Home() {
     const p = params.get("producto");
     if (p && ["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"].includes(p)) {
       setSelectedProduct((p === "bicicletas" ? "bicicleta" : p) as FormProductId);
+      setHasStartedQuote(true);
     }
   }, []);
 
@@ -110,6 +112,7 @@ export default function Home() {
   }
 
   function chooseProduct(product: FormProductId) {
+    setHasStartedQuote(true);
     setSelectedProduct(product);
     quoteRef.current?.selectProduct(product);
   }
@@ -137,10 +140,10 @@ export default function Home() {
       <main id="contenido-principal">
         <section className="hero"><div className="container hero-grid">
           <div>
-            <span className="eyebrow">Productor asesor · Mendoza</span>
-            <h1>Cotizá tu seguro con asesoramiento personalizado.</h1>
-            <p className="lead">Solicitá una cotización para tu auto, moto, hogar, consorcio, bicicleta o caución de alquiler. Registrá tus datos y continuá la consulta por WhatsApp. La solicitud no implica la emisión de una póliza ni garantiza la aprobación de una cobertura.</p>
-            <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => track("cta_click", { cta_location: "hero" })}>Solicitar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Ver coberturas</a></div>
+            <span className="eyebrow">PRODUCTOR ASESOR · MENDOZA</span>
+            <h1>Cotizá tu seguro con un asesor real</h1>
+            <p className="lead">Te respondo personalmente por WhatsApp. Sin tarifa automática en la web.</p>
+            <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => { setHasStartedQuote(true); track("cta_click", { cta_location: "hero" }); }}>Empezar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Ver coberturas</a></div>
             <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática en web</li></ul>
           </div>
           <div className="hero-card"><div className="hero-card-top"><strong>Elegí un producto</strong><p>Seleccioná y saltás al formulario de cotización.</p></div>
@@ -148,13 +151,7 @@ export default function Home() {
           </div>
         </div></section>
 
-        <section className="section" id="seguros"><div className="container">
-          <div className="section-intro"><span className="eyebrow">Coberturas disponibles</span><h2>Qué podemos cotizar</h2><p>Elegí el producto y el formulario se precarga con los datos del riesgo que necesitamos para cotizar.</p></div>
-          <div className="coverage-grid">{landingProducts.map((p) => <article className="coverage-card" key={p.id}>
-            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{p.category}</span></div>
-            <h3>{p.title}</h3><p>{p.desc}</p><button className="coverage-action" type="button" onClick={() => chooseProduct(p.id)}>Cotizar {p.title.toLowerCase()} <span aria-hidden="true">→</span></button>
-          </article>)}</div>
-        </div></section>
+        <QuoteForm ref={quoteRef} />
 
         <section className="section assurance-section" id="aseguradoras"><div className="container">
           <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Compañías con las que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
@@ -169,16 +166,22 @@ export default function Home() {
           </div>
         </div></section>
 
-        <QuoteForm ref={quoteRef} />
+        <section className="section" id="seguros"><div className="container">
+          <div className="section-intro"><span className="eyebrow">Coberturas disponibles</span><h2>Qué podemos cotizar</h2><p>Elegí el producto y el formulario se precarga con los datos del riesgo que necesitamos para cotizar.</p></div>
+          <div className="coverage-grid">{landingProducts.map((p) => <article className="coverage-card" key={p.id}>
+            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{p.category}</span></div>
+            <h3>{p.title}</h3><p>{p.desc}</p><button className="coverage-action" type="button" onClick={() => chooseProduct(p.id)}>Cotizar {p.title.toLowerCase()} <span aria-hidden="true">→</span></button>
+          </article>)}</div>
+        </div></section>
 
-        <section className="section" id="como-funciona"><div className="container"><div className="section-intro"><span className="eyebrow">Paso a paso</span><h2>De la solicitud a la cotización</h2><p>Un proceso corto: datos de contacto, detalle del riesgo y seguimiento por WhatsApp con un productor asesor.</p></div><div className="steps">
-          <article className="step"><div className="step-number">1</div><h3>Contacto y producto</h3><p>Indicás qué querés asegurar y cómo contactarte.</p></article>
-          <article className="step"><div className="step-number">2</div><h3>Detalle del riesgo</h3><p>Completás solo los datos necesarios para cotizar ese producto.</p></article>
+        <section className="section" id="como-funciona"><div className="container"><div className="section-intro"><span className="eyebrow">Paso a paso</span><h2>De la solicitud a la cotización</h2><p>Primero conocemos el riesgo, después tus datos de contacto y finalmente seguimos por WhatsApp.</p></div><div className="steps">
+          <article className="step"><div className="step-number">1</div><h3>Tu seguro</h3><p>Elegís el producto y completás los datos del riesgo.</p></article>
+          <article className="step"><div className="step-number">2</div><h3>Tus datos</h3><p>Dejás tu nombre y WhatsApp para que podamos responderte.</p></article>
           <article className="step"><div className="step-number">3</div><h3>Seguimiento por WhatsApp</h3><p>Registramos la solicitud y continuás con el asesoramiento personalizado.</p></article>
         </div></div></section>
 
         <section className="section section-soft" id="faq"><div className="container"><div className="section-intro"><span className="eyebrow">Dudas habituales</span><h2>Preguntas frecuentes</h2><p>Respuestas claras sobre el proceso de cotización y asesoramiento.</p></div><div className="faq-list">
-          <details className="faq" open><summary>¿Cómo solicito una cotización?</summary><p>Completá los datos de contacto y el tipo de seguro; luego agregá los detalles del riesgo. La solicitud queda registrada y podés continuar la consulta por WhatsApp.</p></details>
+          <details className="faq" open><summary>¿Cómo solicito una cotización?</summary><p>Primero completás los datos del bien y después tu nombre y WhatsApp. La solicitud queda registrada para continuar por WhatsApp.</p></details>
           <details className="faq"><summary>¿La cotización es automática o personalizada?</summary><p>El formulario inicia el proceso; no emite una póliza ni confirma una tarifa automática. La propuesta depende del producto y de la evaluación correspondiente.</p></details>
           <details className="faq"><summary>¿Por qué el contacto continúa por WhatsApp?</summary><p>WhatsApp permite continuar la conversación directamente con el asesor. La apertura de la aplicación no confirma que el mensaje se haya enviado.</p></details>
           <details className="faq"><summary>¿Qué información necesito para cotizar?</summary><p>El formulario solicita datos de contacto y detalles que varían según el producto, como datos del vehículo, características del inmueble o información del alquiler. El asesor puede solicitar información adicional si es necesaria para evaluar el riesgo.</p></details>
@@ -196,7 +199,7 @@ export default function Home() {
       />
 
       {!(consent === "unknown" && showConsent) && (
-        <a className="floating-cta" href="#cotizar" onClick={() => track("cta_click", { cta_location: "floating_cta" })}><span aria-hidden="true">↓</span> Ir a cotizar</a>
+        <a className={"floating-cta" + (hasStartedQuote ? " is-whatsapp" : "")} href="#cotizar" onClick={() => track("cta_click", { cta_location: "floating_cta" })}><span aria-hidden="true">{hasStartedQuote ? "↗" : "↓"}</span> {hasStartedQuote ? "WhatsApp · Cotizar" : "Ir a cotizar"}</a>
       )}
 
 
