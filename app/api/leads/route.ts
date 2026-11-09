@@ -177,7 +177,8 @@ export async function POST(request: NextRequest) {
     firstname,
     phone,
     lifecyclestage: "lead",
-    insurance_product: data.product,
+    // HubSpot portal enum uses the plural stored value for bicycles.
+    insurance_product: data.product === "bicicleta" ? "bicicletas" : data.product,
     insurance_request_id: requestId,
     insurance_request_details: formatInsuranceRequestDetails(data),
     lead_source: data.attribution.utm_source?.trim() || "direct"
