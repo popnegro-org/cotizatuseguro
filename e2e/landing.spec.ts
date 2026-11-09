@@ -80,7 +80,7 @@ test("el paso 1 valida el riesgo y no envía leads incompletos", async ({ page }
   expect(leadApiCalls).toBe(0);
 });
 
-test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", async ({ page }) => {
+test("el paso 2 pide contacto, provincia y localidad, y permite omitir email", async ({ page }) => {
   let leadPayload: Record<string, unknown> | undefined;
   await page.route("**/api/leads", async (route) => {
     leadPayload = route.request().postDataJSON();
@@ -101,13 +101,15 @@ test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", asy
   await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
   await expect(page.getByLabel("WhatsApp *")).toBeVisible();
   await expect(page.getByLabel("Email (opcional)")).toBeVisible();
-  await expect(page.locator("#province")).toHaveCount(0);
-  await expect(page.locator("#city")).toHaveCount(0);
+  await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
   await expect(page.locator("#phone")).toHaveAttribute("inputmode", "tel");
   await expect(page.locator("#email")).toHaveAttribute("inputmode", "email");
 
   await page.getByLabel("Nombre y apellido *").fill("QA Playwright");
   await page.getByLabel("WhatsApp *").fill("+54 261 555 0101");
+  await page.getByLabel("Provincia *").fill("Mendoza");
+  await page.getByLabel("Localidad o departamento *").fill("Godoy Cruz");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Enviar y continuar por WhatsApp" }).click();
 
@@ -116,11 +118,12 @@ test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", asy
     name: "QA Playwright",
     email: "",
     phone: "542615550101",
+    province: "Mendoza",
+    city: "Godoy Cruz",
     product: "auto",
     website: ""
   });
-  expect(leadPayload).not.toHaveProperty("province");
-  expect(leadPayload).not.toHaveProperty("city");
+
   await expect(page).toHaveURL(/https:\/\/wa\.me\//);
   const message = new URL(page.url()).searchParams.get("text") || "";
   expect(message).toContain("Hola Agustín, completé el formulario de Auto.");
@@ -143,14 +146,15 @@ test("el honeypot no tiene texto visible ni entra en el orden de foco", async ({
   expect(clip).toBe("rect(0px, 0px, 0px, 0px)");
 });
 
-test("hogar acepta metros o ambientes y mantiene localidad opcional", async ({ page }) => {
+test("hogar acepta metros o ambientes y solicita provincia y localidad en el paso 2", async ({ page }) => {
   await page.goto("/");
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   await page.getByLabel("Tipo de seguro *").selectOption("hogar");
   await page.getByLabel("Ambientes (opcional)").fill("3");
   await page.getByLabel("La vivienda es *").selectOption("propia");
   await page.getByRole("button", { name: "Continuar" }).click();
-  await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
+  await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
 });
 
 test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) => {
