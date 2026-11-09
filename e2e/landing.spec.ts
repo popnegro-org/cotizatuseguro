@@ -188,6 +188,16 @@ test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) 
   const buttonBox = await stickyButton.boundingBox();
   expect(buttonBox).not.toBeNull();
   expect(buttonBox!.y + buttonBox!.height).toBeLessThanOrEqual(500);
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  await expect(page.locator(".form-actions .button-secondary")).toBeVisible();
+  const narrowViewport = await page.evaluate(() => ({
+    viewport: window.innerWidth,
+    document: document.documentElement.scrollWidth,
+    actionRight: document.querySelector(".form-actions")!.getBoundingClientRect().right
+  }));
+  expect(narrowViewport.document).toBe(narrowViewport.viewport);
+  expect(narrowViewport.actionRight).toBeLessThanOrEqual(narrowViewport.viewport);
 });
 
 test("la pagina de privacidad se abre y contiene informacion de tratamiento", async ({ page }) => {
