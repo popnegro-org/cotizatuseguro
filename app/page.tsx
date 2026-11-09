@@ -144,7 +144,7 @@ export default function Home() {
             <h1>Cotizá tu seguro con un asesor real</h1>
             <p className="lead">Te respondo personalmente por WhatsApp. Sin tarifa automática en la web.</p>
             <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => { setHasStartedQuote(true); track("cta_click", { cta_location: "hero" }); }}>Empezar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Ver coberturas</a></div>
-            <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática en web</li></ul>
+            <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática</li></ul>
           </div>
           <div className="hero-card"><div className="hero-card-top"><strong>Elegí un producto</strong><p>Seleccioná y saltás al formulario de cotización.</p></div>
             <div className="product-grid">{landingProducts.map((p) => <button className={`product-link${selectedProduct === p.id ? " is-selected" : ""}`} key={p.id} onClick={() => chooseProduct(p.id)} type="button" aria-pressed={selectedProduct === p.id}><span className="product-icon" aria-hidden="true">{p.icon}</span><strong>{p.title}</strong><span>{p.shortDesc}</span></button>)}</div>
