@@ -93,7 +93,7 @@ test("la solicitud conserva atribución UTM y gclid al registrar el lead", async
   await page.getByRole("button", { name: "Continuar" }).click();
   await page.getByLabel("Nombre y apellido *").fill("QA Atribución");
   await page.getByLabel("WhatsApp *").fill("+54 261 555 0101");
-  await page.getByLabel("Provincia *").fill("Mendoza");
+  await page.getByLabel("Provincia *").selectOption("Mendoza");
   await page.getByLabel("Localidad o departamento *").fill("Godoy Cruz");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Enviar y continuar por WhatsApp" }).click();

@@ -36,6 +36,13 @@ const landingProducts = products.map((product) => ({
   title: product.landingTitle
 }));
 
+const provinces = [
+  "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut", "Córdoba", "Corrientes",
+  "Entre Ríos", "Formosa", "Jujuy", "La Pampa", "La Rioja", "Mendoza", "Misiones",
+  "Neuquén", "Río Negro", "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
+  "Santiago del Estero", "Tierra del Fuego", "Tucumán"
+] as const;
+
 const initialForm: FormState = {
   name: "", email: "", phone: "", province: "", city: "", product: "auto", make: "", model: "", year: "",
   version: "", usage: "", rooms: "", homeSqm: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
@@ -345,7 +352,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </span>
               </li>
             </ol>
-            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
+            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
@@ -353,7 +360,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
 
               {formStep === 2 && (
               <fieldset className="form-grid">
-                <legend className="sr-only">Paso 2: tus datos de contacto</legend>
+                <legend className="sr-only">Paso 2: tus datos de contacto y ubicación</legend>
                 <div className={"field" + (fieldErrors.name ? " has-error" : "")}>
                   <label htmlFor="name">Nombre y apellido *</label>
                   <input id="name" name="name" required autoComplete="name" minLength={2} maxLength={100} value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.name; return n; }); }} aria-invalid={!!fieldErrors.name} aria-describedby={fieldErrors.name ? "err-name" : undefined} />
@@ -361,7 +368,10 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </div>
                 <div className={"field" + (fieldErrors.province ? " has-error" : "")}>
                   <label htmlFor="province">Provincia *</label>
-                  <input id="province" name="province" required autoComplete="address-level1" maxLength={100} value={form.province} onChange={(e) => { setForm({ ...form, province: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.province; return n; }); }} aria-invalid={!!fieldErrors.province} aria-describedby={fieldErrors.province ? "err-province" : undefined} />
+                  <select id="province" name="province" required autoComplete="address-level1" value={form.province} onChange={(e) => { setForm({ ...form, province: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.province; return n; }); }} aria-invalid={!!fieldErrors.province} aria-describedby={fieldErrors.province ? "err-province" : undefined}>
+                    <option value="">Seleccioná tu provincia</option>
+                    {provinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                  </select>
                   {fieldErrors.province && <span className="field-error" id="err-province">{fieldErrors.province}</span>}
                 </div>
                 <div className={"field" + (fieldErrors.city ? " has-error" : "")}>
@@ -438,7 +448,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                   <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
                 )}
               </div>
-              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
+              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
             </form>
           </div>
         </div></section>

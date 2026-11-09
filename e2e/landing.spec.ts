@@ -99,17 +99,20 @@ test("el paso 2 pide contacto, provincia y localidad, y permite omitir email", a
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("heading", { name: "¿Cómo te contactamos?" })).toBeVisible();
   await expect(page.getByText("Te abro WhatsApp con el resumen de tu solicitud.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Dejás tu nombre, WhatsApp, provincia y localidad para que podamos responderte.")).toBeVisible();
   await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
   await expect(page.getByLabel("WhatsApp *")).toBeVisible();
   await expect(page.getByLabel("Email (opcional)")).toBeVisible();
   await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.locator("#province")).toHaveJSProperty("tagName", "SELECT");
+  await expect(page.locator("#province option")).toHaveCount(25);
   await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
   await expect(page.locator("#phone")).toHaveAttribute("inputmode", "tel");
   await expect(page.locator("#email")).toHaveAttribute("inputmode", "email");
 
   await page.getByLabel("Nombre y apellido *").fill("QA Playwright");
   await page.getByLabel("WhatsApp *").fill("+54 261 555 0101");
-  await page.getByLabel("Provincia *").fill("Mendoza");
+  await page.getByLabel("Provincia *").selectOption("Mendoza");
   await page.getByLabel("Localidad o departamento *").fill("Godoy Cruz");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Enviar y continuar por WhatsApp" }).click();
@@ -155,6 +158,8 @@ test("hogar acepta metros o ambientes y solicita provincia y localidad en el pas
   await page.getByLabel("La vivienda es *").selectOption("propia");
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.locator("#province")).toHaveJSProperty("tagName", "SELECT");
+  await expect(page.locator("#province option")).toHaveCount(25);
   await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
 });
 

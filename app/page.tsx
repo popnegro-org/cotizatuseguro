@@ -174,14 +174,14 @@ export default function Home() {
           </article>)}</div>
         </div></section>
 
-        <section className="section" id="como-funciona"><div className="container"><div className="section-intro"><span className="eyebrow">Paso a paso</span><h2>De la solicitud a la cotización</h2><p>Primero conocemos el riesgo, después tus datos de contacto y finalmente seguimos por WhatsApp.</p></div><div className="steps">
+        <section className="section" id="como-funciona"><div className="container"><div className="section-intro"><span className="eyebrow">Paso a paso</span><h2>De la solicitud a la cotización</h2><p>Primero conocemos el riesgo, después tus datos de contacto y ubicación, y finalmente seguimos por WhatsApp.</p></div><div className="steps">
           <article className="step"><div className="step-number">1</div><h3>Tu seguro</h3><p>Elegís el producto y completás los datos del riesgo.</p></article>
-          <article className="step"><div className="step-number">2</div><h3>Tus datos</h3><p>Dejás tu nombre y WhatsApp para que podamos responderte.</p></article>
+          <article className="step"><div className="step-number">2</div><h3>Tus datos</h3><p>Dejás tu nombre, WhatsApp, provincia y localidad para que podamos responderte.</p></article>
           <article className="step"><div className="step-number">3</div><h3>Seguimiento por WhatsApp</h3><p>Registramos la solicitud y continuás con el asesoramiento personalizado.</p></article>
         </div></div></section>
 
         <section className="section section-soft" id="faq"><div className="container"><div className="section-intro"><span className="eyebrow">Dudas habituales</span><h2>Preguntas frecuentes</h2><p>Respuestas claras sobre el proceso de cotización y asesoramiento.</p></div><div className="faq-list">
-          <details className="faq" open><summary>¿Cómo solicito una cotización?</summary><p>Primero completás los datos del bien y después tu nombre y WhatsApp. La solicitud queda registrada para continuar por WhatsApp.</p></details>
+          <details className="faq" open><summary>¿Cómo solicito una cotización?</summary><p>Primero completás los datos del bien y después tus datos de contacto, provincia y localidad. La solicitud queda registrada para continuar por WhatsApp.</p></details>
           <details className="faq"><summary>¿La cotización es automática o personalizada?</summary><p>El formulario inicia el proceso; no emite una póliza ni confirma una tarifa automática. La propuesta depende del producto y de la evaluación correspondiente.</p></details>
           <details className="faq"><summary>¿Por qué el contacto continúa por WhatsApp?</summary><p>WhatsApp permite continuar la conversación directamente con el asesor. La apertura de la aplicación no confirma que el mensaje se haya enviado.</p></details>
           <details className="faq"><summary>¿Qué información necesito para cotizar?</summary><p>El formulario solicita datos de contacto y detalles que varían según el producto, como datos del vehículo, características del inmueble o información del alquiler. El asesor puede solicitar información adicional si es necesaria para evaluar el riesgo.</p></details>
