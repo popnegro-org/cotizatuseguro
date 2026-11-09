@@ -10,6 +10,8 @@ type FormState = {
   name: string;
   email: string;
   phone: string;
+  province: string;
+  city: string;
   product: Product;
   make: string;
   model: string;
@@ -18,7 +20,6 @@ type FormState = {
   usage: string;
   rooms: string;
   homeSqm: string;
-  location: string;
   occupancy: string;
   constructionMaterial: string;
   activity: string;
@@ -36,13 +37,13 @@ const landingProducts = products.map((product) => ({
 }));
 
 const initialForm: FormState = {
-  name: "", email: "", phone: "", product: "auto", make: "", model: "", year: "",
-  version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
+  name: "", email: "", phone: "", province: "", city: "", product: "auto", make: "", model: "", year: "",
+  version: "", usage: "", rooms: "", homeSqm: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
   bikeMaterial: "", insuredAmount: "", monthlyRent: "", contractDuration: "", privacyAccepted: false
 };
 
 const emptyRiskFields = {
-  make: "", model: "", year: "", version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "",
+  make: "", model: "", year: "", version: "", usage: "", rooms: "", homeSqm: "", occupancy: "",
   constructionMaterial: "", activity: "", wheelSize: "", bikeMaterial: "",
   insuredAmount: "", monthlyRent: "", contractDuration: ""
 };
@@ -141,6 +142,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     }
     const contactErrors: Record<string, string> = {};
     if (!form.name.trim() || form.name.trim().split(/\s+/).length < 2) contactErrors.name = "Ingresá nombre y apellido.";
+    if (!form.province.trim()) contactErrors.province = "Indicá la provincia.";
+    if (!form.city.trim()) contactErrors.city = "Indicá la localidad o departamento.";
     const digits = form.phone.replace(/\D/g, "");
     if (digits.length < 8 || digits.length > 15) contactErrors.phone = "Ingresá un WhatsApp válido (8 a 15 dígitos).";
     if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) contactErrors.email = "Ingresá un email válido.";
@@ -174,16 +177,17 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
           name: form.name,
           email: form.email.trim(),
           phone: form.phone.replace(/\D/g, ""),
+          province: form.province.trim(),
+          city: form.city.trim(),
           product: form.product,
           details:
             form.product === "auto" || form.product === "moto"
               ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
               : form.product === "hogar"
-                ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
+                ? { homeSqm: form.homeSqm, rooms: form.rooms, occupancy: form.occupancy }
                 : form.product === "consorcio"
                   ? {
                       homeSqm: form.homeSqm,
-                      location: form.location,
                       constructionMaterial: form.constructionMaterial,
                       activity: form.activity
                     }
@@ -250,7 +254,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         usage: "Uso",
         rooms: "Ambientes",
         homeSqm: "Superficie cubierta (m²)",
-        location: "Ubicación",
+        province: "Provincia",
+        city: "Localidad",
         occupancy: "Tipo de vivienda",
         constructionMaterial: "Material de construcción",
         activity: "Actividad",
@@ -264,11 +269,10 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         form.product === "auto" || form.product === "moto"
           ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
           : form.product === "hogar"
-            ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
+            ? { homeSqm: form.homeSqm, rooms: form.rooms, occupancy: form.occupancy }
             : form.product === "consorcio"
               ? {
                   homeSqm: form.homeSqm,
-                  location: form.location,
                   constructionMaterial: form.constructionMaterial,
                   activity: form.activity
                 }
@@ -289,6 +293,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         .map(([key, value]) => `• ${detailLabels[key] || key}: ${value}`);
       const messageLines = [
         "Hola Agustín, completé el formulario de " + label + ".",
+        `Provincia: ${form.province}`,
+        `Localidad: ${form.city}`,
         ...(detailLines.length ? detailLines : ["Resumen del riesgo: pendiente de ampliar."]),
         "Quedo atento a tu cotización. Gracias!"
       ];
@@ -352,6 +358,16 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                   <label htmlFor="name">Nombre y apellido *</label>
                   <input id="name" name="name" required autoComplete="name" minLength={2} maxLength={100} value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.name; return n; }); }} aria-invalid={!!fieldErrors.name} aria-describedby={fieldErrors.name ? "err-name" : undefined} />
                   {fieldErrors.name && <span className="field-error" id="err-name">{fieldErrors.name}</span>}
+                </div>
+                <div className={"field" + (fieldErrors.province ? " has-error" : "")}>
+                  <label htmlFor="province">Provincia *</label>
+                  <input id="province" name="province" required autoComplete="address-level1" maxLength={100} value={form.province} onChange={(e) => { setForm({ ...form, province: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.province; return n; }); }} aria-invalid={!!fieldErrors.province} aria-describedby={fieldErrors.province ? "err-province" : undefined} />
+                  {fieldErrors.province && <span className="field-error" id="err-province">{fieldErrors.province}</span>}
+                </div>
+                <div className={"field" + (fieldErrors.city ? " has-error" : "")}>
+                  <label htmlFor="city">Localidad o departamento *</label>
+                  <input id="city" name="city" required autoComplete="address-level2" maxLength={100} value={form.city} onChange={(e) => { setForm({ ...form, city: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.city; return n; }); }} aria-invalid={!!fieldErrors.city} aria-describedby={fieldErrors.city ? "err-city" : undefined} />
+                  {fieldErrors.city && <span className="field-error" id="err-city">{fieldErrors.city}</span>}
                 </div>
                 <div className={"field" + (fieldErrors.phone ? " has-error" : "")}>
                   <label htmlFor="phone">WhatsApp *</label>
