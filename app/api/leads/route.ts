@@ -103,7 +103,7 @@ function formatInsuranceRequestDetails(data: z.infer<typeof schema>): string {
       .filter(([, value]) => value.trim())
       .map(([key, value]) => `${detailLabels[key] || key}: ${value}`)
   ].filter(Boolean);
-  return lines.join("\\n").slice(0, 900);
+  return lines.join("\n").slice(0, 900);
 }
 
 function jsonError(message: string, status: number, headers: Record<string, string> = {}) {
