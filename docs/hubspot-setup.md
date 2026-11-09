@@ -22,7 +22,7 @@ El endpoint envía estas propiedades estándar de contacto:
 
 Antes de probar, confirmar en el portal de HubSpot que existan las propiedades personalizadas con estos **nombres internos** (no solo las etiquetas visibles):
 
-- `insurance_product`: texto o lista desplegable con los valores internos que usa la aplicación (`auto`, `moto`, `hogar`, `comercio`, `bicicleta` (legado: `bicicletas`), `vida`, `accidentes_personales`, `art`, `consorcio`, `viajes`, `caucion_alquiler`).
+- `insurance_product`: lista desplegable. En el portal actual, el valor interno para bicicleta es `bicicletas`; la aplicación lo normaliza desde `bicicleta`. Los demás valores internos incluyen `auto`, `moto`, `hogar`, `consorcio` y `caucion_alquiler`.
 - `insurance_request_id`: texto.
 - `insurance_request_details`: texto de varias líneas legible en la ficha del contacto. Incluye producto, provincia, localidad y los datos específicos del riesgo con etiquetas en español; límite de 900 caracteres.
 - `lead_source`: texto o lista con opción `direct` y las fuentes que la organización use.
@@ -32,7 +32,7 @@ La disponibilidad y los tipos de las propiedades deben confirmarse en el portal;
 
 ## Tipologías y validación
 
-La API valida los campos comunes (nombre y apellido, email, WhatsApp y provincia) y los detalles específicos de Autos, Motos, Hogar, Consorcio, Bicicleta y Caución alquiler. Los detalles se guardan en `insurance_request_details`; no se crean automáticamente propiedades individuales por cada detalle.
+El frontend solicita nombre y apellido, WhatsApp, provincia y localidad en el paso 2; el email es opcional. La API mantiene provincia y localidad opcionales para compatibilidad con integraciones anteriores, y valida los detalles específicos de Autos, Motos, Hogar, Consorcio, Bicicleta y Caución alquiler. Los detalles se guardan en `insurance_request_details`; no se crean automáticamente propiedades individuales por cada detalle.
 
 ## Verificación segura
 
