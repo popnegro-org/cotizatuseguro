@@ -240,7 +240,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         return;
       }
       setSuccess("Solicitud registrada. Ahora podés continuar por WhatsApp.");
-      const label = landingProducts.find((item) => item.id === form.product)?.title || form.product;
+      const productLabels: Record<Product, string> = { auto: "Auto", moto: "Moto", hogar: "Hogar", consorcio: "Consorcio", bicicleta: "Bicicleta", caucion_alquiler: "Caución alquiler" };
+      const label = productLabels[form.product] || landingProducts.find((item) => item.id === form.product)?.title || form.product;
       const detailLabels: Record<string, string> = {
         make: "Marca",
         model: "Modelo",
@@ -338,7 +339,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </span>
               </li>
             </ol>
-            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abrimos WhatsApp con el resumen de tu solicitud."}</p>
+            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
@@ -423,7 +424,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                   <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
                 )}
               </div>
-              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abrimos WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
+              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
             </form>
           </div>
         </div></section>
