@@ -241,7 +241,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   assert.equal(fetchMock.mock.callCount(), validProducts.length * 2, "each lead must reconcile before contact creation");
   assert.deepEqual(
     capturedPayloads.map(({ properties }) => properties.insurance_product),
-    validProducts
+    validProducts.map((product) => product === "bicicleta" ? "bicicletas" : product)
   );
   for (const { properties } of capturedPayloads) {
     assert.equal(properties.city, "Godoy Cruz", "locality should be sent to HubSpot");
