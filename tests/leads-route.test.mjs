@@ -135,6 +135,12 @@ test("creates a lead using HubSpot properties without calling the live CRM", asy
   assert.equal(captured.properties.gclid, "gclid-test");
   assert.equal(captured.properties.fbclid, "fbclid-test");
   assert.equal(captured.properties.insurance_request_id, payload.requestId);
+  assert.match(captured.properties.insurance_request_details, /Producto: Auto/);
+  assert.match(captured.properties.insurance_request_details, /Provincia: Mendoza/);
+  assert.match(captured.properties.insurance_request_details, /Localidad: Mendoza/);
+  assert.match(captured.properties.insurance_request_details, /Marca: QA/);
+  assert.match(captured.properties.insurance_request_details, /Modelo: Test/);
+  assert.match(captured.properties.insurance_request_details, /Año: 2024/);
 });
 
 test("rejects invalid input before contacting HubSpot", async (t) => {
