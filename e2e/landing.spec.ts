@@ -77,6 +77,7 @@ test("el paso 1 valida el riesgo y no envía leads incompletos", async ({ page }
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByRole("alert").first()).toContainText("datos del riesgo");
+  await expect(page.getByLabel("Marca *")).toBeFocused();
   expect(leadApiCalls).toBe(0);
 });
 
