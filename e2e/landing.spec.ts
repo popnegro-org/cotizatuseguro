@@ -20,6 +20,7 @@ test("landing presenta el flujo de dos pasos en orden riesgo y contacto", async 
   await expect(page.getByRole("heading", { name: "Cotizá tu seguro con un asesor real" })).toBeVisible();
   await expect(page.getByText("PRODUCTOR ASESOR · MENDOZA")).toBeVisible();
   await expect(page.getByText("Te respondo personalmente por WhatsApp. Sin tarifa automática en la web.")).toBeVisible();
+  await expect(page.getByText("Sin tarifa automática", { exact: true })).toBeVisible();
   await expect(page.locator("#cotizar")).toBeVisible();
   await expect(page.locator("#seguros .coverage-card")).toHaveCount(6);
   await expect(page.locator("#aseguradoras .company-chip")).toHaveCount(7);
@@ -31,6 +32,8 @@ test("landing presenta el flujo de dos pasos en orden riesgo y contacto", async 
   await expect(page.locator("#name")).toHaveCount(0);
   await expect(page.locator("#phone")).toHaveCount(0);
   await expect(page.locator("#email")).toHaveCount(0);
+  await expect(page.locator("#province")).toHaveCount(0);
+  await expect(page.locator("#city")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Continuar" })).toBeVisible();
 });
 
@@ -94,6 +97,7 @@ test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", asy
 
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("heading", { name: "¿Cómo te contactamos?" })).toBeVisible();
+  await expect(page.getByText("Te abro WhatsApp con el resumen de tu solicitud.", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
   await expect(page.getByLabel("WhatsApp *")).toBeVisible();
   await expect(page.getByLabel("Email (opcional)")).toBeVisible();
@@ -135,6 +139,8 @@ test("el honeypot no tiene texto visible ni entra en el orden de foco", async ({
   await expect(wrapper).not.toContainText(/dejá este campo vacío/i);
   const position = await wrapper.evaluate((element) => getComputedStyle(element).position);
   expect(position).toBe("absolute");
+  const clip = await wrapper.evaluate((element) => getComputedStyle(element).clip);
+  expect(clip).toBe("rect(0px, 0px, 0px, 0px)");
 });
 
 test("hogar acepta metros o ambientes y mantiene localidad opcional", async ({ page }) => {
@@ -153,6 +159,8 @@ test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) 
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   const progress = page.getByRole("list", { name: "Progreso del formulario" });
   await expect(progress.locator('[aria-current="step"]')).toHaveText("1. Tu seguro");
+  const progressPosition = await progress.evaluate((element) => getComputedStyle(element).position);
+  expect(progressPosition).toBe("sticky");
   const stickyPosition = await page.locator(".form-actions").evaluate((element) => getComputedStyle(element).position);
   expect(stickyPosition).toBe("sticky");
   await completeAutoRisk(page);
@@ -160,6 +168,16 @@ test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) 
   await expect(progress.locator('[aria-current="step"]')).toHaveText("2. Tus datos");
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("button", { name: "Enviar y continuar por WhatsApp" })).toBeVisible();
+
+  // Simulate the viewport reduction caused by an on-screen keyboard on mobile.
+  await page.setViewportSize({ width: 390, height: 500 });
+  await page.getByLabel("WhatsApp *").scrollIntoViewIfNeeded();
+  await page.getByLabel("WhatsApp *").focus();
+  const stickyButton = page.getByRole("button", { name: "Enviar y continuar por WhatsApp" });
+  await expect(stickyButton).toBeVisible();
+  const buttonBox = await stickyButton.boundingBox();
+  expect(buttonBox).not.toBeNull();
+  expect(buttonBox!.y + buttonBox!.height).toBeLessThanOrEqual(500);
 });
 
 test("la pagina de privacidad se abre y contiene informacion de tratamiento", async ({ page }) => {
