@@ -17,6 +17,8 @@ export type LeadEventContext = {
   fbp?: string;
   /** Meta click id cookie (_fbc) when available. */
   fbc?: string;
+  /** Public page URL for Meta event_source_url (https only). */
+  eventSourceUrl?: string;
 };
 
 export type StoredLead = {

@@ -1,3 +1,15 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 :root{
   --navy:#102b27;--blue:#28665a;--sky:#e4eee7;--ink:#1d302c;--muted:#687872;--paper:#f5f5ef;--line:#dce2d9;--green:#176b4b;--green-dark:#104d37;--lime:#d8f36a;--white:#fffdf8;
 }
@@ -351,4 +363,47 @@ h2{color:#102a43}
 @media(max-width:380px){
   .footer-layout{grid-template-columns:1fr}
   .footer-about{grid-column:auto}
+}
+
+/* Two-step risk-first quote flow */
+.form-stepper {
+  position: sticky;
+  top: 82px;
+  z-index: 8;
+  padding: 10px 0;
+  background: #fff;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.form-actions .button-wide { flex: 1; }
+.form-stepper .step-pill { white-space: nowrap; }
+.floating-cta.is-whatsapp { background: #20a85a; }
+@media (max-width: 900px) {
+  .form-stepper {
+    top: 72px;
+    background: #fff;
+    box-shadow: 0 8px 14px #102a4308;
+  }
+  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 12;
+    margin: 16px -18px 0;
+    padding: 12px 18px max(12px, env(safe-area-inset-bottom));
+    background: #ffffffed;
+    border-top: 1px solid #dce6ee;
+    backdrop-filter: blur(12px);
+  }
+  .form-actions .button-wide { min-height: 54px; }
+  .quote-card { overflow: visible; }
+}
+@media (max-width: 560px) {
+  .form-stepper { gap: 6px; }
+  .form-stepper > li { min-width: 0; }
+  .step-pill { padding: 8px 10px; font-size: .76rem; }
+  .form-actions { margin-inline: -18px; padding-inline: 18px; }
+  .form-actions .button-secondary { flex: 0 0 auto; padding-inline: 12px; }
 }

@@ -20,35 +20,40 @@ const attributionSchema = z.record(z.string(), z.string().max(500)).optional().d
 const schema = z.object({
   website: z.string().max(200).optional().default(""),
   name: z.string().trim().min(2).max(100).refine((value) => value.split(/\s+/).length >= 2, "Ingresá nombre y apellido"),
-  email: z.string().trim().email().max(254),
+  email: z.string().trim().max(254).optional().default("").refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), "Ingresá un email válido"),
   phone: z.string().trim().min(8).max(30),
-  province: z.string().trim().min(2).max(100),
-  city: z.string().trim().min(2, "Ingresá tu localidad o departamento").max(100),
-  product: z.enum(["auto", "moto", "hogar", "consorcio", "bicicletas", "caucion_alquiler"]),
+  province: z.string().trim().max(100).optional().default(""),
+  city: z.string().trim().max(100).optional().default(""),
+  product: z.enum(["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"]),
   details: z.record(z.string(), z.string().trim().max(200)).optional().default({}),
   attribution: attributionSchema
 }).superRefine((data, ctx) => {
   const requiredByProduct: Record<string, string[]> = {
     auto: ["make", "model", "year"],
     moto: ["make", "model", "year"],
-    hogar: ["homeSqm", "location", "occupancy"],
-    consorcio: ["homeSqm", "location", "constructionMaterial", "activity"],
+    hogar: ["occupancy"],
+    consorcio: ["homeSqm", "constructionMaterial", "activity"],
+    bicicleta: ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"],
     bicicletas: ["make", "model", "year", "wheelSize", "bikeMaterial", "insuredAmount"],
     caucion_alquiler: ["monthlyRent", "contractDuration"]
   };
+  if (data.product === "hogar" && !data.details.homeSqm?.trim() && !data.details.rooms?.trim()) ctx.addIssue({ code: "custom", path: ["details", "homeSqm"], message: "Indicá metros aproximados o cantidad de ambientes" });
   for (const key of requiredByProduct[data.product] || []) {
     if (!data.details[key]?.trim()) ctx.addIssue({ code: "custom", path: ["details", key], message: `Falta completar: ${key}` });
   }
-  if (["auto", "moto", "bicicletas"].includes(data.product)) {
+  if (["auto", "moto", "bicicleta", "bicicletas"].includes(data.product)) {
     const year = Number(data.details.year);
     if (!Number.isInteger(year) || year < 1900 || year > new Date().getFullYear() + 1) {
       ctx.addIssue({ code: "custom", path: ["details", "year"], message: "El año no es válido" });
     }
   }
-  for (const key of ["homeSqm", "insuredAmount", "monthlyRent"]) {
+  for (const key of ["homeSqm", "insuredAmount", "monthlyRent", "rooms"]) {
     if (data.details[key] !== undefined && (!Number.isFinite(Number(data.details[key])) || Number(data.details[key]) <= 0)) {
       ctx.addIssue({ code: "custom", path: ["details", key], message: "Ingresá un importe o valor positivo" });
     }
+  }
+  if (data.details.rooms !== undefined && (!Number.isInteger(Number(data.details.rooms)) || Number(data.details.rooms) < 1 || Number(data.details.rooms) > 30)) {
+    ctx.addIssue({ code: "custom", path: ["details", "rooms"], message: "La cantidad de ambientes debe ser de 1 a 30" });
   }
   if (data.details.contractDuration !== undefined) {
     const duration = Number(data.details.contractDuration);
@@ -82,9 +87,23 @@ export async function POST(request: NextRequest) {
   let raw: unknown;
   try { raw = await request.json(); } catch { return jsonError("El formato de la solicitud no es válido.", 400); }
   const parsed = schema.safeParse(raw);
-  if (!parsed.success) return jsonError("Revisá los datos obligatorios del formulario.", 400);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path.length ? issue.path.join(".") : "form";
+      if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+    }
+    return NextResponse.json(
+      { error: "Revisá los datos obligatorios del formulario.", fieldErrors },
+      { status: 400, headers: { "Cache-Control": "no-store" } }
+    );
+  }
 
-  const data = parsed.data;
+  const data = {
+    ...parsed.data,
+    // Canonical product id (legacy "bicicletas" accepted for backward compatibility).
+    product: parsed.data.product === "bicicletas" ? "bicicleta" as const : parsed.data.product
+  };
   // Reject honeypot submissions before consuming rate-limit quota or contacting the CRM.
   if (data.website.trim()) return jsonError("No pudimos procesar la solicitud. Revisá los datos e intentá nuevamente.", 400);
 
@@ -105,16 +124,19 @@ export async function POST(request: NextRequest) {
   }
 
   const requestId = `SOL-${randomUUID().slice(0, 8).toUpperCase()}`;
-  const phone = data.phone.replace(/[\s().-]/g, "");
+  const phone = data.phone.replace(/\D/g, "");
+  if (phone.length < 8 || phone.length > 15) {
+    return NextResponse.json(
+      { error: "Ingresá un WhatsApp válido (código de área + número).", fieldErrors: { phone: "Ingresá un WhatsApp válido (código de área + número)." } },
+      { status: 400, headers: { "Cache-Control": "no-store" } }
+    );
+  }
   const nameParts = data.name.trim().split(/\s+/);
   const firstname = nameParts.shift() || data.name;
   const lastname = nameParts.join(" ");
   const properties: Record<string, string> = {
-    email: data.email,
     firstname,
     phone,
-    state: data.province,
-    city: data.city || data.province,
     lifecyclestage: "lead",
     insurance_product: data.product,
     insurance_request_id: requestId,
@@ -122,6 +144,9 @@ export async function POST(request: NextRequest) {
     lead_source: data.attribution.utm_source?.trim() || "direct"
   };
   if (lastname) properties.lastname = lastname;
+  if (data.email) properties.email = data.email;
+  if (data.province) properties.state = data.province;
+  if (data.city) properties.city = data.city;
 
   for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid"] as const) {
     const value = data.attribution[key]?.trim();
@@ -146,7 +171,10 @@ export async function POST(request: NextRequest) {
       clientIp: ip || undefined,
       userAgent,
       fbp,
-      fbc
+      fbc,
+      eventSourceUrl: typeof data.attribution.page_url === "string" && data.attribution.page_url.startsWith("https://")
+        ? data.attribution.page_url.slice(0, 500)
+        : undefined
     }
   };
 

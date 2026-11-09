@@ -3,7 +3,7 @@ export type FormProductId =
   | "moto"
   | "hogar"
   | "consorcio"
-  | "bicicletas"
+  | "bicicleta"
   | "caucion_alquiler";
 
 export type ProductSeo = {
@@ -160,7 +160,7 @@ export const products: ProductSeo[] = [
   },
   {
     slug: "bicicleta",
-    formId: "bicicletas",
+    formId: "bicicleta",
     title: "Seguro de bicicleta en Mendoza",
     shortTitle: "Bicicleta",
     landingTitle: "Bicicleta",

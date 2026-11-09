@@ -48,6 +48,9 @@ export const metadata: Metadata = {
   verification: {
     google: "5BdbufppvxzR5z65ZB1XuPNX0X3I7CQwrAXvWwSsFdk"
   },
+  other: {
+    "facebook-domain-verification": "zp5gquuobktkdfcbd7tmvll8orgne1"
+  },
   openGraph: {
     title: "Cotizá tu seguro | Agustín Montes",
     description: "Consultá por seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Solicitá una cotización personalizada.",
@@ -79,5 +82,17 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="es-AR"><head><meta name="facebook-domain-verification" content="zp5gquuobktkdfcbd7tmvll8orgne1" /></head><body><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />{children}</body></html>;
+  return (
+    <html lang="es-AR">
+      <body>
+        {isProductionDeployment ? (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          />
+        ) : null}
+        {children}
+      </body>
+    </html>
+  );
 }

@@ -54,14 +54,24 @@ export function SiteHeader({
         restoreFocusOnCloseRef.current = false;
         menuButtonRef.current?.focus();
       }
-      return;
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        const openDetails = document.querySelectorAll<HTMLDetailsElement>("header details.site-nav-dropdown[open]");
+        if (!openDetails.length && !menuOpen) return;
+
         event.preventDefault();
-        restoreFocusOnCloseRef.current = true;
-        setMenuOpen(false);
+        openDetails.forEach((details) => {
+          details.open = false;
+        });
+
+        if (menuOpen) {
+          restoreFocusOnCloseRef.current = true;
+          setMenuOpen(false);
+        } else {
+          openDetails[0]?.querySelector("summary")?.focus();
+        }
       }
     };
     window.addEventListener("keydown", closeOnEscape);
