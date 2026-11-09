@@ -108,6 +108,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     const firstInvalid = Object.keys(errors)[0];
     if (firstInvalid) {
       const productFieldIds: Record<string, string> = {
+        make: form.product + "-make", model: form.product + "-model", year: form.product + "-year",
+        homeSqm: form.product + "-homeSqm",
         occupancy: "hogar-occupancy", constructionMaterial: "consorcio-constructionMaterial",
         activity: "consorcio-activity", wheelSize: "bicicleta-wheelSize",
         bikeMaterial: "bicicleta-bikeMaterial", insuredAmount: "bicicleta-insuredAmount",
