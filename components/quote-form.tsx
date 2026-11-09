@@ -108,8 +108,6 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     const firstInvalid = Object.keys(errors)[0];
     if (firstInvalid) {
       const productFieldIds: Record<string, string> = {
-        make: form.product + "-make", model: form.product + "-model", year: form.product + "-year",
-        homeSqm: form.product + "-homeSqm", location: form.product + "-location",
         occupancy: "hogar-occupancy", constructionMaterial: "consorcio-constructionMaterial",
         activity: "consorcio-activity", wheelSize: "bicicleta-wheelSize",
         bikeMaterial: "bicicleta-bikeMaterial", insuredAmount: "bicicleta-insuredAmount",
@@ -407,13 +405,11 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </>}
                 {form.product === "hogar" && <>
                   <div className="field"><label htmlFor="hogar-homeSqm">Metros aproximados (opcional)</label><input id="hogar-homeSqm" name="homeSqm" type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="hogar-location">Localidad (opcional)</label><input id="hogar-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="hogar-rooms">Ambientes (opcional)</label><input id="hogar-rooms" name="rooms" type="number" min="1" max="30" value={form.rooms} onChange={(e) => setForm({ ...form, rooms: e.target.value })} /></div>
                   <div className="field"><label htmlFor="hogar-occupancy">La vivienda es *</label><select id="hogar-occupancy" name="occupancy" required value={form.occupancy} onChange={(e) => setForm({ ...form, occupancy: e.target.value })} aria-required="true"><option value="">Seleccioná una opción</option><option value="propia">Propia</option><option value="alquiler">Alquiler</option></select></div>
                 </>}
                 {form.product === "consorcio" && <>
                   <div className="field"><label htmlFor="consorcio-homeSqm">Metros aproximados *</label><input id="consorcio-homeSqm" name="homeSqm" required type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="consorcio-location">Localidad (opcional)</label><input id="consorcio-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-constructionMaterial">Material de construcción *</label><input id="consorcio-constructionMaterial" name="constructionMaterial" required maxLength={100} value={form.constructionMaterial} onChange={(e) => setForm({ ...form, constructionMaterial: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-activity">Actividad *</label><input id="consorcio-activity" name="activity" required maxLength={120} value={form.activity} onChange={(e) => setForm({ ...form, activity: e.target.value })} aria-required="true" /></div>
                 </>}
