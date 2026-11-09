@@ -407,6 +407,7 @@ h2{color:#102a43}
   .form-actions { margin-inline: -18px; padding-inline: 18px; }
   .form-actions .button-secondary { flex: 0 0 auto; padding-inline: 12px; }
 }
+/* Keep both contact-step actions inside narrow mobile viewports. */
 @media (max-width: 380px) {
   .form-actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
   .form-actions .button-secondary,
