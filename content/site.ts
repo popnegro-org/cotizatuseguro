@@ -53,7 +53,7 @@ export const products: ProductSeo[] = [
       },
       {
         q: "¿Trabajan con varias aseguradoras?",
-        a: "Sí. Cotizamos con compañías reconocidas para que puedas comparar condiciones y precio antes de decidir."
+        a: "La disponibilidad de aseguradoras y coberturas se confirma al revisar los datos del riesgo. La propuesta permite conocer las condiciones y el precio antes de decidir."
       },
       {
         q: "¿La cotización tiene costo?",
@@ -80,7 +80,7 @@ export const products: ProductSeo[] = [
       "Opciones adaptadas a motos de baja, media y alta cilindrada",
       "Evaluación de responsabilidad civil y coberturas adicionales",
       "Seguimiento de la consulta por WhatsApp",
-      "Acompañamiento local en Mendoza"
+      "Atención de consultas desde Mendoza"
     ],
     faqs: [
       {
