@@ -565,3 +565,6 @@ h2{color:#102a43}
     bottom: 148px;
   }
 }
+
+/* Preserve viewport-sticky form actions inside the hero without creating a scroll container. */
+.hero { overflow: clip; }
