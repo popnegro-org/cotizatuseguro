@@ -903,3 +903,11 @@ textarea {
   .coverage-card-redesign { transition: none; }
   .coverage-card-redesign:hover { transform: none; }
 }
+
+
+/* Utility-first visual policy: remove decorative symbols and background ornaments. */
+.hero { background: var(--paper); }
+.hero::before { content: none; display: none; }
+.product-icon, .assurance-card > span { display: none !important; }
+.coverage-card-top { min-height: 0; }
+.coverage-card { box-shadow: none; }
