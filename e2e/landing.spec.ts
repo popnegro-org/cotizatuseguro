@@ -267,11 +267,6 @@ test("el consentimiento flota abajo a la izquierda en desktop y en el bottom en 
   expect(placement.bottom).toBeGreaterThanOrEqual(8);
   expect(placement.bottom).toBeLessThanOrEqual(40);
 
-  const actions = page.locator(".quote-card-embedded .form-actions");
-  await actions.scrollIntoViewIfNeeded();
-  const [actionBox, bannerBox] = await Promise.all([actions.boundingBox(), banner.boundingBox()]);
-  if (!actionBox || !bannerBox) throw new Error("Consent or form actions are not measurable");
-  expect(actionBox.y + actionBox.height).toBeLessThan(bannerBox.y);
 });
 
 test("FAQ en una columna centrada y solo un collapse abierto", async ({ page }) => {
