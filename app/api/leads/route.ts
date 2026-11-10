@@ -67,6 +67,45 @@ const schema = z.object({
 });
 
 
+const productLabels: Record<string, string> = {
+  auto: "Auto",
+  moto: "Moto",
+  hogar: "Hogar",
+  consorcio: "Consorcio",
+  bicicleta: "Bicicleta",
+  caucion_alquiler: "Caución alquiler"
+};
+
+const detailLabels: Record<string, string> = {
+  make: "Marca",
+  model: "Modelo",
+  year: "Año",
+  version: "Versión o tipo",
+  usage: "Uso",
+  rooms: "Ambientes",
+  homeSqm: "Superficie aproximada (m²)",
+  occupancy: "Tipo de vivienda",
+  constructionMaterial: "Material de construcción",
+  activity: "Actividad",
+  wheelSize: "Rodado",
+  bikeMaterial: "Material de la bicicleta",
+  insuredAmount: "Suma asegurada (ARS)",
+  monthlyRent: "Alquiler mensual (ARS)",
+  contractDuration: "Duración del contrato (meses)"
+};
+
+function formatInsuranceRequestDetails(data: z.infer<typeof schema>): string {
+  const lines = [
+    `Producto: ${productLabels[data.product] || data.product}`,
+    data.province ? `Provincia: ${data.province}` : "",
+    data.city ? `Localidad: ${data.city}` : "",
+    ...Object.entries(data.details)
+      .filter(([, value]) => value.trim())
+      .map(([key, value]) => `${detailLabels[key] || key}: ${value}`)
+  ].filter(Boolean);
+  return lines.join("\n").slice(0, 900);
+}
+
 function jsonError(message: string, status: number, headers: Record<string, string> = {}) {
   return NextResponse.json({ error: message }, {
     status,
@@ -138,9 +177,10 @@ export async function POST(request: NextRequest) {
     firstname,
     phone,
     lifecyclestage: "lead",
-    insurance_product: data.product,
+    // HubSpot portal enum uses the plural stored value for bicycles.
+    insurance_product: data.product === "bicicleta" ? "bicicletas" : data.product,
     insurance_request_id: requestId,
-    insurance_request_details: JSON.stringify(data.details).slice(0, 900),
+    insurance_request_details: formatInsuranceRequestDetails(data),
     lead_source: data.attribution.utm_source?.trim() || "direct"
   };
   if (lastname) properties.lastname = lastname;

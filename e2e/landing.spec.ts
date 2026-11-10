@@ -77,10 +77,11 @@ test("el paso 1 valida el riesgo y no envía leads incompletos", async ({ page }
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(page.getByRole("alert").first()).toContainText("datos del riesgo");
+  await expect(page.getByLabel("Marca *")).toBeFocused();
   expect(leadApiCalls).toBe(0);
 });
 
-test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", async ({ page }) => {
+test("el paso 2 pide contacto, provincia y localidad, y permite omitir email", async ({ page }) => {
   let leadPayload: Record<string, unknown> | undefined;
   await page.route("**/api/leads", async (route) => {
     leadPayload = route.request().postDataJSON();
@@ -98,16 +99,21 @@ test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", asy
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("heading", { name: "¿Cómo te contactamos?" })).toBeVisible();
   await expect(page.getByText("Te abro WhatsApp con el resumen de tu solicitud.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Dejás tu nombre, WhatsApp, provincia y localidad para que podamos responderte.")).toBeVisible();
   await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
   await expect(page.getByLabel("WhatsApp *")).toBeVisible();
   await expect(page.getByLabel("Email (opcional)")).toBeVisible();
-  await expect(page.locator("#province")).toHaveCount(0);
-  await expect(page.locator("#city")).toHaveCount(0);
+  await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.locator("#province")).toHaveJSProperty("tagName", "SELECT");
+  await expect(page.locator("#province option")).toHaveCount(25);
+  await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
   await expect(page.locator("#phone")).toHaveAttribute("inputmode", "tel");
   await expect(page.locator("#email")).toHaveAttribute("inputmode", "email");
 
   await page.getByLabel("Nombre y apellido *").fill("QA Playwright");
   await page.getByLabel("WhatsApp *").fill("+54 261 555 0101");
+  await page.getByLabel("Provincia *").selectOption("Mendoza");
+  await page.getByLabel("Localidad o departamento *").fill("Godoy Cruz");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Enviar y continuar por WhatsApp" }).click();
 
@@ -116,11 +122,12 @@ test("el paso 2 pide nombre y WhatsApp, y permite omitir email y localidad", asy
     name: "QA Playwright",
     email: "",
     phone: "542615550101",
+    province: "Mendoza",
+    city: "Godoy Cruz",
     product: "auto",
     website: ""
   });
-  expect(leadPayload).not.toHaveProperty("province");
-  expect(leadPayload).not.toHaveProperty("city");
+
   await expect(page).toHaveURL(/https:\/\/wa\.me\//);
   const message = new URL(page.url()).searchParams.get("text") || "";
   expect(message).toContain("Hola Agustín, completé el formulario de Auto.");
@@ -143,14 +150,17 @@ test("el honeypot no tiene texto visible ni entra en el orden de foco", async ({
   expect(clip).toBe("rect(0px, 0px, 0px, 0px)");
 });
 
-test("hogar acepta metros o ambientes y mantiene localidad opcional", async ({ page }) => {
+test("hogar acepta metros o ambientes y solicita provincia y localidad en el paso 2", async ({ page }) => {
   await page.goto("/");
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   await page.getByLabel("Tipo de seguro *").selectOption("hogar");
   await page.getByLabel("Ambientes (opcional)").fill("3");
   await page.getByLabel("La vivienda es *").selectOption("propia");
   await page.getByRole("button", { name: "Continuar" }).click();
-  await expect(page.getByLabel("Nombre y apellido *")).toBeVisible();
+  await expect(page.getByLabel("Provincia *")).toBeVisible();
+  await expect(page.locator("#province")).toHaveJSProperty("tagName", "SELECT");
+  await expect(page.locator("#province option")).toHaveCount(25);
+  await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
 });
 
 test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) => {
@@ -178,6 +188,16 @@ test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) 
   const buttonBox = await stickyButton.boundingBox();
   expect(buttonBox).not.toBeNull();
   expect(buttonBox!.y + buttonBox!.height).toBeLessThanOrEqual(500);
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  await expect(page.locator(".form-actions .button-secondary")).toBeVisible();
+  const narrowViewport = await page.evaluate(() => ({
+    viewport: window.innerWidth,
+    document: document.documentElement.scrollWidth,
+    actionRight: document.querySelector(".form-actions")!.getBoundingClientRect().right
+  }));
+  expect(narrowViewport.document).toBe(narrowViewport.viewport);
+  expect(narrowViewport.actionRight).toBeLessThanOrEqual(narrowViewport.viewport);
 });
 
 test("la pagina de privacidad se abre y contiene informacion de tratamiento", async ({ page }) => {

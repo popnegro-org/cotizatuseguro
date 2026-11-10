@@ -10,6 +10,8 @@ type FormState = {
   name: string;
   email: string;
   phone: string;
+  province: string;
+  city: string;
   product: Product;
   make: string;
   model: string;
@@ -18,7 +20,6 @@ type FormState = {
   usage: string;
   rooms: string;
   homeSqm: string;
-  location: string;
   occupancy: string;
   constructionMaterial: string;
   activity: string;
@@ -35,14 +36,21 @@ const landingProducts = products.map((product) => ({
   title: product.landingTitle
 }));
 
+const provinces = [
+  "Buenos Aires", "CABA", "Catamarca", "Chaco", "Chubut", "Córdoba", "Corrientes",
+  "Entre Ríos", "Formosa", "Jujuy", "La Pampa", "La Rioja", "Mendoza", "Misiones",
+  "Neuquén", "Río Negro", "Salta", "San Juan", "San Luis", "Santa Cruz", "Santa Fe",
+  "Santiago del Estero", "Tierra del Fuego", "Tucumán"
+] as const;
+
 const initialForm: FormState = {
-  name: "", email: "", phone: "", product: "auto", make: "", model: "", year: "",
-  version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
+  name: "", email: "", phone: "", province: "", city: "", product: "auto", make: "", model: "", year: "",
+  version: "", usage: "", rooms: "", homeSqm: "", occupancy: "", constructionMaterial: "", activity: "", wheelSize: "",
   bikeMaterial: "", insuredAmount: "", monthlyRent: "", contractDuration: "", privacyAccepted: false
 };
 
 const emptyRiskFields = {
-  make: "", model: "", year: "", version: "", usage: "", rooms: "", homeSqm: "", location: "", occupancy: "",
+  make: "", model: "", year: "", version: "", usage: "", rooms: "", homeSqm: "", occupancy: "",
   constructionMaterial: "", activity: "", wheelSize: "", bikeMaterial: "",
   insuredAmount: "", monthlyRent: "", contractDuration: ""
 };
@@ -108,7 +116,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     if (firstInvalid) {
       const productFieldIds: Record<string, string> = {
         make: form.product + "-make", model: form.product + "-model", year: form.product + "-year",
-        homeSqm: form.product + "-homeSqm", location: form.product + "-location",
+        homeSqm: form.product + "-homeSqm",
         occupancy: "hogar-occupancy", constructionMaterial: "consorcio-constructionMaterial",
         activity: "consorcio-activity", wheelSize: "bicicleta-wheelSize",
         bikeMaterial: "bicicleta-bikeMaterial", insuredAmount: "bicicleta-insuredAmount",
@@ -141,6 +149,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
     }
     const contactErrors: Record<string, string> = {};
     if (!form.name.trim() || form.name.trim().split(/\s+/).length < 2) contactErrors.name = "Ingresá nombre y apellido.";
+    if (!form.province.trim()) contactErrors.province = "Indicá la provincia.";
+    if (!form.city.trim()) contactErrors.city = "Indicá la localidad o departamento.";
     const digits = form.phone.replace(/\D/g, "");
     if (digits.length < 8 || digits.length > 15) contactErrors.phone = "Ingresá un WhatsApp válido (8 a 15 dígitos).";
     if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) contactErrors.email = "Ingresá un email válido.";
@@ -174,16 +184,17 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
           name: form.name,
           email: form.email.trim(),
           phone: form.phone.replace(/\D/g, ""),
+          province: form.province.trim(),
+          city: form.city.trim(),
           product: form.product,
           details:
             form.product === "auto" || form.product === "moto"
               ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
               : form.product === "hogar"
-                ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
+                ? { homeSqm: form.homeSqm, rooms: form.rooms, occupancy: form.occupancy }
                 : form.product === "consorcio"
                   ? {
                       homeSqm: form.homeSqm,
-                      location: form.location,
                       constructionMaterial: form.constructionMaterial,
                       activity: form.activity
                     }
@@ -250,7 +261,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         usage: "Uso",
         rooms: "Ambientes",
         homeSqm: "Superficie cubierta (m²)",
-        location: "Ubicación",
+        province: "Provincia",
+        city: "Localidad",
         occupancy: "Tipo de vivienda",
         constructionMaterial: "Material de construcción",
         activity: "Actividad",
@@ -264,11 +276,10 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         form.product === "auto" || form.product === "moto"
           ? { make: form.make, model: form.model, year: form.year, version: form.version, usage: form.usage }
           : form.product === "hogar"
-            ? { homeSqm: form.homeSqm, rooms: form.rooms, location: form.location, occupancy: form.occupancy }
+            ? { homeSqm: form.homeSqm, rooms: form.rooms, occupancy: form.occupancy }
             : form.product === "consorcio"
               ? {
                   homeSqm: form.homeSqm,
-                  location: form.location,
                   constructionMaterial: form.constructionMaterial,
                   activity: form.activity
                 }
@@ -289,6 +300,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
         .map(([key, value]) => `• ${detailLabels[key] || key}: ${value}`);
       const messageLines = [
         "Hola Agustín, completé el formulario de " + label + ".",
+        `Provincia: ${form.province}`,
+        `Localidad: ${form.city}`,
         ...(detailLines.length ? detailLines : ["Resumen del riesgo: pendiente de ampliar."]),
         "Quedo atento a tu cotización. Gracias!"
       ];
@@ -339,7 +352,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </span>
               </li>
             </ol>
-            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
+            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
@@ -347,11 +360,24 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
 
               {formStep === 2 && (
               <fieldset className="form-grid">
-                <legend className="sr-only">Paso 2: tus datos de contacto</legend>
+                <legend className="sr-only">Paso 2: tus datos de contacto y ubicación</legend>
                 <div className={"field" + (fieldErrors.name ? " has-error" : "")}>
                   <label htmlFor="name">Nombre y apellido *</label>
                   <input id="name" name="name" required autoComplete="name" minLength={2} maxLength={100} value={form.name} onChange={(e) => { setForm({ ...form, name: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.name; return n; }); }} aria-invalid={!!fieldErrors.name} aria-describedby={fieldErrors.name ? "err-name" : undefined} />
                   {fieldErrors.name && <span className="field-error" id="err-name">{fieldErrors.name}</span>}
+                </div>
+                <div className={"field" + (fieldErrors.province ? " has-error" : "")}>
+                  <label htmlFor="province">Provincia *</label>
+                  <select id="province" name="province" required autoComplete="address-level1" value={form.province} onChange={(e) => { setForm({ ...form, province: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.province; return n; }); }} aria-invalid={!!fieldErrors.province} aria-describedby={fieldErrors.province ? "err-province" : undefined}>
+                    <option value="">Seleccioná tu provincia</option>
+                    {provinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                  </select>
+                  {fieldErrors.province && <span className="field-error" id="err-province">{fieldErrors.province}</span>}
+                </div>
+                <div className={"field" + (fieldErrors.city ? " has-error" : "")}>
+                  <label htmlFor="city">Localidad o departamento *</label>
+                  <input id="city" name="city" required autoComplete="address-level2" maxLength={100} value={form.city} onChange={(e) => { setForm({ ...form, city: e.target.value }); setFieldErrors((prev) => { const n = { ...prev }; delete n.city; return n; }); }} aria-invalid={!!fieldErrors.city} aria-describedby={fieldErrors.city ? "err-city" : undefined} />
+                  {fieldErrors.city && <span className="field-error" id="err-city">{fieldErrors.city}</span>}
                 </div>
                 <div className={"field" + (fieldErrors.phone ? " has-error" : "")}>
                   <label htmlFor="phone">WhatsApp *</label>
@@ -391,13 +417,11 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                 </>}
                 {form.product === "hogar" && <>
                   <div className="field"><label htmlFor="hogar-homeSqm">Metros aproximados (opcional)</label><input id="hogar-homeSqm" name="homeSqm" type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="hogar-location">Localidad (opcional)</label><input id="hogar-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="hogar-rooms">Ambientes (opcional)</label><input id="hogar-rooms" name="rooms" type="number" min="1" max="30" value={form.rooms} onChange={(e) => setForm({ ...form, rooms: e.target.value })} /></div>
                   <div className="field"><label htmlFor="hogar-occupancy">La vivienda es *</label><select id="hogar-occupancy" name="occupancy" required value={form.occupancy} onChange={(e) => setForm({ ...form, occupancy: e.target.value })} aria-required="true"><option value="">Seleccioná una opción</option><option value="propia">Propia</option><option value="alquiler">Alquiler</option></select></div>
                 </>}
                 {form.product === "consorcio" && <>
                   <div className="field"><label htmlFor="consorcio-homeSqm">Metros aproximados *</label><input id="consorcio-homeSqm" name="homeSqm" required type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
-                  <div className="field"><label htmlFor="consorcio-location">Localidad (opcional)</label><input id="consorcio-location" name="location" maxLength={160} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-constructionMaterial">Material de construcción *</label><input id="consorcio-constructionMaterial" name="constructionMaterial" required maxLength={100} value={form.constructionMaterial} onChange={(e) => setForm({ ...form, constructionMaterial: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="consorcio-activity">Actividad *</label><input id="consorcio-activity" name="activity" required maxLength={120} value={form.activity} onChange={(e) => setForm({ ...form, activity: e.target.value })} aria-required="true" /></div>
                 </>}
@@ -424,7 +448,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
                   <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
                 )}
               </div>
-              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso solo te pedimos WhatsApp." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
+              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
             </form>
           </div>
         </div></section>

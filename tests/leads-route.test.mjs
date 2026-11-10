@@ -135,6 +135,12 @@ test("creates a lead using HubSpot properties without calling the live CRM", asy
   assert.equal(captured.properties.gclid, "gclid-test");
   assert.equal(captured.properties.fbclid, "fbclid-test");
   assert.equal(captured.properties.insurance_request_id, payload.requestId);
+  assert.match(captured.properties.insurance_request_details, /Producto: Auto/);
+  assert.match(captured.properties.insurance_request_details, /Provincia: Mendoza/);
+  assert.match(captured.properties.insurance_request_details, /Localidad: Mendoza/);
+  assert.match(captured.properties.insurance_request_details, /Marca: QA/);
+  assert.match(captured.properties.insurance_request_details, /Modelo: Test/);
+  assert.match(captured.properties.insurance_request_details, /Año: 2024/);
 });
 
 test("rejects invalid input before contacting HubSpot", async (t) => {
@@ -235,7 +241,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   assert.equal(fetchMock.mock.callCount(), validProducts.length * 2, "each lead must reconcile before contact creation");
   assert.deepEqual(
     capturedPayloads.map(({ properties }) => properties.insurance_product),
-    validProducts
+    validProducts.map((product) => product === "bicicleta" ? "bicicletas" : product)
   );
   for (const { properties } of capturedPayloads) {
     assert.equal(properties.city, "Godoy Cruz", "locality should be sent to HubSpot");
