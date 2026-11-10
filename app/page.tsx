@@ -41,7 +41,6 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const p = params.get("producto");
     if (p && ["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"].includes(p)) {
-      setSelectedProduct((p === "bicicletas" ? "bicicleta" : p) as FormProductId);
       setHasStartedQuote(true);
     }
   }, []);
