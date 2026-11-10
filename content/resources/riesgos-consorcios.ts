@@ -28,7 +28,7 @@ export const article: ResourceArticle = {
         heading: "Rol del administrador en la cotización",
         body: [
           "El administrador o un representante autorizado suele reunir los datos del edificio y canalizar las propuestas al consorcio. La decisión de contratación corresponde a los órganos que fije el reglamento y la normativa aplicable.",
-          "Contar con un productor que conozca el mercado local agiliza la comparación entre compañías con experiencia en edificios."
+          "Un productor puede ayudarte a ordenar los datos del edificio y revisar las diferencias entre las propuestas disponibles."
         ]
       }
     ],
