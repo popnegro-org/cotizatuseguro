@@ -223,3 +223,59 @@ test("la navegación compartida no desborda en móvil", async ({ page }) => {
     expect(dimensions.header).toBeLessThanOrEqual(dimensions.viewport);
   }
 });
+
+
+test("el formulario principal está integrado en la columna derecha del hero", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  const hero = page.locator(".hero");
+  const form = page.locator("#cotizar");
+  await expect(form).toHaveClass(/quote-hero/);
+  await expect(hero.locator("#cotizar")).toBeVisible();
+  await expect(page.locator("main > #cotizar")).toHaveCount(0);
+  await expect(page.locator(".quote-layout")).toHaveCount(0);
+  const columns = await page.locator(".hero-grid").evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
+  expect(columns).toBe(2);
+  await expect(page.getByLabel("Tipo de seguro *")).toBeVisible();
+});
+
+test("el consentimiento flota abajo a la izquierda en desktop y en el bottom en mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const banner = page.getByLabel("Preferencias de privacidad");
+  await expect(banner).toBeVisible();
+  let placement = await banner.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { position: getComputedStyle(element).position, left: rect.left, bottom: window.innerHeight - rect.bottom };
+  });
+  expect(placement.position).toBe("fixed");
+  expect(placement.left).toBeLessThan(32);
+  expect(placement.bottom).toBeGreaterThanOrEqual(20);
+  expect(placement.bottom).toBeLessThanOrEqual(28);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  placement = await banner.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { position: getComputedStyle(element).position, left: rect.left, right: window.innerWidth - rect.right, bottom: window.innerHeight - rect.bottom };
+  });
+  expect(placement.position).toBe("fixed");
+  expect(placement.left).toBeGreaterThanOrEqual(8);
+  expect(placement.right).toBeGreaterThanOrEqual(8);
+  expect(placement.bottom).toBeGreaterThanOrEqual(8);
+  expect(placement.bottom).toBeLessThanOrEqual(40);
+});
+
+test("FAQ en una columna centrada y solo un collapse abierto", async ({ page }) => {
+  await page.goto("/");
+  const list = page.locator(".faq-list");
+  const items = list.locator(":scope > details");
+  await expect(items).toHaveCount(8);
+  const tracks = await list.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
+  expect(tracks).toBe(1);
+  await expect(items.nth(0)).toHaveAttribute("open", "");
+  await items.nth(1).locator("summary").click();
+  await expect(items.nth(1)).toHaveAttribute("open", "");
+  await expect(items.nth(0)).not.toHaveAttribute("open", "");
+  await expect(page.getByText("La información de este sitio es orientativa.", { exact: false })).toHaveCount(0);
+});
