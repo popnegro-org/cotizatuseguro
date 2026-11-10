@@ -731,3 +731,23 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Avoid desktop navigation compression at the narrow tablet breakpoint. */
+@media (min-width: 901px) and (max-width: 940px) {
+  .main-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  .mobile-nav-panel {
+    display: block !important;
+  }
+}
