@@ -50,10 +50,7 @@ export default function RecursosPage() {
           <p className="seo-kicker">Guías orientativas</p>
           <h1>Recursos sobre seguros</h1>
           <p className="seo-lead">
-            Información práctica para comprender conceptos, preparar los datos de
-            una cotización y conocer qué aspectos revisar en cada propuesta. El
-            contenido no reemplaza las condiciones de cada póliza ni el asesoramiento
-            aplicado a una situación particular.
+            Guías sobre coberturas, datos necesarios para cotizar y condiciones que conviene revisar antes de contratar. El alcance real siempre surge de la propuesta y de la póliza.
           </p>
           <div className="seo-actions">
             <CtaQuote />
@@ -63,7 +60,7 @@ export default function RecursosPage() {
 
       <section className="section seo-section">
         <div className="container">
-          <h2>Guías disponibles</h2>
+          <h2>Consultá por tema</h2>
           <ul className="seo-resource-list">
             {resources.map((item) => (
               <li key={item.slug}>
@@ -73,7 +70,7 @@ export default function RecursosPage() {
                   </h3>
                   <p>{item.answer}</p>
                   <Link className="seo-resource-link" href={`/recursos/${item.slug}`}>
-                    Leer guía completa
+                    Ver guía
                   </Link>
                 </article>
               </li>
