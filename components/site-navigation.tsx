@@ -195,7 +195,7 @@ export function SiteFooter({
         <Link href="/privacidad">Política de privacidad</Link>
       </div>
       <div className="container footer-note">
-        La información de este sitio es orientativa. Las coberturas, exclusiones y condiciones definitivas dependen de cada póliza y compañía.
+
       </div>
     </footer>
   );
