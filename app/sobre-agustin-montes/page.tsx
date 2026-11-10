@@ -11,7 +11,7 @@ const path = "/sobre-agustin-montes";
 export const metadata: Metadata = {
   title: "Sobre Agustín Montes | Productor Asesor de Seguros en Mendoza",
   description:
-    "Agustín Montes, Agustín Montes es Productor Asesor de Seguros en Mendoza. Brinda asesoramiento para cotizar seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
+    "Agustín Montes es Productor Asesor de Seguros en Mendoza. Brinda asesoramiento para cotizar seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
   alternates: { canonical: path },
   openGraph: {
     title: "Sobre Agustín Montes | CotizaTuSeguro",
