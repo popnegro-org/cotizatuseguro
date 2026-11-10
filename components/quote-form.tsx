@@ -357,7 +357,6 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
                 </span>
               </li>
             </ol>
-            <p className="help">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud."}</p>
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
@@ -418,8 +417,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
                   <div className="field"><label htmlFor={`${form.product}-model`}>Modelo *</label><input id={`${form.product}-model`} name="model" required maxLength={80} value={form.model} onChange={(e) => setForm({ ...form, model: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor={`${form.product}-year`}>Año *</label><input id={`${form.product}-year`} name="year" required type="number" min="1900" max={new Date().getFullYear()+1} value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor={form.product + "-version"}>Versión o tipo (opcional)</label><input id={form.product + "-version"} name="version" maxLength={100} value={form.version} onChange={(e) => setForm({ ...form, version: e.target.value })} /></div>
-                  <div className="field"><label htmlFor={form.product + "-usage"}>Uso (opcional)</label><select id={form.product + "-usage"} name="usage" value={form.usage} onChange={(e) => setForm({ ...form, usage: e.target.value })}><option value="">Seleccioná una opción</option><option value="particular">Particular</option><option value="comercial">Comercial</option></select></div>
                 </>}
+                {form.product === "moto" && <div className="field"><label htmlFor="moto-usage">Uso (opcional)</label><select id="moto-usage" name="usage" value={form.usage} onChange={(e) => setForm({ ...form, usage: e.target.value })}><option value="">Seleccioná una opción</option><option value="particular">Particular</option><option value="comercial">Comercial</option></select></div>}
                 {form.product === "hogar" && <>
                   <div className="field"><label htmlFor="hogar-homeSqm">Metros aproximados (opcional)</label><input id="hogar-homeSqm" name="homeSqm" type="number" min="1" step="1" value={form.homeSqm} onChange={(e) => setForm({ ...form, homeSqm: e.target.value })} aria-required="true" /></div>
                   <div className="field"><label htmlFor="hogar-rooms">Ambientes (opcional)</label><input id="hogar-rooms" name="rooms" type="number" min="1" max="30" value={form.rooms} onChange={(e) => setForm({ ...form, rooms: e.target.value })} /></div>
@@ -453,7 +452,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
                   <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
                 )}
               </div>
-              <p className="privacy-note">{formStep === 1 ? "Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad." : "Te abro WhatsApp con el resumen de tu solicitud. El mensaje queda listo para que lo envíes."}</p>
+              {formStep === 2 && <p className="privacy-note">El mensaje queda listo para que lo envíes.</p>}
             </form>
           </div>
         </div></section>
