@@ -28,7 +28,7 @@ export const article: ResourceArticle = {
         heading: "Tiempos y resultado de la evaluación",
         body: [
           "La evaluación corre por cuenta del proveedor de la caución. El productor asesora en el armado de la solicitud y en la lectura de condiciones, pero no garantiza la aprobación.",
-          "En Mendoza el proceso se puede orientar de forma ágil cuando los datos del contrato están claros desde el primer contacto."
+          "En Mendoza, tener claros el monto, el plazo y los datos del inmueble permite iniciar la consulta con información concreta."
         ]
       }
     ],
