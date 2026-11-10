@@ -36,15 +36,15 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Consultá por responsabilidad civil, robo y daños.",
     category: "VEHÍCULOS",
     metaDescription:
-      "Cotizá seguro de auto en Mendoza con Agustín Montes. Compará responsabilidad civil, robo y daños con compañías líderes. Respuesta por WhatsApp.",
+      "Cotizá seguro de auto en Mendoza con Agustín Montes. Consultá alternativas de responsabilidad civil, robo y daños. Las condiciones dependen de cada propuesta.",
     h1: "Seguro de auto en Mendoza",
     intro:
       "Asesoramiento personalizado para cotizar la cobertura de tu auto o camioneta en Mendoza. Evaluamos uso, antigüedad y necesidades para proponerte opciones claras, sin compromiso de compra.",
     benefits: [
-      "Comparación de propuestas de compañías con presencia local",
+      "Revisión de alternativas disponibles según los datos del vehículo",
       "Orientación sobre responsabilidad civil, robo y daños parciales o totales",
       "Proceso simple: datos básicos y seguimiento por WhatsApp",
-      "Acompañamiento en la emisión y en siniestros"
+      "Orientación durante la gestión de la solicitud"
     ],
     faqs: [
       {
@@ -57,7 +57,7 @@ export const products: ProductSeo[] = [
       },
       {
         q: "¿La cotización tiene costo?",
-        a: "No. La solicitud y el asesoramiento inicial son sin cargo. Solo contratás si te conviene."
+        a: "El costo y las condiciones de la cobertura se informan en la propuesta antes de contratar."
       }
     ],
     icon: "🚘"
@@ -79,7 +79,7 @@ export const products: ProductSeo[] = [
     benefits: [
       "Opciones adaptadas a motos de baja, media y alta cilindrada",
       "Evaluación de responsabilidad civil y coberturas adicionales",
-      "Respuesta ágil por WhatsApp",
+      "Seguimiento de la consulta por WhatsApp",
       "Acompañamiento local en Mendoza"
     ],
     faqs: [
@@ -112,7 +112,7 @@ export const products: ProductSeo[] = [
       "Coberturas orientadas a incendio, robo y daños por agua",
       "Evaluación de responsabilidad civil del hogar",
       "Propuestas según vivienda permanente o de uso temporal",
-      "Asesoramiento sin costo de cotización"
+      "Asesoramiento para revisar alternativas de cobertura"
     ],
     faqs: [
       {
@@ -143,7 +143,7 @@ export const products: ProductSeo[] = [
     benefits: [
       "Evaluación de riesgos de áreas comunes e infraestructura",
       "Orientación para administradores de consorcio",
-      "Comparación de propuestas de compañías con experiencia en edificios",
+      "Revisión de alternativas disponibles para el edificio",
       "Seguimiento local y respuesta por WhatsApp"
     ],
     faqs: [
@@ -176,7 +176,7 @@ export const products: ProductSeo[] = [
       "Coberturas orientadas a bicicletas de uso urbano o deportivo",
       "Evaluación según valor asegurado y características",
       "Proceso simple de cotización",
-      "Asesoramiento personalizado en Mendoza"
+      "Asesoramiento para consultas desde Mendoza"
     ],
     faqs: [
       {
@@ -200,7 +200,7 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Consulta por caución de alquiler.",
     category: "GARANTÍAS",
     metaDescription:
-      "Cotizá caución de alquiler en Mendoza para vivienda o comercio. Alternativa a depósito o garantía propietaria. Asesoramiento ágil.",
+      "Cotizá caución de alquiler en Mendoza para vivienda o comercio. Consultá requisitos y condiciones de una garantía de caución para alquiler.",
     h1: "Caución de alquiler en Mendoza",
     intro:
       "Consultá por una garantía de caución para alquiler de vivienda o local comercial en Mendoza. Evaluamos requisitos y te orientamos en el proceso.",
@@ -208,7 +208,7 @@ export const products: ProductSeo[] = [
       "Alternativa a depósito en efectivo o garantía de un tercero",
       "Orientación sobre documentación habitual",
       "Evaluación para vivienda y comercio",
-      "Respuesta rápida por WhatsApp"
+      "Seguimiento de la consulta por WhatsApp"
     ],
     faqs: [
       {
