@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Seguros en Mendoza | CotizaTuSeguro",
     description:
-      "Asesoramiento local en Mendoza para cotizar seguros con compañías líderes. Respuesta por WhatsApp.",
+      "Cotización de seguros en Mendoza para seis tipos de cobertura. Consultas y seguimiento directo por WhatsApp.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "website"
@@ -63,9 +63,7 @@ export default function SegurosEnMendozaPage() {
           <p className="seo-kicker">Asesoramiento local</p>
           <h1>Seguros en Mendoza</h1>
           <p className="seo-lead">
-            Cotizá con un Productor Asesor de Seguros en Mendoza. Compará opciones
-            de auto, moto, hogar, consorcio, bicicleta y caución de alquiler con
-            información clara y seguimiento por WhatsApp.
+            Solicitá una cotización de seguro en Mendoza para auto, moto, hogar, consorcio, bicicleta o caución de alquiler. La propuesta se prepara según los datos del riesgo y las condiciones disponibles de cada aseguradora.
           </p>
           <div className="seo-actions">
             <CtaQuote />
@@ -75,7 +73,7 @@ export default function SegurosEnMendozaPage() {
 
       <section className="section seo-section">
         <div className="container">
-          <h2>Coberturas disponibles</h2>
+          <h2>Elegí qué necesitás asegurar</h2>
           <ul className="seo-product-grid seo-product-grid-large">
             {products.map((p) => (
               <li key={p.slug}>
@@ -94,16 +92,15 @@ export default function SegurosEnMendozaPage() {
 
       <section className="section seo-section">
         <div className="container seo-prose">
-          <h2>Por qué cotizar en Mendoza con nosotros</h2>
+          <h2>Cómo se gestiona tu cotización</h2>
           <ul className="seo-list">
-            <li>Enfoque local: conocemos el mercado y las compañías con presencia en la región.</li>
-            <li>Proceso simple: datos básicos y respuesta por WhatsApp.</li>
-            <li>Sin costo de cotización ni compromiso de contratación.</li>
-            <li>Acompañamiento en la emisión y orientación ante siniestros.</li>
+            <li>Indicás qué bien o riesgo querés asegurar.</li>
+            <li>Completás los datos necesarios para evaluar la solicitud.</li>
+            <li>El asesor revisa las alternativas disponibles y continúa el contacto por WhatsApp.</li>
+            <li>Antes de decidir, revisás precio, límites, franquicias, exclusiones y vigencia de la propuesta.</li>
           </ul>
           <p>
-            La información de estas páginas es orientativa. Las condiciones
-            definitivas dependen de cada póliza y de la evaluación de la compañía.
+            La solicitud no emite una póliza ni garantiza aceptación. La cobertura, el precio y las condiciones se confirman en la propuesta de la aseguradora.
           </p>
           <div className="seo-actions">
             <CtaQuote label="Solicitar cotización ahora" />
