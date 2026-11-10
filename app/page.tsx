@@ -135,7 +135,7 @@ export default function Home() {
         </aside>
       )}
 
-      <main id="contenido-principal">
+      <main id="contenido-principal" className={consent === "unknown" && showConsent ? "has-pending-consent" : undefined}>
         <section className="hero"><div className="container hero-grid">
           <div>
             <span className="eyebrow">PRODUCTOR ASESOR · MENDOZA</span>
