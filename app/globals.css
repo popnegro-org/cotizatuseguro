@@ -178,6 +178,9 @@ h2{color:#102a43}
 .footer-column a:hover{color:#1769aa}
 .footer-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 0;border-top:1px solid #dce6ee;font-size:.78rem}
 .footer-bottom a{color:#52677c}
+.footer-bottom-links{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom-links a:last-child{font-weight:700;text-decoration:none}
+.footer-bottom-links a:last-child:hover{text-decoration:underline}
 .floating-cta{position:fixed;z-index:18;right:22px;bottom:22px;display:inline-flex;align-items:center;gap:9px;padding:14px 19px;border-radius:999px;background:#20c66b;color:#fff;text-decoration:none;font-size:.9rem;font-weight:800;box-shadow:0 8px 26px #0b5e322e;transition:transform .15s,background .15s}
 .floating-cta:hover{background:#17ad59;transform:translateY(-2px)}
 .consent-banner{border-color:#dce6ee;border-radius:14px;box-shadow:0 10px 32px #102a4322;padding:14px 16px;gap:14px;max-width:640px}
@@ -414,3 +417,151 @@ h2{color:#102a43}
   .form-actions .button-wide { width: 100%; min-width: 0; }
   .form-actions .button-wide { margin-top: 0; }
 }
+
+
+/* Hero conversion layout: keep the existing quote flow visible in the first viewport. */
+.hero-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: start;
+}
+.quote-hero,
+.quote-hero-inner {
+  width: 100%;
+  min-width: 0;
+}
+.quote-hero {
+  scroll-margin-top: 104px;
+}
+.quote-card-embedded {
+  width: 100%;
+  padding: clamp(20px, 2.4vw, 30px);
+  border-radius: 24px;
+}
+.quote-card-embedded > .eyebrow {
+  margin-bottom: 4px;
+}
+.quote-card-embedded .form-stepper {
+  margin-bottom: 14px;
+}
+.quote-card-embedded .form-grid {
+  gap: 12px;
+}
+
+/* Floating privacy controls: desktop bottom-left, mobile bottom with safe-area support. */
+.consent-banner {
+  position: fixed;
+  z-index: 40;
+  left: 24px;
+  right: auto;
+  bottom: 24px;
+  width: min(640px, calc(100vw - 48px));
+  max-width: 640px;
+  margin: 0;
+  flex-direction: row;
+  align-items: center;
+  box-shadow: 0 16px 44px #102a4330;
+}
+.consent-banner p {
+  max-width: 360px;
+}
+.consent-actions {
+  flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+  .quote-hero {
+    max-width: 680px;
+  }
+}
+@media (max-width: 560px) {
+  .quote-card-embedded {
+    padding: 18px;
+    border-radius: 20px;
+  }
+  .consent-banner {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    width: auto;
+    max-width: none;
+    padding: 14px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .consent-banner p {
+    max-width: none;
+  }
+  .consent-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+  }
+  .consent-actions button {
+    flex: 1;
+    min-height: 42px;
+  }
+}
+
+/* FAQ: one centered column and exclusive, predictable disclosure behavior. */
+#faq .section-intro {
+  margin-inline: auto;
+  text-align: center;
+}
+.faq-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 860px);
+  margin-inline: auto;
+  gap: 12px;
+}
+.faq {
+  overflow: hidden;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.faq[open] {
+  border-color: #a9bfd0;
+  box-shadow: 0 8px 24px #102a430d;
+}
+.faq summary {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  transition: color .18s ease;
+}
+.faq summary:focus-visible {
+  outline: 3px solid #8db9de;
+  outline-offset: -4px;
+  border-radius: 12px;
+}
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .22s ease;
+}
+.faq[open] .faq-answer {
+  grid-template-rows: 1fr;
+}
+.faq-answer > p {
+  min-height: 0;
+  overflow: hidden;
+}
+.faq:not([open]) .faq-answer > p {
+  padding-bottom: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq,
+  .faq-answer,
+  .faq summary {
+    transition: none;
+  }
+}
+
+
+/* Preserve viewport-sticky form actions inside the hero without creating a scroll container. */
+.hero { overflow: clip; }

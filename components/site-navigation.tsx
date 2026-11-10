@@ -176,7 +176,6 @@ export function SiteFooter({
           <Link href="/seguros-en-mendoza">Seguros en Mendoza</Link>
           <Link href="/sobre-agustin-montes">Sobre Agustín</Link>
           <Link href="/#aseguradoras">Aseguradoras</Link>
-          <Link href="/#como-funciona">Cómo funciona</Link>
         </nav>
 
         <nav className="footer-column" aria-label="Información y contacto">
@@ -192,11 +191,11 @@ export function SiteFooter({
 
       <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} Agustín Montes · Mendoza, Argentina</span>
-        <Link href="/privacidad">Política de privacidad</Link>
+        <div className="footer-bottom-links">
+          <Link href="/privacidad">Política de privacidad</Link>
+          <a href="https://wa.me/5492616706710" target="_blank" rel="noopener noreferrer">Powered by SmartWeb</a>
+        </div>
       </div>
-      <div className="container footer-note">
-        La información de este sitio es orientativa. Las coberturas, exclusiones y condiciones definitivas dependen de cada póliza y compañía.
-      </div>
-    </footer>
+          </footer>
   );
 }
