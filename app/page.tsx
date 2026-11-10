@@ -27,7 +27,6 @@ const companies = [
 
 export default function Home() {
   const quoteRef = useRef<QuoteFormHandle>(null);
-  const [selectedProduct, setSelectedProduct] = useState<FormProductId>("auto");
   const [hasStartedQuote, setHasStartedQuote] = useState(false);
   const [consent, setConsent] = useState<"unknown" | "accepted" | "rejected">("unknown");
   const [showConsent, setShowConsent] = useState(false);
@@ -113,7 +112,6 @@ export default function Home() {
 
   function chooseProduct(product: FormProductId) {
     setHasStartedQuote(true);
-    setSelectedProduct(product);
     quoteRef.current?.selectProduct(product);
   }
 
@@ -146,12 +144,8 @@ export default function Home() {
             <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => { setHasStartedQuote(true); track("cta_click", { cta_location: "hero" }); }}>Empezar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Ver coberturas</a></div>
             <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática</li></ul>
           </div>
-          <div className="hero-card"><div className="hero-card-top"><strong>Elegí un producto</strong><p>Seleccioná y saltás al formulario de cotización.</p></div>
-            <div className="product-grid">{landingProducts.map((p) => <button className={`product-link${selectedProduct === p.id ? " is-selected" : ""}`} key={p.id} onClick={() => chooseProduct(p.id)} type="button" aria-pressed={selectedProduct === p.id}><span className="product-icon" aria-hidden="true">{p.icon}</span><strong>{p.title}</strong><span>{p.shortDesc}</span></button>)}</div>
-          </div>
+          <QuoteForm ref={quoteRef} embedded />
         </div></section>
-
-        <QuoteForm ref={quoteRef} />
 
         <section className="section assurance-section" id="aseguradoras"><div className="container">
           <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Compañías con las que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
@@ -181,14 +175,30 @@ export default function Home() {
         </div></div></section>
 
         <section className="section section-soft" id="faq"><div className="container"><div className="section-intro"><span className="eyebrow">Dudas habituales</span><h2>Preguntas frecuentes</h2><p>Respuestas claras sobre el proceso de cotización y asesoramiento.</p></div><div className="faq-list">
-          <details className="faq" open><summary>¿Cómo solicito una cotización?</summary><p>Primero completás los datos del bien y después tus datos de contacto, provincia y localidad. La solicitud queda registrada para continuar por WhatsApp.</p></details>
-          <details className="faq"><summary>¿La cotización es automática o personalizada?</summary><p>El formulario inicia el proceso; no emite una póliza ni confirma una tarifa automática. La propuesta depende del producto y de la evaluación correspondiente.</p></details>
-          <details className="faq"><summary>¿Por qué el contacto continúa por WhatsApp?</summary><p>WhatsApp permite continuar la conversación directamente con el asesor. La apertura de la aplicación no confirma que el mensaje se haya enviado.</p></details>
-          <details className="faq"><summary>¿Qué información necesito para cotizar?</summary><p>El formulario solicita datos de contacto y detalles que varían según el producto, como datos del vehículo, características del inmueble o información del alquiler. El asesor puede solicitar información adicional si es necesaria para evaluar el riesgo.</p></details>
-          <details className="faq"><summary>¿De qué depende el precio de un seguro?</summary><p>Depende del producto, las características del bien o riesgo, la suma asegurada, las coberturas solicitadas, los criterios de evaluación y las condiciones ofrecidas por cada aseguradora. El precio se confirma en la propuesta correspondiente.</p></details>
-          <details className="faq"><summary>¿La solicitud garantiza que me otorguen la cobertura?</summary><p>No. Enviar el formulario inicia una consulta y no equivale a contratar un seguro. La aceptación, el precio, los límites, las exclusiones y la vigencia dependen de la evaluación y de la documentación contractual aplicable.</p></details>
-          <details className="faq"><summary>¿Puedo consultar por más de un seguro?</summary><p>Sí. Podés generar una solicitud por cada producto para mantener cada consulta identificada.</p></details>
-          <details className="faq"><summary>¿Cómo se tratan mis datos personales?</summary><p>Consultá la <a href="/privacidad">política de privacidad</a> antes de enviar tus datos. La solicitud se procesa para gestionar la cotización.</p></details>
+          <details name="faq" className="faq" open><summary>¿Cómo solicito una cotización?</summary>
+            <div className="faq-answer"><p>Primero completás los datos del bien y después tus datos de contacto, provincia y localidad. La solicitud queda registrada para continuar por WhatsApp.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿La cotización es automática o personalizada?</summary>
+            <div className="faq-answer"><p>El formulario inicia el proceso; no emite una póliza ni confirma una tarifa automática. La propuesta depende del producto y de la evaluación correspondiente.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿Por qué el contacto continúa por WhatsApp?</summary>
+            <div className="faq-answer"><p>WhatsApp permite continuar la conversación directamente con el asesor. La apertura de la aplicación no confirma que el mensaje se haya enviado.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿Qué información necesito para cotizar?</summary>
+            <div className="faq-answer"><p>El formulario solicita datos de contacto y detalles que varían según el producto, como datos del vehículo, características del inmueble o información del alquiler. El asesor puede solicitar información adicional si es necesaria para evaluar el riesgo.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿De qué depende el precio de un seguro?</summary>
+            <div className="faq-answer"><p>Depende del producto, las características del bien o riesgo, la suma asegurada, las coberturas solicitadas, los criterios de evaluación y las condiciones ofrecidas por cada aseguradora. El precio se confirma en la propuesta correspondiente.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿La solicitud garantiza que me otorguen la cobertura?</summary>
+            <div className="faq-answer"><p>No. Enviar el formulario inicia una consulta y no equivale a contratar un seguro. La aceptación, el precio, los límites, las exclusiones y la vigencia dependen de la evaluación y de la documentación contractual aplicable.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿Puedo consultar por más de un seguro?</summary>
+            <div className="faq-answer"><p>Sí. Podés generar una solicitud por cada producto para mantener cada consulta identificada.</p></div>
+          </details>
+          <details name="faq" className="faq"><summary>¿Cómo se tratan mis datos personales?</summary>
+            <div className="faq-answer"><p>Consultá la <a href="/privacidad">política de privacidad</a> antes de enviar tus datos. La solicitud se procesa para gestionar la cotización.</p></div>
+          </details>
         </div></div></section>
       </main>
 
