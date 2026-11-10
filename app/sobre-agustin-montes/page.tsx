@@ -11,12 +11,12 @@ const path = "/sobre-agustin-montes";
 export const metadata: Metadata = {
   title: "Sobre Agustín Montes | Productor Asesor de Seguros en Mendoza",
   description:
-    "Agustín Montes, Productor Asesor de Seguros en Mendoza. Asesoramiento personalizado para auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
+    "Agustín Montes, Agustín Montes es Productor Asesor de Seguros en Mendoza. Brinda asesoramiento para cotizar seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
   alternates: { canonical: path },
   openGraph: {
     title: "Sobre Agustín Montes | CotizaTuSeguro",
     description:
-      "Productor Asesor de Seguros en Mendoza. Cotizaciones claras y seguimiento por WhatsApp.",
+      "Información sobre el asesor y los tipos de seguros que podés consultar en Mendoza.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "profile"
@@ -75,9 +75,7 @@ export default function SobreAgustinPage() {
           <p className="seo-kicker">Productor Asesor de Seguros</p>
           <h1>Agustín Montes</h1>
           <p className="seo-lead">
-            Productor Asesor de Seguros en Mendoza. Acompaño a personas y empresas a
-            cotizar coberturas con información clara, sin presión comercial y con
-            seguimiento cercano por WhatsApp.
+            Soy Agustín Montes, Productor Asesor de Seguros en Mendoza. Recibo consultas para cotizar seguros y explico las condiciones de cada propuesta antes de que tomes una decisión.
           </p>
           <div className="seo-actions">
             <CtaQuote />
@@ -92,21 +90,17 @@ export default function SobreAgustinPage() {
         <div className="container seo-prose">
           <h2>Cómo trabajo</h2>
           <p>
-            El objetivo es que entiendas qué estás contratando. Cotizo con compañías
-            reconocidas, explico diferencias de cobertura y te ayudo a elegir según
-            tu uso real del riesgo, no según el producto más caro.
+            El trabajo consiste en relevar los datos del riesgo, solicitar alternativas disponibles y explicar las diferencias entre coberturas, límites, franquicias y exclusiones. La aceptación y las condiciones finales dependen de cada aseguradora.
           </p>
           <ul className="seo-list">
-            <li>Respuesta ágil y seguimiento por WhatsApp</li>
-            <li>Comparación de propuestas de varias aseguradoras</li>
-            <li>Orientación en emisión y en caso de siniestro</li>
-            <li>Enfoque local en Mendoza y alrededores</li>
+            <li>Recepción de consultas y datos para cotizar.</li>
+            <li>Revisión de alternativas disponibles según el riesgo.</li>
+            <li>Explicación de las condiciones incluidas en cada propuesta.</li>
+            <li>Seguimiento de la solicitud por WhatsApp.</li>
           </ul>
           <h2>Coberturas que asesoro</h2>
           <p>
-            Auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Cada
-            producto tiene su propia página con información orientativa y un acceso
-            directo al formulario de cotización.
+            Las consultas disponibles son auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Cada página explica qué información se solicita y permite iniciar una cotización.
           </p>
           <div className="seo-actions">
             <CtaQuote label="Solicitar cotización" />
