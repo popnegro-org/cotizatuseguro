@@ -246,7 +246,7 @@ test("el consentimiento flota abajo a la izquierda en desktop y en el bottom en 
   await expect(banner).toBeVisible();
   let placement = await banner.evaluate((element) => {
     const rect = element.getBoundingClientRect();
-    return { position: getComputedStyle(element).position, left: rect.left, bottom: window.innerHeight - rect.bottom };
+    return { position: getComputedStyle(element).position, left: rect.left, right: window.innerWidth - rect.right, bottom: window.innerHeight - rect.bottom };
   });
   expect(placement.position).toBe("fixed");
   expect(placement.left).toBeLessThan(32);
