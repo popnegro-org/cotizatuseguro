@@ -357,6 +357,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
                 </span>
               </li>
             </ol>
+            {formStep === 2 && <p className="help">Te abro WhatsApp con el resumen de tu solicitud.</p>}
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
@@ -452,7 +453,6 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
                   <button className="button button-wide" type="submit" disabled={busy}>{busy ? "Enviando solicitud…" : "Enviar y continuar por WhatsApp"} <span aria-hidden="true">→</span></button>
                 )}
               </div>
-              {formStep === 2 && <p className="privacy-note">El mensaje queda listo para que lo envíes.</p>}
             </form>
           </div>
         </div></section>
