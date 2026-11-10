@@ -35,6 +35,22 @@ test("landing presenta el flujo de dos pasos en orden riesgo y contacto", async 
   await expect(page.locator("#province")).toHaveCount(0);
   await expect(page.locator("#city")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Continuar" })).toBeVisible();
+  await expect(page.locator("#como-funciona")).toHaveCount(0);
+  await expect(page.getByText("Completá los datos del bien. En el siguiente paso completás tus datos de contacto, provincia y localidad.", { exact: true })).toHaveCount(0);
+});
+
+test("el formulario simplifica Auto, conserva Uso para Moto y muestra SmartWeb en el footer", async ({ page }) => {
+  await page.goto("/");
+  await page.getByLabel("Tipo de seguro *").selectOption("auto");
+  await expect(page.getByLabel("Uso (opcional)")).toHaveCount(0);
+  await page.getByLabel("Tipo de seguro *").selectOption("moto");
+  await expect(page.getByLabel("Uso (opcional)")).toBeVisible();
+
+  const smartWeb = page.locator(".footer-bottom-links a", { hasText: "Powered by SmartWeb" });
+  await expect(smartWeb).toHaveAttribute("href", "https://wa.me/5492616706710");
+  await expect(smartWeb).toHaveAttribute("target", "_blank");
+  await expect(smartWeb).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(page.locator(".footer-bottom-links").getByRole("link", { name: "Política de privacidad" })).toBeVisible();
 });
 
 test("rechazar consentimiento mantiene bloqueadas las etiquetas de medición", async ({ page }) => {
