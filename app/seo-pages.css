@@ -83,3 +83,46 @@
 .seo-sources li { margin: 0 0 8px; }
 .seo-sources a { color: var(--blue); text-underline-offset: 3px; }
 .seo-sources a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+
+/* Site-wide page system: consistent hierarchy, readable content and low-friction navigation. */
+.seo-shell { min-height: 100vh; background: var(--white); color: var(--ink); }
+.seo-shell .site-header { border-bottom-color: var(--line); }
+.seo-shell .seo-hero {
+  padding: clamp(36px, 6vw, 72px) 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.seo-shell .seo-hero-inner { width: min(1160px, calc(100% - 48px)); max-width: 1160px; }
+.seo-shell .seo-kicker { color: var(--green-dark); letter-spacing: .06em; }
+.seo-shell .seo-hero h1 { max-width: 18ch; font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.08; letter-spacing: -.045em; }
+.seo-shell .seo-lead { max-width: 66ch; color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.16rem); line-height: 1.65; }
+.seo-shell .section { padding-block: clamp(36px, 5vw, 64px); }
+.seo-shell .seo-section h2 { font-size: clamp(1.35rem, 2.2vw, 1.8rem); line-height: 1.2; letter-spacing: -.03em; }
+.seo-shell .seo-grid { grid-template-columns: minmax(0, 1.5fr) minmax(250px, .8fr); gap: clamp(24px, 4vw, 48px); }
+.seo-shell .seo-prose { max-width: 74ch; font-size: 1rem; line-height: 1.75; }
+.seo-shell .seo-prose h2 { margin-top: 2rem; }
+.seo-shell .seo-aside { background: var(--paper); border-color: var(--line); border-radius: 12px; }
+.seo-shell .seo-resource-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.seo-shell .seo-resource-card { height: 100%; padding: 20px; border-color: var(--line); border-radius: 12px; box-shadow: none; }
+.seo-shell .seo-resource-card h3 { line-height: 1.35; }
+.seo-shell .seo-resource-card h3 a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.seo-shell .seo-product-grid a { border-radius: 12px; box-shadow: none; }
+.seo-shell .seo-faq-item { border-radius: 10px; }
+.seo-shell .seo-actions { gap: 10px; }
+.seo-shell .seo-actions .button, .seo-shell .seo-actions .button-secondary { min-height: 48px; }
+.seo-shell .seo-note { line-height: 1.6; }
+.seo-shell .seo-breadcrumb { margin-bottom: 18px; }
+.seo-shell .seo-breadcrumb a { color: var(--green-dark); }
+.seo-shell .site-footer { margin-top: 0; }
+@media (max-width: 900px) {
+  .seo-shell .seo-grid { grid-template-columns: minmax(0, 1fr); }
+  .seo-shell .seo-resource-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .seo-shell .seo-hero-inner { width: min(100% - 32px, 1160px); }
+  .seo-shell .seo-hero h1 { max-width: 16ch; }
+  .seo-shell .seo-actions { align-items: stretch; }
+  .seo-shell .seo-actions > * { width: 100%; }
+  .seo-shell .seo-resource-card { padding: 16px; }
+}
