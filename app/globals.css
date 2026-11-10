@@ -559,12 +559,6 @@ h2{color:#102a43}
   }
 }
 
-@media (max-width: 560px) {
-  /* Keep the sticky form action above the floating consent panel until a choice is made. */
-  .has-pending-consent .quote-card-embedded .form-actions {
-    bottom: 148px;
-  }
-}
 
 /* Preserve viewport-sticky form actions inside the hero without creating a scroll container. */
 .hero { overflow: clip; }
