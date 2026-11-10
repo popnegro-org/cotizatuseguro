@@ -126,3 +126,9 @@
   .seo-shell .seo-actions > * { width: 100%; }
   .seo-shell .seo-resource-card { padding: 16px; }
 }
+
+
+/* Content pages prioritize navigation and readable information over decoration. */
+.seo-product-icon { display: none !important; }
+.seo-hero { background: var(--paper); }
+.seo-shell .seo-resource-card:hover { box-shadow: none; transform: none; }
