@@ -166,6 +166,8 @@ test("hogar acepta metros o ambientes y solicita provincia y localidad en el pas
 test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await waitForConsentBanner(page);
+  await page.getByRole("button", { name: "Rechazar" }).click();
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   const progress = page.getByRole("list", { name: "Progreso del formulario" });
   await expect(progress.locator('[aria-current="step"]')).toHaveText("1. Tu seguro");
