@@ -59,7 +59,9 @@ export type QuoteFormHandle = {
   selectProduct: (product: Product) => void;
 };
 
-export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, ref) {
+type QuoteFormProps = { embedded?: boolean };
+
+export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function QuoteForm({ embedded = false }, ref) {
   const [form, setForm] = useState<FormState>(initialForm);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -316,7 +318,8 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
   }
 
   return (
-        <section className="section section-soft" id="cotizar"><div className="container quote-layout">
+        <section className={embedded ? "quote-hero" : "section section-soft"} id="cotizar"><div className={embedded ? "quote-hero-inner" : "container quote-layout"}>
+{!embedded && (
           <aside className="quote-aside">
             <span className="eyebrow">Solicitud de cotización</span>
             <h2>Empecemos por lo importante.</h2>
@@ -332,7 +335,9 @@ export const QuoteForm = forwardRef<QuoteFormHandle>(function QuoteForm(_props, 
               <p className="quote-trust-note">La cotización es personalizada: no hay precio automático en el sitio.</p>
             </div>
           </aside>
-          <div className="quote-card">
+          )}
+
+          <div className={embedded ? "quote-card quote-card-embedded" : "quote-card"}>
             <span className="eyebrow">Formulario de cotización</span>
             <h2 id="quote-form-title" tabIndex={-1}>{formStep === 1 ? "¿Qué necesitás asegurar?" : "¿Cómo te contactamos?"}</h2>
             <ol className="form-stepper" aria-label="Progreso del formulario">
