@@ -135,18 +135,23 @@ export default function Home() {
       )}
 
       <main id="contenido-principal">
-        <section className="hero"><div className="container hero-grid">
-          <div>
-            <span className="eyebrow">PRODUCTOR ASESOR · MENDOZA</span>
-            <h1>Cotizá tu seguro con un asesor real</h1>
-            <p className="lead">Te respondo personalmente por WhatsApp. Sin tarifa automática en la web.</p>
-            <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => { setHasStartedQuote(true); track("cta_click", { cta_location: "hero" }); }}>Empezar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Ver coberturas</a></div>
-            <ul className="trustline trust-list"><li>Asesor PAS</li><li>Cotización por WhatsApp</li><li>Sin tarifa automática</li></ul>
+        <section className="hero hero-redesign"><div className="container hero-grid hero-grid-redesign">
+          <div className="hero-copy">
+            <span className="eyebrow">ASESORAMIENTO EN SEGUROS · MENDOZA</span>
+            <h1>La cobertura adecuada empieza con <span>una buena conversación.</span></h1>
+            <p className="lead">Contame qué necesitás proteger. Analizo tu solicitud y te contacto personalmente para acercarte alternativas de cobertura.</p>
+            <div className="hero-actions"><a className="button" href="#cotizar" onClick={() => { setHasStartedQuote(true); track("cta_click", { cta_location: "hero" }); }}>Solicitar cotización <span aria-hidden="true">→</span></a><a className="secondary" href="#seguros">Explorar seguros</a></div>
+            <div className="hero-proof" aria-label="Cómo te acompaño">
+              <div><strong>01</strong><span>Contás qué necesitás</span></div>
+              <div><strong>02</strong><span>Reviso alternativas</span></div>
+              <div><strong>03</strong><span>Seguimos por WhatsApp</span></div>
+            </div>
+            <p className="hero-disclaimer">La solicitud no implica contratación ni garantiza la aceptación del riesgo.</p>
           </div>
-          <QuoteForm ref={quoteRef} embedded />
+          <div className="hero-form-shell"><div className="hero-form-heading"><span className="form-kicker">EMPEZÁ POR ACÁ</span><strong>Pedí tu cotización</strong><span>Completá los datos iniciales. Te acompaño en el proceso.</span></div><QuoteForm ref={quoteRef} embedded /></div>
         </div></section>
 
-        <section className="section assurance-section" id="aseguradoras"><div className="container">
+        <section className="section assurance-section assurance-section-redesign" id="aseguradoras"><div className="container">
           <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Compañías con las que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
           <ul className="company-strip" aria-label="Compañías aseguradoras">
             {companies.map((name) => (<li className="company-chip" key={name}>{name}</li>))}
@@ -159,11 +164,11 @@ export default function Home() {
           </div>
         </div></section>
 
-        <section className="section" id="seguros"><div className="container">
-          <div className="section-intro"><span className="eyebrow">Coberturas disponibles</span><h2>Qué podemos cotizar</h2><p>Elegí el producto y el formulario se precarga con los datos del riesgo que necesitamos para cotizar.</p></div>
-          <div className="coverage-grid">{landingProducts.map((p) => <article className="coverage-card" key={p.id}>
-            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{p.category}</span></div>
-            <h3>{p.title}</h3><p>{p.desc}</p><button className="coverage-action" type="button" onClick={() => chooseProduct(p.id)}>Cotizar {p.title.toLowerCase()} <span aria-hidden="true">→</span></button>
+        <section className="section coverage-section-redesign" id="seguros"><div className="container">
+          <div className="section-heading-redesign"><div><span className="eyebrow">PROTECCIÓN PARA CADA ETAPA</span><h2>¿Qué querés proteger hoy?</h2></div><p>Elegí el tipo de seguro. Vamos a pedirte solo la información necesaria para iniciar la consulta.</p></div>
+          <div className="coverage-grid coverage-grid-redesign">{landingProducts.map((p, index) => <article className="coverage-card coverage-card-redesign" key={p.id}>
+            <div className="coverage-card-top"><span className="product-icon" aria-hidden="true">{p.icon}</span><span className="coverage-category">{p.category}</span><span className="coverage-index">{String(index + 1).padStart(2,"0")}</span></div>
+            <h3>{p.title}</h3><p>{p.desc}</p><button className="coverage-action" type="button" onClick={() => chooseProduct(p.id)}>Cotizar esta cobertura <span aria-hidden="true">↗</span></button>
           </article>)}</div>
         </div></section>
 
