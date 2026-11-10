@@ -358,6 +358,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
               </li>
             </ol>
             {formStep === 2 && <p className="help">Te abro WhatsApp con el resumen de tu solicitud.</p>}
+            {formStep === 2 && <p className="privacy-note">Dejás tu nombre, WhatsApp, provincia y localidad para que podamos responderte.</p>}
             {error && <div className="form-error" role="alert">{error}</div>}
             {success && <div className="form-success" role="status">{success}</div>}
             <form onSubmit={submit} noValidate>
