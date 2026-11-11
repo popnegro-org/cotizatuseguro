@@ -154,7 +154,7 @@ export default function Home() {
 
         <section className="section assurance-section assurance-section-redesign" id="aseguradoras"><div className="container">
           <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Aseguradoras y operadores con los que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
-          <ul className="company-strip" aria-label="Compañías aseguradoras">
+          <ul className="company-strip" aria-label="Aseguradoras y operadores con los que trabajo">
             {companies.map((name) => (<li className="company-chip" key={name}>{name}</li>))}
           </ul>
           <div className="assurance-grid">
