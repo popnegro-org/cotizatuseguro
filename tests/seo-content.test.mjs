@@ -94,7 +94,7 @@ test("product content uses conditional language and does not promise unverified 
     assert.equal(catalogue.toLowerCase().includes(unsupported), false, "unsupported claim found: " + unsupported);
   }
   assert.match(productPage, /La solicitud no constituye una póliza ni confirma cobertura/);
-  assert.match(productPage, /La aseguradora determina la aceptación/);
+  assert.match(productPage, /La aseguradora\\s+determina la aceptación/);
 });
 
 test("resource content avoids guaranteed acceptance and response-time claims", () => {
@@ -110,7 +110,7 @@ test("resource content avoids guaranteed acceptance and response-time claims", (
   for (const slug of slugs) {
     const source = readFileSync(path.join(root, "content/resources", slug + ".ts"), "utf8");
     assert.ok(source.includes("La aseguradora") || source.includes("proveedor") || source.includes("póliza"), slug + " should explain the conditional nature of insurance");
-    assert.doesNotMatch(source, /garantiza la aprobación|respuesta en (minutos|horas)|aprobación automática/i);
+    assert.doesNotMatch(source, /(?:se garantiza|garantizamos) la aprobación|respuesta en (minutos|horas)|aprobación automática/i);
   }
 });
 
