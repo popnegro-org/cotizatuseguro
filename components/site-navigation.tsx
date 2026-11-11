@@ -193,7 +193,6 @@ export function SiteFooter({
         <span>© {new Date().getFullYear()} Agustín Montes · Mendoza, Argentina</span>
         <div className="footer-bottom-links">
           <Link href="/privacidad">Política de privacidad</Link>
-          <a href="https://wa.me/5492616706710" target="_blank" rel="noopener noreferrer">Powered by SmartWeb</a>
         </div>
       </div>
           </footer>

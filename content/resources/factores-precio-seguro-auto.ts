@@ -13,21 +13,21 @@ export const article: ResourceArticle = {
       {
         heading: "Características del vehículo",
         body: [
-          "Autos más nuevos o de mayor valor de reposición suelen tener primas más altas en coberturas sobre el propio bien. Modelos con mayor siniestralidad estadística o repuestos costosos también pueden encarecer la propuesta.",
-          "El año, la versión y si el vehículo tiene rastreador u otros elementos de seguridad son datos que algunas compañías consideran al cotizar."
+          "El valor declarado del vehículo y los costos asociados a su reparación o reposición pueden influir en la evaluación y en el precio. La ponderación de estas variables depende del modelo de cada aseguradora.",
+          "El año, la versión y los dispositivos de seguridad son datos que la aseguradora puede solicitar. Su efecto sobre el precio o la aceptación depende de sus criterios de suscripción."
         ]
       },
       {
         heading: "Coberturas y franquicias",
         body: [
-          "Una póliza centrada en responsabilidad civil no se compara de forma lineal con un producto que incluye robo y daños totales. Ampliar coberturas o bajar franquicias suele aumentar el costo; lo inverso puede bajarlo, a cambio de mayor exposición del asegurado.",
+          "Una póliza centrada en responsabilidad civil no se compara de forma lineal con un producto que incluye robo y daños totales. El alcance de las coberturas y el importe de la franquicia inciden en el precio de acuerdo con las condiciones de cada producto. Una franquicia implica que una parte del daño queda a cargo del asegurado, según lo pactado.",
           "Por eso es importante leer qué está incluido y qué queda fuera, no solo el valor de la cuota."
         ]
       },
       {
         heading: "Uso, zona y perfil",
         body: [
-          "El uso particular versus laboral, los kilómetros aproximados y la zona de guarda o circulación influyen en la tarifa según el modelo de cada aseguradora. En Mendoza, como en el resto del país, la suscripción combina reglas automáticas y revisión caso a caso.",
+          "El uso declarado, la zona de guarda o circulación y otros datos del riesgo pueden ser considerados por la aseguradora. No todas las compañías utilizan las mismas variables ni les asignan el mismo peso.",
           "La mejor forma de conocer el precio real es cotizar con datos concretos: sin eso, cualquier cifra genérica es solo una referencia débil."
         ]
       }
@@ -35,11 +35,11 @@ export const article: ResourceArticle = {
     faqs: [
       {
         q: "¿Por qué cambió el precio en la renovación?",
-        a: "Puede deberse a actualización de suma asegurada, siniestralidad, cambios de tarifa de la compañía o modificación de coberturas. Conviene pedir el detalle al renovar."
+        a: "El cambio puede relacionarse con modificaciones de tarifa, suma asegurada, coberturas, datos del riesgo u otros criterios de la aseguradora. Solicitá el detalle de los conceptos que cambiaron."
       },
       {
         q: "¿Conviene el plan más barato?",
-        a: "No siempre. Un precio bajo con límites estrechos o muchas exclusiones puede no resolver el riesgo que querés cubrir. Compará condiciones, no solo la cuota."
+        a: "El precio por sí solo no permite evaluar una póliza. Revisá riesgos cubiertos, sumas, límites, franquicias, exclusiones y condiciones de contratación."
       }
     ],
     references: [

@@ -46,7 +46,7 @@ export function ProductPageView({ product }: { product: ProductSeo }) {
       <section className="seo-hero">
         <div className="container seo-hero-inner">
           <Breadcrumb items={crumbs} />
-          <p className="seo-kicker">{product.icon} Seguro · Mendoza</p>
+          <p className="seo-kicker">Seguro · Mendoza</p>
           <h1>{product.h1}</h1>
           <p className="seo-lead">{product.intro}</p>
           <div className="seo-actions">
@@ -61,22 +61,23 @@ export function ProductPageView({ product }: { product: ProductSeo }) {
       <section className="section seo-section">
         <div className="container seo-grid">
           <div>
-            <h2>Beneficios de cotizar con nosotros</h2>
+            <h2>Qué información se revisa</h2>
             <ul className="seo-list">
               {product.benefits.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
             <p className="seo-note">
-              La cotización es orientativa y sin compromiso. Las condiciones finales
-              las define cada compañía en la propuesta formal.
+              La solicitud no constituye una póliza ni confirma cobertura. La aseguradora
+              determina la aceptación, los límites, las franquicias y las exclusiones.
             </p>
           </div>
           <aside className="seo-aside">
-            <h2>Solicitá tu cotización</h2>
+            <h2>Solicitá una cotización</h2>
             <p>
-              Completá el formulario con datos básicos. Te respondemos por WhatsApp
-              con opciones claras para {product.shortTitle.toLowerCase()}.
+              Completá los datos del formulario para iniciar una consulta sobre
+              {" "}{product.shortTitle.toLowerCase()}. La información adicional y
+              las condiciones dependen de la evaluación de la aseguradora.
             </p>
             <CtaQuote product={product.formId} label="Ir a cotizar" />
           </aside>
@@ -106,7 +107,6 @@ export function ProductPageView({ product }: { product: ProductSeo }) {
             {otherProducts.map((p) => (
               <li key={p.slug}>
                 <Link href={`/seguros/${p.slug}`}>
-                  <span aria-hidden="true">{p.icon}</span>
                   <strong>{p.shortTitle}</strong>
                 </Link>
               </li>

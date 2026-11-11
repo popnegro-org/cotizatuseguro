@@ -63,8 +63,11 @@ test("homepage includes factual structured data for the site, page, and named pr
 test("homepage content clarifies the quote is not a policy or guaranteed coverage", async () => {
   const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const siteContent = await readFile(new URL("../content/site.ts", import.meta.url), "utf8");
-  assert.match(page, /<h1>Cotizá tu seguro con un asesor real<\/h1>/);
-  assert.match(page, /Sin tarifa automática en la web/);
+  assert.match(page, /<h1>La cobertura adecuada empieza con <span>una buena conversación\.<\/span><\/h1>/);
+  assert.match(page, /La solicitud no implica contratación ni garantiza la aceptación del riesgo/);
+  assert.match(page, /ASESORAMIENTO EN SEGUROS · MENDOZA/);
+  assert.match(page, /Pedí tu cotización/);
+  assert.match(page, /¿Qué querés proteger hoy\?/);
   assert.match(page, /no emite una póliza ni confirma una tarifa automática/);
   assert.ok(page.includes('import { products, type FormProductId } from "../content/site"'));
   assert.match(siteContent, /La aprobación y los requisitos dependen de la evaluación del proveedor/);

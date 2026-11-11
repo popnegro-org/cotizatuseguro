@@ -8,34 +8,34 @@ export const article: ResourceArticle = {
       "Riesgos habituales en consorcios y edificios en Mendoza: áreas comunes, responsabilidad civil e infraestructura. Guía para administradores.",
     formId: "consorcio",
     answer:
-      "Los administradores de consorcios suelen evaluar riesgos de áreas comunes (incendios, daños estructurales, instalaciones), responsabilidad civil frente a terceros y ocupantes, y eventos que afecten la operatoria del edificio. El seguro de consorcio no reemplaza el reglamento interno ni las obligaciones legales del administrador, pero ayuda a transferir parte del riesgo económico según las condiciones de la póliza.",
+      "Al consultar por un seguro de consorcio conviene describir el edificio, las áreas comunes, las instalaciones y los riesgos que se desean evaluar. La póliza puede contemplar determinados daños materiales y responsabilidades, pero el alcance depende de las coberturas contratadas, sus límites y exclusiones.",
     sections: [
       {
         heading: "Áreas comunes e infraestructura",
         body: [
-          "Halls, ascensores, salas de máquinas, techos y cocheras comunes concentran riesgos de daño material y de interrupción de servicios. La superficie, la antigüedad y el material de construcción son datos típicos al cotizar.",
+          "Para describir el inmueble pueden solicitarse superficie, antigüedad, materiales, cantidad de plantas, instalaciones y características de los espacios comunes. La información requerida depende de la aseguradora.",
           "Cada compañía define qué bienes y qué eventos entran en cobertura; por eso la descripción del edificio debe ser precisa."
         ]
       },
       {
         heading: "Responsabilidad civil del consorcio",
         body: [
-          "Daños a terceros o a unidades funcionales derivados de partes comunes son un punto sensible. Los límites de RC y las exclusiones deben revisarse con el consejo o la administración antes de contratar o renovar.",
-          "Un siniestro mal dimensionado puede impactar las expensas; por eso conviene alinear suma y alcance con el tamaño del edificio."
+          "La responsabilidad civil del consorcio debe analizarse según los supuestos incluidos en la póliza, los límites y las exclusiones. No toda responsabilidad ni todo daño a una unidad funcional queda automáticamente cubierto.",
+          "La suma asegurada y los límites deben revisarse en relación con las características y valores declarados del edificio. La definición requiere evaluar las condiciones concretas de la propuesta."
         ]
       },
       {
         heading: "Rol del administrador en la cotización",
         body: [
-          "El administrador o un representante autorizado suele reunir los datos del edificio y canalizar las propuestas al consorcio. La decisión de contratación corresponde a los órganos que fije el reglamento y la normativa aplicable.",
-          "Contar con un productor que conozca el mercado local agiliza la comparación entre compañías con experiencia en edificios."
+          "El administrador o un representante autorizado suele reunir los datos del edificio y canalizar las propuestas al consorcio. La autorización para contratar debe seguir el reglamento de propiedad horizontal y las decisiones válidas del consorcio. Ante dudas, corresponde consultar a la administración o asesoría legal.",
+          "Un productor puede ayudarte a ordenar los datos del edificio y revisar las diferencias entre las propuestas disponibles."
         ]
       }
     ],
     faqs: [
       {
         q: "¿El seguro del consorcio cubre cada departamento?",
-        a: "En general se enfoca en partes comunes y responsabilidad del consorcio. Las unidades funcionales suelen requerir seguro de hogar propio, según lo que decida cada propietario."
+        a: "El alcance sobre partes comunes y unidades funcionales depende de lo que describa y cubra la póliza. No supongas que el seguro del consorcio reemplaza el seguro individual de cada unidad: revisá las condiciones contratadas."
       },
       {
         q: "¿Qué datos del edificio se necesitan?",

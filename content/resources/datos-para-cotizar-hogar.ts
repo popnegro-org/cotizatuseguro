@@ -8,12 +8,12 @@ export const article: ResourceArticle = {
       "Qué datos pedir para cotizar seguro de hogar en Mendoza: superficie, ubicación, tipo de vivienda y uso. Guía práctica y orientativa.",
     formId: "hogar",
     answer:
-      "Para cotizar un seguro de hogar suelen pedir ubicación del inmueble, superficie aproximada, tipo de vivienda (casa o departamento), material de construcción cuando aplica, y si es de uso permanente o temporal. Con esos datos se pueden armar propuestas de incendio, contenidos, daños por agua y responsabilidad civil, según el producto de cada compañía.",
+      "Para cotizar un seguro de hogar suelen pedir ubicación del inmueble, superficie aproximada, tipo de vivienda (casa o departamento), material de construcción cuando aplica, y si es de uso permanente o temporal. Con esos datos se puede iniciar una consulta. Los riesgos que pueden incluirse —por ejemplo incendio, contenidos, daños por agua o responsabilidad civil— dependen del producto y de las condiciones ofrecidas.",
     sections: [
       {
         heading: "Datos del inmueble",
         body: [
-          "La localidad o barrio, la superficie cubierta aproximada y el tipo de construcción ayudan a ubicar el riesgo. No hace falta una tasación formal para una cotización inicial, pero sí información coherente y verificable al momento de emitir.",
+          "La localidad o barrio, la superficie cubierta aproximada y el tipo de construcción ayudan a ubicar el riesgo. La aseguradora puede solicitar documentación o información adicional para evaluar el inmueble y determinar las condiciones de contratación.",
           "Si el hogar es de fin de semana o alquiler temporario, conviene aclararlo: cambia el análisis de ocupación."
         ]
       },
@@ -27,19 +27,19 @@ export const article: ResourceArticle = {
       {
         heading: "Proceso de cotización",
         body: [
-          "Con los datos básicos y el contacto del interesado se pueden comparar alternativas. La cotización no implica emisión: la póliza se confirma cuando aceptás condiciones y la aseguradora aprueba el riesgo.",
-          "En Mendoza el asesoramiento local facilita alinear la propuesta con el tipo de vivienda y el uso real."
+          "Con los datos iniciales se puede consultar por una propuesta. La solicitud no implica emisión ni aceptación: la aseguradora debe evaluar el riesgo y confirmar las condiciones.",
+          "Informar correctamente la ubicación y el uso del inmueble ayuda a que la consulta corresponda al riesgo que se busca asegurar."
         ]
       }
     ],
     faqs: [
       {
         q: "¿Hace falta inventario de muebles?",
-        a: "Para una cotización inicial no siempre. Para sumas altas de contenidos, algunas compañías piden más detalle o documentación al emitir."
+        a: "El inventario y los comprobantes pueden ser requeridos según el valor declarado, el producto y los criterios de la aseguradora."
       },
       {
         q: "¿El seguro de hogar cubre terremotos o granizo?",
-        a: "Depende del producto y de las cláusulas contratadas. Hay que verificarlo en cada propuesta; no asumir cobertura automática."
+        a: "No debe suponerse que esos eventos están cubiertos. Revisá si aparecen expresamente incluidos y cuáles son sus límites, franquicias y exclusiones."
       }
     ],
     references: [
