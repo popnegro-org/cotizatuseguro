@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { readAnalyticsConsent, writeAnalyticsConsent, type AnalyticsConsent } from "../lib/analytics-consent";
+import { track } from "../lib/analytics";
 
 type ConsentContextValue = {
   consent: AnalyticsConsent;
@@ -31,12 +32,12 @@ function loadGoogleTagManager(): void {
 
 export function ConsentProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const isHome = pathname === "/";
+
   const [consent, setConsent] = useState<AnalyticsConsent>("unknown");
   const [bannerVisible, setBannerVisible] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
-  // The landing page still owns its existing consent UI. Refresh the shared
-  // state on navigation so a choice made there enables GTM across the site.
   useEffect(() => {
     setConsent(readAnalyticsConsent());
     setInitialized(true);
@@ -59,15 +60,20 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
     writeAnalyticsConsent(value);
     setConsent(value);
     setBannerVisible(false);
+    track("consent_choice", { consent_choice: value });
   }, []);
 
   const accept = useCallback(() => chooseConsent("accepted"), [chooseConsent]);
   const reject = useCallback(() => chooseConsent("rejected"), [chooseConsent]);
   const openPreferences = useCallback(() => setBannerVisible(true), []);
 
-  const value = useMemo(() => ({ consent, bannerVisible, accept, reject, openPreferences }), [consent, bannerVisible, accept, reject, openPreferences]);
-  // Avoid rendering a second banner over the landing page's legacy banner.
-  const showProviderBanner = bannerVisible && (pathname !== "/" || consent !== "unknown");
+  const value = useMemo(
+    () => ({ consent, bannerVisible, accept, reject, openPreferences }),
+    [consent, bannerVisible, accept, reject, openPreferences]
+  );
+
+  // Home pinta su propio banner; el provider solo en páginas internas / reopen.
+  const showProviderBanner = bannerVisible && !isHome;
 
   return (
     <ConsentContext.Provider value={value}>

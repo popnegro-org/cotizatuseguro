@@ -1,7 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function waitForConsentBanner(page: Page) {
-  await expect(page.getByLabel("Preferencias de privacidad")).toBeVisible({ timeout: 5000 });
+  const banner = page.getByLabel("Preferencias de privacidad");
+  await expect(banner).toHaveCount(1);
+  await expect(banner).toBeVisible({ timeout: 5000 });
+  return banner;
 }
 
 async function completeAutoRisk(page: Page) {
@@ -51,8 +54,8 @@ test("rechazar consentimiento mantiene bloqueadas las etiquetas de medición", a
     if (/googletagmanager\.com|google-analytics\.com|connect\.facebook\.net|facebook\.com\/tr/i.test(request.url())) analyticsRequests.push(request.url());
   });
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Rechazar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Rechazar" }).click();
   await expect(page.getByLabel("Preferencias de privacidad")).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(analyticsRequests).toEqual([]);
@@ -67,8 +70,8 @@ test("aceptar consentimiento carga GTM y persiste la decisión", async ({ page }
   });
   await page.route("https://www.googletagmanager.com/**", (route) => route.fulfill({ status: 200, contentType: "application/javascript", body: "" }));
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Aceptar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Aceptar" }).click();
   await expect(page.getByLabel("Preferencias de privacidad")).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("analytics-consent"))).toBe("accepted");
   if (gtmId) {
@@ -172,8 +175,8 @@ test("hogar acepta metros o ambientes y solicita provincia y localidad en el pas
 test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Rechazar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Rechazar" }).click();
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   const progress = page.getByRole("list", { name: "Progreso del formulario" });
   await expect(progress.locator('[aria-current="step"]')).toHaveText("1. Tu seguro");
