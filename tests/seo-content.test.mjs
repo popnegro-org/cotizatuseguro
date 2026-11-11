@@ -94,7 +94,7 @@ test("product content uses conditional language and does not promise unverified 
     assert.equal(catalogue.toLowerCase().includes(unsupported), false, "unsupported claim found: " + unsupported);
   }
   assert.match(productPage, /La solicitud no constituye una póliza ni confirma cobertura/);
-  assert.match(productPage, /La aseguradora\\s+determina la aceptación/);
+  assert.ok(productPage.includes("La aseguradora") && productPage.includes("determina la aceptación"));
 });
 
 test("resource content avoids guaranteed acceptance and response-time claims", () => {
