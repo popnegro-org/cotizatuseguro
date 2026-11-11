@@ -11,12 +11,12 @@ const path = "/sobre-agustin-montes";
 export const metadata: Metadata = {
   title: "Sobre Agustín Montes | Productor Asesor de Seguros en Mendoza",
   description:
-    "Agustín Montes es Productor Asesor de Seguros en Mendoza. Brinda asesoramiento para cotizar seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
+    "Agustín Montes es Productor Asesor de Seguros en Mendoza y recibe consultas de alcance nacional para cotizar seguros de auto, moto, hogar, consorcio, bicicleta y caución de alquiler.",
   alternates: { canonical: path },
   openGraph: {
     title: "Sobre Agustín Montes | CotizaTuSeguro",
     description:
-      "Información sobre el asesor y los tipos de seguros que podés consultar en Mendoza.",
+      "Información sobre el asesor, la atención desde Mendoza y las consultas de alcance nacional.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "profile"
@@ -30,7 +30,7 @@ export default function SobreAgustinPage() {
       path,
       name: "Sobre Agustín Montes",
       description:
-        "Productor Asesor de Seguros en Mendoza. Asesoramiento personalizado en seguros."
+        "Productor Asesor de Seguros con atención desde Mendoza y consultas de alcance nacional. La disponibilidad depende del riesgo y del producto."
     }),
     {
       "@context": "https://schema.org",
@@ -51,8 +51,8 @@ export default function SobreAgustinPage() {
         addressCountry: "AR"
       },
       areaServed: {
-        "@type": "AdministrativeArea",
-        name: "Mendoza"
+        "@type": "Country",
+        name: "Argentina"
       }
     },
     breadcrumbList(
@@ -75,7 +75,7 @@ export default function SobreAgustinPage() {
           <p className="seo-kicker">Productor Asesor de Seguros</p>
           <h1>Agustín Montes</h1>
           <p className="seo-lead">
-            Soy Agustín Montes, Productor Asesor de Seguros en Mendoza. Recibo consultas para cotizar seguros y explico las condiciones de cada propuesta antes de que tomes una decisión.
+            Soy Agustín Montes, Productor Asesor de Seguros. Atiendo desde Mendoza y recibo consultas de alcance nacional. La disponibilidad de cada producto se confirma según el riesgo y las condiciones de cada aseguradora.
           </p>
           <div className="seo-actions">
             <CtaQuote />
