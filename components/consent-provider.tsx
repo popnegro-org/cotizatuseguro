@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { readAnalyticsConsent, writeAnalyticsConsent, type AnalyticsConsent } from "../lib/analytics-consent";
 
 type ConsentContextValue = {
@@ -29,14 +30,17 @@ function loadGoogleTagManager(): void {
 }
 
 export function ConsentProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [consent, setConsent] = useState<AnalyticsConsent>("unknown");
   const [bannerVisible, setBannerVisible] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
+  // The landing page still owns its existing consent UI. Refresh the shared
+  // state on navigation so a choice made there enables GTM across the site.
   useEffect(() => {
     setConsent(readAnalyticsConsent());
     setInitialized(true);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -62,11 +66,13 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   const openPreferences = useCallback(() => setBannerVisible(true), []);
 
   const value = useMemo(() => ({ consent, bannerVisible, accept, reject, openPreferences }), [consent, bannerVisible, accept, reject, openPreferences]);
+  // Avoid rendering a second banner over the landing page's legacy banner.
+  const showProviderBanner = bannerVisible && (pathname !== "/" || consent !== "unknown");
 
   return (
     <ConsentContext.Provider value={value}>
       {children}
-      {bannerVisible ? (
+      {showProviderBanner ? (
         <aside className="consent-banner" aria-label="Preferencias de privacidad">
           <p>Usamos medición del sitio. Las etiquetas solo se activan si aceptás. <a href="/privacidad">Más info</a>.</p>
           <div className="consent-actions">
