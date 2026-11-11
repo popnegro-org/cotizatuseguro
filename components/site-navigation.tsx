@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { products, type FormProductId } from "../content/site";
+import { useAnalyticsConsentOptional } from "./consent-provider";
 
 type SiteHeaderProps = {
   activePath?: string;
@@ -49,23 +50,17 @@ export function SiteHeader({
   const restoreFocusOnCloseRef = useRef(false);
 
   useEffect(() => {
-    if (!menuOpen) {
-      if (restoreFocusOnCloseRef.current) {
-        restoreFocusOnCloseRef.current = false;
-        menuButtonRef.current?.focus();
-      }
+    if (!menuOpen && restoreFocusOnCloseRef.current) {
+      restoreFocusOnCloseRef.current = false;
+      menuButtonRef.current?.focus();
     }
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         const openDetails = document.querySelectorAll<HTMLDetailsElement>("header details.site-nav-dropdown[open]");
         if (!openDetails.length && !menuOpen) return;
-
         event.preventDefault();
-        openDetails.forEach((details) => {
-          details.open = false;
-        });
-
+        openDetails.forEach((details) => { details.open = false; });
         if (menuOpen) {
           restoreFocusOnCloseRef.current = true;
           setMenuOpen(false);
@@ -87,12 +82,8 @@ export function SiteHeader({
         <div className="container header-inner">
           <Link className="brand" href="/" aria-label="CotizaTuSeguro, inicio">
             <span className="brand-mark" aria-hidden="true"><Image src="/iso-am.svg" alt="" width={100} height={73} priority unoptimized /></span>
-            <span className="brand-copy">
-              COTIZA TU SEGURO
-              <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
-            </span>
+            <span className="brand-copy">COTIZA TU SEGURO<small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small></span>
           </Link>
-
           <nav className="main-nav" aria-label="Navegación principal">
             <details className="site-nav-dropdown">
               <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
@@ -102,33 +93,19 @@ export function SiteHeader({
             <Link href="/sobre-agustin-montes" aria-current={isCurrent("/sobre-agustin-montes") ? "page" : undefined}>Sobre Agustín</Link>
             <Link href="/recursos" aria-current={isCurrent("/recursos") ? "page" : undefined}>Recursos</Link>
           </nav>
-
           <div className="header-actions">
-            <Link className="header-cta" href={quoteHref} onClick={onQuoteClick}>
-              Solicitar cotización <span aria-hidden="true">→</span>
-            </Link>
-            <button
-              ref={menuButtonRef}
-              type="button"
-              className={"menu-toggle" + (menuOpen ? " is-open" : "")}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
+            <Link className="header-cta" href={quoteHref} onClick={onQuoteClick}>Solicitar cotización <span aria-hidden="true">→</span></Link>
+            <button ref={menuButtonRef} type="button" className={"menu-toggle" + (menuOpen ? " is-open" : "")} aria-expanded={menuOpen} aria-controls="mobile-nav" aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} onClick={() => setMenuOpen((open) => !open)}>
               <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
             </button>
           </div>
         </div>
-
         {menuOpen ? (
           <div className="mobile-nav-panel" id="mobile-nav">
             <nav className="mobile-nav" aria-label="Menú móvil">
               <details className="site-nav-dropdown">
                 <summary className={`site-nav-trigger${activePath?.startsWith("/seguros/") ? " is-active" : ""}`}>Seguros</summary>
-                <div className="site-nav-dropdown-menu">
-                  <ProductLinks activePath={activePath} onProductClick={onProductClick} onNavigate={() => setMenuOpen(false)} />
-                </div>
+                <div className="site-nav-dropdown-menu"><ProductLinks activePath={activePath} onProductClick={onProductClick} onNavigate={() => setMenuOpen(false)} /></div>
               </details>
               <Link href="/seguros-en-mendoza" aria-current={isCurrent("/seguros-en-mendoza") ? "page" : undefined} onClick={() => setMenuOpen(false)}>Seguros en Mendoza</Link>
               <Link href="/sobre-agustin-montes" aria-current={isCurrent("/sobre-agustin-montes") ? "page" : undefined} onClick={() => setMenuOpen(false)}>Sobre Agustín</Link>
@@ -146,55 +123,36 @@ export function SiteHeader({
   );
 }
 
-export function SiteFooter({
-  quoteHref = "/#cotizar",
-  onQuoteClick,
-  onProductClick
-}: SiteFooterProps) {
+export function SiteFooter({ quoteHref = "/#cotizar", onQuoteClick, onProductClick }: SiteFooterProps) {
+  const consent = useAnalyticsConsentOptional();
+
   return (
     <footer className="site-footer">
       <div className="container footer-layout">
         <div className="footer-about">
           <Link className="brand footer-brand" href="/" aria-label="CotizaTuSeguro, inicio">
             <span className="brand-mark" aria-hidden="true"><Image src="/iso-am.svg" alt="" width={100} height={73} priority unoptimized /></span>
-            <span className="brand-copy">
-              COTIZA TU SEGURO
-              <small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small>
-            </span>
+            <span className="brand-copy">COTIZA TU SEGURO<small>AGUSTÍN MONTES · PRODUCTOR ASESOR</small></span>
           </Link>
           <p>Asesoramiento personalizado en seguros patrimoniales y de personas, con atención en Mendoza.</p>
           <Link className="footer-about-link" href="/sobre-agustin-montes">Conocé a Agustín</Link>
         </div>
-
-        <nav className="footer-column" aria-label="Coberturas">
-          <strong>Seguros</strong>
-          <ProductLinks onProductClick={onProductClick} />
-        </nav>
-
+        <nav className="footer-column" aria-label="Coberturas"><strong>Seguros</strong><ProductLinks onProductClick={onProductClick} /></nav>
         <nav className="footer-column" aria-label="Información institucional">
-          <strong>Institucional</strong>
-          <Link href="/seguros-en-mendoza">Seguros en Mendoza</Link>
-          <Link href="/sobre-agustin-montes">Sobre Agustín</Link>
-          <Link href="/#aseguradoras">Aseguradoras</Link>
+          <strong>Institucional</strong><Link href="/seguros-en-mendoza">Seguros en Mendoza</Link><Link href="/sobre-agustin-montes">Sobre Agustín</Link><Link href="/#aseguradoras">Aseguradoras</Link>
         </nav>
-
         <nav className="footer-column" aria-label="Información y contacto">
-          <strong>Información</strong>
-          <Link href="/recursos">Recursos y guías</Link>
-          <Link href="/#faq">Preguntas frecuentes</Link>
-          <Link href="/privacidad">Política de privacidad</Link>
-          <Link className="footer-cta" href={quoteHref} onClick={onQuoteClick}>
-            Solicitar cotización <span aria-hidden="true">→</span>
-          </Link>
+          <strong>Información</strong><Link href="/recursos">Recursos y guías</Link><Link href="/#faq">Preguntas frecuentes</Link><Link href="/privacidad">Política de privacidad</Link>
+          <Link className="footer-cta" href={quoteHref} onClick={onQuoteClick}>Solicitar cotización <span aria-hidden="true">→</span></Link>
         </nav>
       </div>
-
       <div className="container footer-bottom">
         <span>© {new Date().getFullYear()} Agustín Montes · Mendoza, Argentina</span>
         <div className="footer-bottom-links">
           <Link href="/privacidad">Política de privacidad</Link>
+          <button className="footer-preferences-link" type="button" onClick={() => consent?.openPreferences()}>Preferencias de cookies</button>
         </div>
       </div>
-          </footer>
+    </footer>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ConsentProvider } from "../components/consent-provider";
 import "./globals.css";
 import "./seo-pages.css";
 
@@ -90,7 +91,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
           />
         ) : null}
-        {children}
+        <ConsentProvider>{children}</ConsentProvider>
       </body>
     </html>
   );
