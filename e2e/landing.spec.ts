@@ -23,7 +23,7 @@ test("landing presenta el flujo de dos pasos en orden riesgo y contacto", async 
   await expect(page.getByText("Completá los datos iniciales. Te acompaño en el proceso.")).toBeVisible();
   await expect(page.locator("#cotizar")).toBeVisible();
   await expect(page.locator("#seguros .coverage-card")).toHaveCount(6);
-  await expect(page.locator("#aseguradoras .company-chip")).toHaveCount(7);
+  await expect(page.locator("#aseguradoras .company-chip")).toHaveCount(8);
   await expect(page.getByRole("list", { name: "Progreso del formulario" })).toBeVisible();
   await expect(page.getByText("1. Tu seguro")).toBeVisible();
   await expect(page.getByText("2. Tus datos")).toBeVisible();
