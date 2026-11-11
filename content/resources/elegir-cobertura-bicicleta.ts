@@ -13,33 +13,33 @@ export const article: ResourceArticle = {
       {
         heading: "Valor y características de la bici",
         body: [
-          "Marca, modelo, año aproximado, rodado, material y suma asegurada orientativa ayudan a cotizar. Bicicletas de alto valor o eléctricas pueden tener reglas de suscripción más estrictas.",
-          "Declarar un valor realista evita tanto un subaseguro como una prima desalineada."
+          "Para consultar se pueden solicitar marca, modelo, año, rodado, material, valor y tipo de bicicleta. La aseguradora puede aplicar requisitos distintos según el producto y las características declaradas.",
+          "El valor declarado debe corresponderse con la documentación y las reglas de valuación que establezca la aseguradora."
         ]
       },
       {
         heading: "Robo, daños y exclusiones",
         body: [
-          "El robo suele ser el evento más consultado. Los daños por accidente o transporte, si existen en el producto, traen franquicias y exclusiones propias. Hay que leer qué queda fuera (por ejemplo uso profesional o competencias, si aplica).",
-          "Las medidas de guarda y seguridad pueden influir en la aceptación o en las condiciones."
+          "Revisá si la propuesta incluye robo, daños accidentales o transporte. Cada riesgo puede tener condiciones, límites, franquicias y exclusiones diferentes. No supongas que el uso profesional o la participación en competencias están incluidos.",
+          "La aseguradora puede solicitar información sobre medidas de guarda y seguridad. Su efecto depende de las condiciones de suscripción."
         ]
       },
       {
         heading: "Cotización simple",
         body: [
-          "Con los datos de la bicicleta y el contacto del interesado se pueden armar alternativas. La cotización es orientativa hasta la emisión y la aceptación formal de la compañía.",
-          "Si también tenés auto u hogar, a veces conviene revisar el conjunto de coberturas con el mismo asesor para evitar solapamientos innecesarios."
+          "Con los datos de la bicicleta se puede iniciar una consulta. La cotización no implica aceptación del riesgo ni emisión de la póliza.",
+          "Si ya tenés otras pólizas, revisá sus alcances para identificar si existen coberturas relacionadas. La existencia de una cobertura en otra póliza debe confirmarse en sus condiciones."
         ]
       }
     ],
     faqs: [
       {
         q: "¿Las bicicletas eléctricas se aseguran igual?",
-        a: "No siempre. Algunas compañías las tratan con reglas distintas o las limitan. Hay que cotizar con el modelo y la potencia a mano."
+        a: "La aceptación y las condiciones para bicicletas eléctricas dependen de la aseguradora y del producto. Informá marca, modelo y características técnicas para consultar."
       },
       {
         q: "¿Hace falta factura de compra?",
-        a: "Para cotizar no siempre. Para emitir o para un siniestro, la documentación de valor y titularidad puede ser necesaria según la compañía."
+        a: "La documentación requerida para cotizar, emitir o gestionar un siniestro depende de la aseguradora y de las condiciones de la póliza."
       }
     ],
     references: [
