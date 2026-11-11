@@ -25,7 +25,6 @@ const structuredData = {
       name: "Agustín Montes",
       url: productionSiteUrl,
       jobTitle: "Productor Asesor de Seguros",
-      areaServed: { "@type": "Country", name: "Argentina" }
     },
     {
       "@type": "WebPage",
