@@ -8,12 +8,12 @@ export const article: ResourceArticle = {
       "Guía orientativa sobre seguros de auto en Mendoza: responsabilidad civil, robo, daños y cómo cotizar. Asesoramiento de Agustín Montes.",
     formId: "auto",
     answer:
-      "La Ley 24.449, artículo 68, exige que los automotores, acoplados y semiacoplados cuenten con seguro para cubrir daños eventuales a terceros, transportados o no; la misma obligación alcanza a las motocicletas. La autoridad aseguradora fija las condiciones del seguro obligatorio. Las coberturas adicionales sobre el propio vehículo —como robo, incendio o daños— dependen de la propuesta y de las condiciones de cada póliza.",
+      "El artículo 68 de la Ley 24.449 establece la obligación de contar con un seguro que cubra daños a terceros, transportados o no, para los vehículos alcanzados por la norma. El alcance exigible y las condiciones deben consultarse en el texto legal y en las disposiciones vigentes de la autoridad de control. Las coberturas sobre el propio vehículo, como robo, incendio o daños, dependen de la póliza contratada.",
     sections: [
       {
         heading: "Responsabilidad civil: el núcleo habitual",
         body: [
-          "La responsabilidad civil cubre, dentro de los límites de la póliza, daños que el vehículo asegurado cause a terceros (personas o bienes). Es la base más consultada al armar una cotización, porque responde a un riesgo cotidiano de circulación.",
+          "La cobertura de responsabilidad civil contempla, dentro de los límites y condiciones de la póliza, la responsabilidad por daños a terceros derivados del uso del vehículo. El alcance exacto se determina en el contrato.",
           "Los límites de cobertura, franquicias y exclusiones varían por producto. Por eso conviene comparar propuestas concretas y no solo el precio mensual."
         ]
       },
@@ -27,7 +27,7 @@ export const article: ResourceArticle = {
       {
         heading: "Cómo cotizar de forma ordenada",
         body: [
-          "Para armar propuestas útiles suelen pedir marca, modelo, año, uso del vehículo y datos de contacto con localidad. Con eso se pueden comparar alternativas de distintas compañías sin compromiso de contratación.",
+          "Para iniciar una consulta suelen solicitar marca, modelo, año, versión, uso del vehículo y datos de contacto y localidad. La aseguradora puede requerir información adicional para evaluar el riesgo.",
           "La cotización es orientativa: la emisión y las condiciones definitivas se confirman recién al aceptar una propuesta y completar la documentación que requiera la aseguradora."
         ]
       }
@@ -39,11 +39,11 @@ export const article: ResourceArticle = {
       },
       {
         q: "¿Cuánto tarda una cotización?",
-        a: "Con los datos básicos del vehículo y de contacto, suele poder orientarse en poco tiempo. La emisión de la póliza depende de la compañía y de la documentación."
+        a: "El tiempo de evaluación y emisión depende de la aseguradora, de los datos declarados y de la documentación que solicite."
       },
       {
         q: "¿Puedo cambiar de compañía después?",
-        a: "Sí, al vencimiento o según las condiciones de cada contrato. Un productor puede ayudarte a comparar renovación versus alternativas nuevas."
+        a: "La posibilidad de cambiar de aseguradora depende de la vigencia, las condiciones del contrato y los trámites aplicables. Revisá las condiciones antes de solicitar el cambio."
       }
     ],
     references: [
