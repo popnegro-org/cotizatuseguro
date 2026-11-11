@@ -36,20 +36,20 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Consultá por responsabilidad civil, robo y daños.",
     category: "VEHÍCULOS",
     metaDescription:
-      "Cotizá seguro de auto en Mendoza con Agustín Montes. Consultá alternativas de responsabilidad civil, robo y daños. Las condiciones dependen de cada propuesta.",
+      "Información para cotizar un seguro de auto en Mendoza: datos del vehículo, uso y alternativas sujetas a evaluación de la aseguradora.",
     h1: "Seguro de auto en Mendoza",
     intro:
-      "Asesoramiento personalizado para cotizar la cobertura de tu auto o camioneta en Mendoza. Evaluamos uso, antigüedad y necesidades para proponerte opciones claras, sin compromiso de compra.",
+      "Para consultar por un seguro de auto o camioneta en Mendoza, se consideran datos como marca, modelo, año y uso del vehículo. Las coberturas, el precio y la aceptación dependen de la evaluación de cada aseguradora.",
     benefits: [
-      "Revisión de alternativas disponibles según los datos del vehículo",
-      "Orientación sobre responsabilidad civil, robo y daños parciales o totales",
-      "Proceso simple: datos básicos y seguimiento por WhatsApp",
-      "Orientación durante la gestión de la solicitud"
+      "Datos habituales: marca, modelo, año, versión y uso del vehículo",
+      "Revisión de las coberturas, límites, franquicias y exclusiones de cada propuesta",
+      "La solicitud permite iniciar la evaluación; no equivale a una póliza",
+      "La aseguradora confirma requisitos y condiciones antes de la emisión"
     ],
     faqs: [
       {
         q: "¿Qué datos necesito para cotizar un seguro de auto?",
-        a: "Marca, modelo, año y uso del vehículo, más tus datos de contacto y localidad. Con eso armamos propuestas orientativas."
+        a: "Se solicitan datos del vehículo —como marca, modelo, año y uso— y datos de contacto y localidad. La información adicional depende de la aseguradora."
       },
       {
         q: "¿Trabajan con varias aseguradoras?",
@@ -57,7 +57,7 @@ export const products: ProductSeo[] = [
       },
       {
         q: "¿La cotización tiene costo?",
-        a: "El costo y las condiciones de la cobertura se informan en la propuesta antes de contratar."
+        a: "El sitio no informa una tarifa fija. El precio se conoce al recibir una propuesta para los datos declarados."
       }
     ],
     icon: "🚘"
@@ -72,15 +72,15 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Alternativas según el tipo de moto y cobertura.",
     category: "VEHÍCULOS",
     metaDescription:
-      "Cotizá seguro de moto o ciclomotor en Mendoza. Opciones de RC, robo y daños según tipo de moto. Asesoramiento de Agustín Montes.",
+      "Información para consultar por un seguro de moto en Mendoza. La disponibilidad y el alcance de las coberturas dependen de la evaluación de cada aseguradora.",
     h1: "Seguro de moto en Mendoza",
     intro:
-      "Cotizá coberturas para motos y ciclomotores en Mendoza. Te orientamos según cilindrada, uso y presupuesto para encontrar alternativas claras.",
+      "Para cotizar un seguro de moto o ciclomotor se revisan sus características y el uso declarado. Cada aseguradora define sus requisitos, coberturas disponibles y condiciones.",
     benefits: [
-      "Opciones adaptadas a motos de baja, media y alta cilindrada",
-      "Evaluación de responsabilidad civil y coberturas adicionales",
-      "Seguimiento de la consulta por WhatsApp",
-      "Atención de consultas desde Mendoza"
+      "Datos de referencia: tipo, marca, modelo, cilindrada y año de la moto",
+      "Revisión de responsabilidad civil y coberturas adicionales incluidas en cada propuesta",
+      "Canal de contacto y seguimiento de la solicitud",
+      "Página orientada a consultas de seguros en Mendoza"
     ],
     faqs: [
       {
@@ -104,15 +104,15 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Consultá por riesgos del hogar.",
     category: "VIVIENDA",
     metaDescription:
-      "Cotizá seguro de hogar en Mendoza: incendio, robo de contenidos, daños por agua y responsabilidad civil. Asesoramiento personalizado.",
+      "Consultá por un seguro de hogar en Mendoza. Los riesgos, límites y exclusiones dependen de las condiciones de cada póliza.",
     h1: "Seguro de hogar en Mendoza",
     intro:
-      "Protegé tu vivienda y contenidos con opciones claras. Cotizamos seguros de hogar en Mendoza considerando superficie, ubicación y tipo de ocupación.",
+      "Para consultar por un seguro de hogar se consideran la ubicación, el tipo de vivienda, su superficie y el uso del inmueble. La cobertura del edificio y de los contenidos depende de cada propuesta.",
     benefits: [
-      "Coberturas orientadas a incendio, robo y daños por agua",
-      "Evaluación de responsabilidad civil del hogar",
-      "Propuestas según vivienda permanente o de uso temporal",
-      "Asesoramiento para revisar alternativas de cobertura"
+      "Revisión de riesgos y coberturas disponibles para el inmueble",
+      "Revisión de límites, exclusiones y requisitos de la propuesta",
+      "Información sobre ocupación y uso habitual o temporal de la vivienda",
+      "Comparación de condiciones únicamente cuando existan propuestas disponibles"
     ],
     faqs: [
       {
@@ -136,15 +136,15 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Opciones para edificios y espacios comunes.",
     category: "EDIFICIOS",
     metaDescription:
-      "Seguro de consorcio y edificios en Mendoza. Evaluación de áreas comunes, responsabilidad civil y riesgos del edificio. Asesoramiento para administradores.",
+      "Consultas sobre seguro de consorcio en Mendoza. Los bienes, riesgos, límites y condiciones cubiertos se determinan en cada póliza.",
     h1: "Seguro de consorcio en Mendoza",
     intro:
-      "Asesoramos a administradores y consorcistas para cotizar coberturas de edificios y áreas comunes en Mendoza, con foco en riesgos reales del inmueble.",
+      "La cotización de un seguro de consorcio requiere información del edificio, sus áreas comunes y las características constructivas. La aceptación y las coberturas dependen de la aseguradora.",
     benefits: [
-      "Evaluación de riesgos de áreas comunes e infraestructura",
-      "Orientación para administradores de consorcio",
-      "Revisión de alternativas disponibles para el edificio",
-      "Seguimiento local y respuesta por WhatsApp"
+      "Datos del edificio y descripción de áreas comunes e instalaciones",
+      "Información para administradores y representantes autorizados",
+      "Revisión de las condiciones incluidas en cada propuesta recibida",
+      "Canal de contacto para consultas sobre el edificio"
     ],
     faqs: [
       {
@@ -168,15 +168,15 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Alternativas para bicicletas.",
     category: "MOVILIDAD",
     metaDescription:
-      "Cotizá seguro para bicicleta en Mendoza. Coberturas orientadas a robo y daños según valor y uso. Asesoramiento de Agustín Montes.",
+      "Consultá por un seguro de bicicleta en Mendoza. La aceptación, los riesgos cubiertos y los requisitos dependen de cada aseguradora.",
     h1: "Seguro de bicicleta en Mendoza",
     intro:
-      "Cotizá opciones para proteger tu bicicleta en Mendoza. Evaluamos valor, rodado y material para proponerte alternativas acordes.",
+      "Para solicitar una cotización de bicicleta se pueden requerir marca, modelo, año, valor y características de uso. La cobertura depende de las condiciones del producto disponible.",
     benefits: [
-      "Coberturas orientadas a bicicletas de uso urbano o deportivo",
-      "Evaluación según valor asegurado y características",
-      "Proceso simple de cotización",
-      "Asesoramiento para consultas desde Mendoza"
+      "Información de uso declarado: urbano, recreativo, deportivo u otro",
+      "Revisión del valor declarado y de las características de la bicicleta",
+      "Datos necesarios para iniciar una consulta de cotización",
+      "Información para consultas desde Mendoza"
     ],
     faqs: [
       {
@@ -200,20 +200,20 @@ export const products: ProductSeo[] = [
     landingShortDescription: "Consulta por caución de alquiler.",
     category: "GARANTÍAS",
     metaDescription:
-      "Cotizá caución de alquiler en Mendoza para vivienda o comercio. Consultá requisitos y condiciones de una garantía de caución para alquiler.",
+      "Consultá los requisitos para una garantía de caución de alquiler. La disponibilidad y aprobación dependen del proveedor y de la evaluación del solicitante.",
     h1: "Caución de alquiler en Mendoza",
     intro:
-      "Consultá por una garantía de caución para alquiler de vivienda o local comercial en Mendoza. Evaluamos requisitos y te orientamos en el proceso.",
+      "La caución de alquiler es una garantía cuyo alcance y aceptación dependen del proveedor, del contrato y de la evaluación del solicitante. La consulta inicial permite conocer los requisitos aplicables.",
     benefits: [
-      "Alternativa a depósito en efectivo o garantía de un tercero",
-      "Orientación sobre documentación habitual",
-      "Evaluación para vivienda y comercio",
-      "Seguimiento de la consulta por WhatsApp"
+      "Consulta sobre una posible garantía de caución para el contrato de alquiler",
+      "Información sobre documentación que puede solicitar el proveedor",
+      "Revisión del tipo de contrato: vivienda o uso comercial",
+      "Canal de contacto para consultar requisitos y condiciones"
     ],
     faqs: [
       {
         q: "¿Qué documentación suele pedirse?",
-        a: "Datos del inquilino, del contrato (monto y duración) y documentación personal o laboral según el proveedor."
+        a: "Pueden solicitarse datos del inquilino y del contrato, además de documentación personal o laboral. La lista exacta la define el proveedor."
       },
       {
         q: "¿La aprobación es automática?",
