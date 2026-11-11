@@ -76,3 +76,46 @@ test("homepage derives product cards from the shared catalogue", () => {
   assert.equal(catalogue.split("\n").filter((line) => line.startsWith("    landingDescription:")).length, 6);
   assert.equal(catalogue.split("\n").filter((line) => line.startsWith("    landingShortDescription:")).length, 6);
 });
+
+
+test("product content uses conditional language and does not promise unverified commercial terms", () => {
+  const catalogue = readFileSync(path.join(root, "content/site.ts"), "utf8");
+  const productPage = readFileSync(path.join(root, "components/seo/product-page.tsx"), "utf8");
+  for (const slug of ["auto", "moto", "hogar", "consorcio", "bicicleta", "caucion-alquiler"]) {
+    assert.ok(catalogue.includes('slug: "' + slug + '"'), "missing product: " + slug);
+  }
+  for (const unsupported of [
+    "compañías líderes",
+    "respuesta rápida",
+    "sin costo de cotización",
+    "te respondemos por WhatsApp",
+    "garantía propietaria"
+  ]) {
+    assert.equal(catalogue.toLowerCase().includes(unsupported), false, "unsupported claim found: " + unsupported);
+  }
+  assert.match(productPage, /La solicitud no constituye una póliza ni confirma cobertura/);
+  assert.match(productPage, /La aseguradora determina la aceptación/);
+});
+
+test("resource content avoids guaranteed acceptance and response-time claims", () => {
+  const slugs = [
+    "seguro-auto-mendoza",
+    "factores-precio-seguro-auto",
+    "rc-vs-todo-riesgo",
+    "datos-para-cotizar-hogar",
+    "riesgos-consorcios",
+    "documentacion-caucion-alquiler",
+    "elegir-cobertura-bicicleta"
+  ];
+  for (const slug of slugs) {
+    const source = readFileSync(path.join(root, "content/resources", slug + ".ts"), "utf8");
+    assert.ok(source.includes("La aseguradora") || source.includes("proveedor") || source.includes("póliza"), slug + " should explain the conditional nature of insurance");
+    assert.doesNotMatch(source, /garantiza la aprobación|respuesta en (minutos|horas)|aprobación automática/i);
+  }
+});
+
+test("professional structured data does not assert an unverified service territory", () => {
+  const layout = readFileSync(path.join(root, "app/layout.tsx"), "utf8");
+  assert.match(layout, /jobTitle: "Productor Asesor de Seguros"/);
+  assert.doesNotMatch(layout, /areaServed:/);
+});
