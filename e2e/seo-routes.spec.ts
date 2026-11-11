@@ -56,3 +56,38 @@ test("resource guide exposes official references and a contextual product CTA", 
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", "/?producto=auto#cotizar");
 });
+
+
+test("all product and resource pages expose canonical metadata and a single primary heading", async ({ page }) => {
+  for (const route of routes) {
+    await page.goto(route);
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
+    expect(canonical, route + " canonical").toBe("https://cotizatuseguro.com.ar" + route);
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ir al contenido" })).toHaveAttribute("href", "#contenido-principal");
+  }
+});
+
+test("product and resource pages remain usable without horizontal overflow on mobile", async ({ page }) => {
+  for (const route of routes) {
+    await page.goto(route);
+    await page.setViewportSize({ width: 375, height: 812 });
+    const dimensions = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      document: document.documentElement.scrollWidth
+    }));
+    expect(dimensions.document, route + " horizontal overflow").toBeLessThanOrEqual(dimensions.viewport);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.locator("footer.site-footer")).toBeVisible();
+  }
+});
+
+test("product and resource CTAs have descriptive accessible names", async ({ page }) => {
+  for (const route of routes) {
+    await page.goto(route);
+    const quoteLinks = page.locator('main a[href*="#cotizar"]');
+    await expect(quoteLinks.first()).toBeVisible();
+    await expect(quoteLinks.first()).toHaveAccessibleName(/cotiz|solicitar/i);
+  }
+});
