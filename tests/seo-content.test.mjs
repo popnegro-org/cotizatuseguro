@@ -114,8 +114,9 @@ test("resource content avoids guaranteed acceptance and response-time claims", (
   }
 });
 
-test("professional structured data does not assert an unverified service territory", () => {
-  const layout = readFileSync(path.join(root, "app/layout.tsx"), "utf8");
-  assert.match(layout, /jobTitle: "Productor Asesor de Seguros"/);
-  assert.doesNotMatch(layout, /areaServed:/);
+test("professional structured data reflects the confirmed national service area", () => {
+  const page = readFileSync(path.join(root, "app/sobre-agustin-montes/page.tsx"), "utf8");
+  assert.match(page, /jobTitle: "Productor Asesor de Seguros"/);
+  assert.match(page, /"@type": "Country",[\s\S]*name: "Argentina"/);
+  assert.match(page, /consultas de alcance nacional/i);
 });
