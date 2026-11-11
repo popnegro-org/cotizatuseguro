@@ -22,7 +22,8 @@ const companies = [
   "Sancor",
   "San Cristóbal",
   "Galicia",
-  "Rivadavia"
+  "Rivadavia",
+  "HY Broker de Seguros"
 ];
 
 export default function Home() {
@@ -152,7 +153,7 @@ export default function Home() {
         </div></section>
 
         <section className="section assurance-section assurance-section-redesign" id="aseguradoras"><div className="container">
-          <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Compañías con las que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
+          <div className="section-intro"><span className="eyebrow">Respaldo asegurador</span><h2>Aseguradoras y operadores con los que trabajo</h2><p>La disponibilidad de cada aseguradora y producto debe confirmarse para tu solicitud; las alternativas dependen del riesgo y de las condiciones vigentes.</p></div>
           <ul className="company-strip" aria-label="Compañías aseguradoras">
             {companies.map((name) => (<li className="company-chip" key={name}>{name}</li>))}
           </ul>
