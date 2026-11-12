@@ -91,3 +91,51 @@ test("product and resource CTAs have descriptive accessible names", async ({ pag
     await expect(quoteLinks.first()).toHaveAccessibleName(/cotiz|solicitar/i);
   }
 });
+
+
+test("resource guides show editorial attribution and matching Article/Breadcrumb JSON-LD", async ({ page }) => {
+  const resourceRoutes = routes.filter((route) => route.startsWith("/recursos/"));
+  for (const route of resourceRoutes) {
+    await page.goto(route);
+    await expect(page.locator(".seo-article-meta")).toContainText("Agustín Montes");
+    await expect(page.locator('time[datetime="2026-11-06"]')).toContainText("Publicado");
+    await expect(page.locator('time[datetime="2026-11-11"]')).toContainText("Actualizado");
+
+    const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+      nodes.flatMap((node) => {
+        const parsed = JSON.parse(node.textContent || "null");
+        return Array.isArray(parsed) ? parsed : [parsed];
+      })
+    );
+    const article = schemas.find((schema) => schema["@type"] === "Article");
+    expect(article, route + " Article schema").toBeTruthy();
+    expect(article.datePublished).toBe("2026-11-06");
+    expect(article.dateModified).toBe("2026-11-11");
+    expect(article.author).toMatchObject({
+      "@type": "Person",
+      "@id": "https://cotizatuseguro.com.ar/#advisor",
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros"
+    });
+    expect(schemas.some((schema) => schema["@type"] === "BreadcrumbList")).toBeTruthy();
+  }
+});
+
+test("Mendoza landing describes the verified service scope without inventing a storefront", async ({ page }) => {
+  await page.goto("/seguros-en-mendoza");
+  await expect(page.getByRole("heading", { name: "Atención desde Mendoza y consultas de alcance nacional" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "la página profesional de Agustín Montes" })).toHaveAttribute("href", "/sobre-agustin-montes");
+
+  const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+    nodes.flatMap((node) => {
+        const parsed = JSON.parse(node.textContent || "null");
+        return Array.isArray(parsed) ? parsed : [parsed];
+      })
+  );
+  const types = schemas.map((schema) => schema["@type"]);
+  expect(types).toContain("WebPage");
+  expect(types).toContain("BreadcrumbList");
+  expect(types).toContain("ItemList");
+  expect(types).not.toContain("LocalBusiness");
+  expect(types).not.toContain("ProfessionalService");
+});
