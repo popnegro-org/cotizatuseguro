@@ -1,4 +1,5 @@
 import { serializeJsonLd } from "../components/seo/serialize-json-ld.ts";
+import { articleSchema } from "../components/seo/article-schema.ts";
 import robots from "../app/robots.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -58,7 +59,7 @@ test("six product routes exist and resource catalogue has seven articles", () =>
 
 test("resource article route is statically generated with canonical Article metadata", () => {
   const source = readFileSync(path.join(root, "app/recursos/[slug]/page.tsx"), "utf8");
-  for (const fragment of ["generateStaticParams", "getAllResourceSlugs", "canonical: path", '"@type": "Article"']) {
+  for (const fragment of ["generateStaticParams", "getAllResourceSlugs", "canonical: path", "articleSchema(article, SITE_URL)", "breadcrumbList"]) {
     assert.ok(source.includes(fragment));
   }
 });
@@ -119,4 +120,51 @@ test("professional structured data reflects the confirmed national service area"
   assert.match(page, /jobTitle: "Productor Asesor de Seguros"/);
   assert.match(page, /"@type": "Country",[\s\S]*name: "Argentina"/);
   assert.match(page, /consultas de alcance nacional/i);
+});
+
+
+test("all resource articles declare grounded editorial dates and an attributed author", () => {
+  const slugs = [
+    "seguro-auto-mendoza",
+    "factores-precio-seguro-auto",
+    "rc-vs-todo-riesgo",
+    "datos-para-cotizar-hogar",
+    "riesgos-consorcios",
+    "documentacion-caucion-alquiler",
+    "elegir-cobertura-bicicleta"
+  ];
+  for (const slug of slugs) {
+    const source = readFileSync(path.join(root, "content/resources", slug + ".ts"), "utf8");
+    assert.match(source, /datePublished: "2026-11-06"/, slug + " publication date");
+    assert.match(source, /dateModified: "2026-11-11"/, slug + " modification date");
+    assert.match(source, /name: "Agustín Montes"/, slug + " author");
+    assert.match(source, /jobTitle: "Productor Asesor de Seguros"/, slug + " author role");
+    assert.match(source, /url: "\/sobre-agustin-montes"/, slug + " author profile");
+  }
+});
+
+test("Article JSON-LD includes editorial dates, named author and canonical page identity", () => {
+  const schema = articleSchema({
+    slug: "guia-prueba",
+    title: "Guía de prueba",
+    metaDescription: "Descripción de prueba",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    }
+  }, "https://cotizatuseguro.com.ar");
+
+  assert.equal(schema["@type"], "Article");
+  assert.equal(schema["@id"], "https://cotizatuseguro.com.ar/recursos/guia-prueba#article");
+  assert.equal(schema.datePublished, "2026-11-06");
+  assert.equal(schema.dateModified, "2026-11-11");
+  assert.equal(schema.author["@type"], "Person");
+  assert.equal(schema.author["@id"], "https://cotizatuseguro.com.ar/#advisor");
+  assert.equal(schema.author.name, "Agustín Montes");
+  assert.equal(schema.author.url, "https://cotizatuseguro.com.ar/sobre-agustin-montes");
+  assert.equal(schema.publisher["@type"], "Person");
+  assert.equal(schema.publisher["@id"], "https://cotizatuseguro.com.ar/#advisor");
 });
