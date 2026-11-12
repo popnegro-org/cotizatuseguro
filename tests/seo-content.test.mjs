@@ -122,7 +122,8 @@ test("professional structured data reflects the confirmed national service area"
   assert.match(page, /"@type": "InsuranceAgency"/);
   assert.match(page, /streetAddress: "Av\. San Martín Sur 6996"/);
   assert.match(page, /addressLocality: "Luján de Cuyo"/);
-  assert.match(page, /name: "Provincia de Mendoza"/);
+  for (const area of ["Ciudad de Mendoza", "Godoy Cruz", "Guaymallén", "Las Heras", "Luján de Cuyo", "Maipú"]) assert.ok(page.includes(area), "missing local service area: " + area);
+  assert.doesNotMatch(page, /toda la provincia de Mendoza/i);
   assert.match(page, /maps\.app\.goo\.gl\/fLzqqbVNFxbpigTb8/);
   assert.match(page, /consultas de alcance nacional/i);
 });
