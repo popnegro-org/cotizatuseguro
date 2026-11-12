@@ -123,7 +123,7 @@ test("resource guides show editorial attribution and matching Article/Breadcrumb
 
 test("Mendoza landing describes the verified in-person and home-visit service scope", async ({ page }) => {
   await page.goto("/seguros-en-mendoza");
-  await expect(page.getByRole("heading", { name: "Atención presencial y a domicilio en Mendoza" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Atención presencial y visitas en Gran Mendoza" })).toBeVisible();
   await expect(page.getByText(/Av\. San Martín Sur 6996/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Cómo llegar en Google Maps" })).toHaveAttribute("href", "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8");
 
@@ -140,11 +140,11 @@ test("Mendoza landing describes the verified in-person and home-visit service sc
   expect(types).toContain("InsuranceAgency");
 });
 
-test("professional profile displays the confirmed address and provincial service area", async ({ page }) => {
+test("professional profile displays the confirmed address and restricted Gran Mendoza service area", async ({ page }) => {
   await page.goto("/sobre-agustin-montes");
   await expect(page.getByRole("heading", { name: "Atención presencial en Luján de Cuyo" })).toBeVisible();
   await expect(page.locator("address")).toContainText("Av. San Martín Sur 6996");
-  await expect(page.getByText(/atención a domicilio en toda la provincia de Mendoza/i)).toBeVisible();
+  await expect(page.getByText(/Ciudad de Mendoza, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú/)).toBeVisible();
   const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
     nodes.flatMap((node) => {
       const parsed = JSON.parse(node.textContent || "null");
@@ -163,6 +163,6 @@ test("professional profile displays the confirmed address and provincial service
       postalCode: "M5505",
       addressCountry: "AR"
     },
-    areaServed: { "@type": "AdministrativeArea", name: "Provincia de Mendoza" }
+    areaServed: [\n      { "@type": "AdministrativeArea", name: "Ciudad de Mendoza" },\n      { "@type": "AdministrativeArea", name: "Godoy Cruz" },\n      { "@type": "AdministrativeArea", name: "Guaymallén" },\n      { "@type": "AdministrativeArea", name: "Las Heras" },\n      { "@type": "AdministrativeArea", name: "Luján de Cuyo" },\n      { "@type": "AdministrativeArea", name: "Maipú" }\n    ]
   });
 });
