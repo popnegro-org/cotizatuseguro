@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Qué variables suelen impactar el precio de un seguro de auto: vehículo, uso, ubicación, coberturas y compañía. Guía orientativa para Mendoza.",
     formId: "auto",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "El precio de un seguro de auto no es fijo: depende del vehículo (marca, modelo, año y valor), del tipo de cobertura elegida, de la ubicación y uso, del perfil del asegurado según cada compañía y de la política comercial del momento. Dos cotizaciones para el mismo auto pueden diferir porque cada aseguradora pondera el riesgo de forma distinta.",
     sections: [
