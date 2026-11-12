@@ -14,11 +14,12 @@ test("robots blocks indexing outside production and exposes sitemap only in prod
     process.env.VERCEL_ENV = "preview";
     assert.deepEqual(robots(), { rules: [{ userAgent: "*", disallow: "/" }] });
     process.env.VERCEL_ENV = "production";
-    assert.deepEqual(robots(), {
+    const productionRobots = robots();
+    assert.deepEqual(productionRobots, {
       rules: [{ userAgent: "*", allow: "/", disallow: "/api/" }],
-      sitemap: "https://cotizatuseguro.com.ar/sitemap.xml",
-      host: "https://cotizatuseguro.com.ar"
+      sitemap: "https://cotizatuseguro.com.ar/sitemap.xml"
     });
+    assert.equal("host" in productionRobots, false, "robots.txt must not emit the unsupported Host directive");
   } finally {
     if (previous === undefined) delete process.env.VERCEL_ENV;
     else process.env.VERCEL_ENV = previous;
