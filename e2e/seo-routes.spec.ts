@@ -163,6 +163,13 @@ test("professional profile displays the confirmed address and restricted Gran Me
       postalCode: "M5505",
       addressCountry: "AR"
     },
-    areaServed: [\n      { "@type": "AdministrativeArea", name: "Ciudad de Mendoza" },\n      { "@type": "AdministrativeArea", name: "Godoy Cruz" },\n      { "@type": "AdministrativeArea", name: "Guaymallén" },\n      { "@type": "AdministrativeArea", name: "Las Heras" },\n      { "@type": "AdministrativeArea", name: "Luján de Cuyo" },\n      { "@type": "AdministrativeArea", name: "Maipú" }\n    ]
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Ciudad de Mendoza" },
+      { "@type": "AdministrativeArea", name: "Godoy Cruz" },
+      { "@type": "AdministrativeArea", name: "Guaymallén" },
+      { "@type": "AdministrativeArea", name: "Las Heras" },
+      { "@type": "AdministrativeArea", name: "Luján de Cuyo" },
+      { "@type": "AdministrativeArea", name: "Maipú" }
+    ]
   });
 });
