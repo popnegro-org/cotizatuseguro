@@ -11,12 +11,12 @@ const path = "/seguros-en-mendoza";
 export const metadata: Metadata = {
   title: "Seguros en Mendoza | CotizaTuSeguro — Agustín Montes",
   description:
-    "Cotizá seguros en Mendoza: auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Asesoramiento local de Agustín Montes, Productor Asesor de Seguros.",
+    "Asesoramiento en seguros desde Mendoza y consultas nacionales para auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Disponibilidad según cada riesgo.",
   alternates: { canonical: path },
   openGraph: {
     title: "Seguros en Mendoza | CotizaTuSeguro",
     description:
-      "Cotización de seguros en Mendoza para seis tipos de cobertura. Consultas y seguimiento directo por WhatsApp.",
+      "Asesoramiento en seguros desde Mendoza y consultas de alcance nacional, según el riesgo y la disponibilidad de cada producto.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "website"
@@ -30,7 +30,7 @@ export default function SegurosEnMendozaPage() {
       path,
       name: "Seguros en Mendoza",
       description:
-        "Cotizá seguros en Mendoza con asesoramiento local. Auto, moto, hogar, consorcio, bicicleta y caución de alquiler."
+        "Asesoramiento en seguros desde Mendoza y consultas de alcance nacional. La disponibilidad depende del riesgo, el producto y la aseguradora."
     }),
     breadcrumbList(
       [
@@ -87,6 +87,21 @@ export default function SegurosEnMendozaPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="section seo-section">
+        <div className="container seo-prose">
+          <h2>Atención desde Mendoza y consultas de alcance nacional</h2>
+          <p>
+            Agustín Montes desarrolla su actividad desde Mendoza y recibe consultas de alcance nacional.
+            La disponibilidad de cada producto y la posibilidad de avanzar con una propuesta se confirman
+            según las características del riesgo y las condiciones de cada aseguradora.
+          </p>
+          <p>
+            Para conocer al asesor y cómo gestiona las solicitudes, visitá
+            {" "}<Link href="/sobre-agustin-montes">la página profesional de Agustín Montes</Link>.
+          </p>
         </div>
       </section>
 
