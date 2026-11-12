@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Qué datos pedir para cotizar seguro de hogar en Mendoza: superficie, ubicación, tipo de vivienda y uso. Guía práctica y orientativa.",
     formId: "hogar",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "Para cotizar un seguro de hogar suelen pedir ubicación del inmueble, superficie aproximada, tipo de vivienda (casa o departamento), material de construcción cuando aplica, y si es de uso permanente o temporal. Con esos datos se puede iniciar una consulta. Los riesgos que pueden incluirse —por ejemplo incendio, contenidos, daños por agua o responsabilidad civil— dependen del producto y de las condiciones ofrecidas.",
     sections: [
