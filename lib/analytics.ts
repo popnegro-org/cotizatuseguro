@@ -1,19 +1,12 @@
-/** Client-side analytics helpers. Only fire after explicit measurement consent. */
+import { hasAcceptedAnalyticsConsent } from "./analytics-consent";
 
+/** Client-side analytics helpers. Only fire after explicit measurement consent. */
 export function track(event: string, params: Record<string, string> = {}, eventCallback?: () => void) {
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" || !hasAcceptedAnalyticsConsent()) {
     eventCallback?.();
     return;
   }
-  let consentAccepted = false;
-  try {
-    consentAccepted = window.localStorage.getItem("analytics-consent") === "accepted";
-  } catch {
-  }
-  if (!consentAccepted) {
-    eventCallback?.();
-    return;
-  }
+
   const w = window as Window & {
     dataLayer?: Record<string, unknown>[];
     fbq?: (...args: unknown[]) => void;
@@ -25,7 +18,7 @@ export function track(event: string, params: Record<string, string> = {}, eventC
     ...(eventCallback ? { eventCallback, eventTimeout: 1200 } : {})
   });
 
-  // Meta Pixel is sent directly from the browser; never pass contact fields or form payloads.
+  // Meta Pixel events are handled only by an optional fbq installed through GTM.
   if (w.fbq) {
     const productName = params.insurance_product || "seguro";
     if (event === "insurance_product_select") {

@@ -1,11 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
-declare global {
-  interface Window { __metaCalls?: unknown[][]; }
-}
-
 async function waitForConsentBanner(page: Page) {
-  await expect(page.getByLabel("Preferencias de privacidad")).toBeVisible({ timeout: 5000 });
+  const banner = page.getByLabel("Preferencias de privacidad");
+  await expect(banner).toHaveCount(1);
+  await expect(banner).toBeVisible({ timeout: 5000 });
+  return banner;
 }
 
 async function completeAutoRisk(page: Page) {
@@ -45,8 +44,8 @@ test("el formulario simplifica Auto, conserva Uso para Moto y mantiene la navega
   await expect(page.getByLabel("Uso (opcional)")).toHaveCount(0);
   await page.getByLabel("Tipo de seguro *").selectOption("moto");
   await expect(page.getByLabel("Uso (opcional)")).toBeVisible();
-
   await expect(page.locator(".footer-bottom-links").getByRole("link", { name: "Política de privacidad" })).toBeVisible();
+  await expect(page.locator(".footer-bottom-links").getByRole("button", { name: "Preferencias de cookies" })).toBeVisible();
 });
 
 test("rechazar consentimiento mantiene bloqueadas las etiquetas de medición", async ({ page }) => {
@@ -55,28 +54,41 @@ test("rechazar consentimiento mantiene bloqueadas las etiquetas de medición", a
     if (/googletagmanager\.com|google-analytics\.com|connect\.facebook\.net|facebook\.com\/tr/i.test(request.url())) analyticsRequests.push(request.url());
   });
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Rechazar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Rechazar" }).click();
   await expect(page.getByLabel("Preferencias de privacidad")).toHaveCount(0);
   await page.waitForTimeout(500);
   expect(analyticsRequests).toEqual([]);
   expect(await page.evaluate(() => localStorage.getItem("analytics-consent"))).toBe("rejected");
 });
 
-test("aceptar consentimiento carga Meta Pixel y encola PageView", async ({ page }) => {
-  await page.route("https://connect.facebook.net/en_US/fbevents.js", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/javascript",
-      body: "window.__metaCalls = window.fbq?.queue?.map((args) => [...args]) || []; if (window.fbq) { window.fbq.callMethod = (...args) => window.__metaCalls.push(args); window.fbq.queue = []; }"
-    });
+test("aceptar consentimiento carga GTM y persiste la decisión", async ({ page }) => {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+  const gtmRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("www.googletagmanager.com/gtm.js")) gtmRequests.push(request.url());
   });
+  await page.route("https://www.googletagmanager.com/**", (route) => route.fulfill({ status: 200, contentType: "application/javascript", body: "" }));
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Aceptar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Aceptar" }).click();
   await expect(page.getByLabel("Preferencias de privacidad")).toHaveCount(0);
-  await expect(page.locator("#meta-pixel-loader")).toHaveCount(1);
-  await expect.poll(async () => page.evaluate(() => window.__metaCalls?.length || 0)).toBeGreaterThanOrEqual(2);
+  expect(await page.evaluate(() => localStorage.getItem("analytics-consent"))).toBe("accepted");
+  if (gtmId) {
+    await expect(page.locator("#gtm-loader")).toHaveAttribute("src", `https://www.googletagmanager.com/gtm.js?id=${gtmId}`);
+    await expect.poll(() => gtmRequests.length).toBeGreaterThan(0);
+  } else {
+    await expect(page.locator("#gtm-loader")).toHaveCount(0);
+  }
+});
+
+test("GTM queda disponible en páginas internas después de aceptar consentimiento", async ({ page }) => {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+  test.skip(!gtmId, "NEXT_PUBLIC_GTM_ID no está configurado en este entorno");
+  await page.addInitScript(() => localStorage.setItem("analytics-consent", "accepted"));
+  await page.route("https://www.googletagmanager.com/**", (route) => route.fulfill({ status: 200, contentType: "application/javascript", body: "" }));
+  await page.goto("/privacidad");
+  await expect(page.locator("#gtm-loader")).toHaveAttribute("src", `https://www.googletagmanager.com/gtm.js?id=${gtmId}`);
 });
 
 test("el paso 1 valida el riesgo y no envía leads incompletos", async ({ page }) => {
@@ -102,12 +114,10 @@ test("el paso 2 pide contacto, provincia y localidad, y permite omitir email", a
   await page.route("https://wa.me/**", async (route) => {
     await route.fulfill({ status: 200, contentType: "text/html", body: "<title>WhatsApp intercepted</title>" });
   });
-
   await page.goto("/");
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   await completeAutoRisk(page);
   await page.getByRole("button", { name: "Continuar" }).click();
-
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("heading", { name: "¿Cómo te contactamos?" })).toBeVisible();
   await expect(page.getByText("Te abro WhatsApp con el resumen de tu solicitud.", { exact: true })).toBeVisible();
@@ -121,25 +131,14 @@ test("el paso 2 pide contacto, provincia y localidad, y permite omitir email", a
   await expect(page.getByLabel("Localidad o departamento *")).toBeVisible();
   await expect(page.locator("#phone")).toHaveAttribute("inputmode", "tel");
   await expect(page.locator("#email")).toHaveAttribute("inputmode", "email");
-
   await page.getByLabel("Nombre y apellido *").fill("QA Playwright");
   await page.getByLabel("WhatsApp *").fill("+54 261 555 0101");
   await page.getByLabel("Provincia *").selectOption("Mendoza");
   await page.getByLabel("Localidad o departamento *").fill("Godoy Cruz");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Enviar y continuar por WhatsApp" }).click();
-
   await expect.poll(() => leadPayload).toBeTruthy();
-  expect(leadPayload).toMatchObject({
-    name: "QA Playwright",
-    email: "",
-    phone: "542615550101",
-    province: "Mendoza",
-    city: "Godoy Cruz",
-    product: "auto",
-    website: ""
-  });
-
+  expect(leadPayload).toMatchObject({ name: "QA Playwright", email: "", phone: "542615550101", province: "Mendoza", city: "Godoy Cruz", product: "auto", website: "" });
   await expect(page).toHaveURL(/https:\/\/wa\.me\//);
   const message = new URL(page.url()).searchParams.get("text") || "";
   expect(message).toContain("Hola Agustín, completé el formulario de Auto.");
@@ -156,10 +155,8 @@ test("el honeypot no tiene texto visible ni entra en el orden de foco", async ({
   await expect(honeypot).toHaveAttribute("tabindex", "-1");
   await expect(honeypot).toHaveAttribute("autocomplete", "off");
   await expect(wrapper).not.toContainText(/dejá este campo vacío/i);
-  const position = await wrapper.evaluate((element) => getComputedStyle(element).position);
-  expect(position).toBe("absolute");
-  const clip = await wrapper.evaluate((element) => getComputedStyle(element).clip);
-  expect(clip).toBe("rect(0px, 0px, 0px, 0px)");
+  expect(await wrapper.evaluate((element) => getComputedStyle(element).position)).toBe("absolute");
+  expect(await wrapper.evaluate((element) => getComputedStyle(element).clip)).toBe("rect(0px, 0px, 0px, 0px)");
 });
 
 test("hogar acepta metros o ambientes y solicita provincia y localidad en el paso 2", async ({ page }) => {
@@ -178,22 +175,18 @@ test("hogar acepta metros o ambientes y solicita provincia y localidad en el pas
 test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await waitForConsentBanner(page);
-  await page.getByRole("button", { name: "Rechazar" }).click();
+  const banner = await waitForConsentBanner(page);
+  await banner.getByRole("button", { name: "Rechazar" }).click();
   await page.locator("#cotizar").scrollIntoViewIfNeeded();
   const progress = page.getByRole("list", { name: "Progreso del formulario" });
   await expect(progress.locator('[aria-current="step"]')).toHaveText("1. Tu seguro");
-  const progressPosition = await progress.evaluate((element) => getComputedStyle(element).position);
-  expect(progressPosition).toBe("sticky");
-  const stickyPosition = await page.locator(".form-actions").evaluate((element) => getComputedStyle(element).position);
-  expect(stickyPosition).toBe("sticky");
+  expect(await progress.evaluate((element) => getComputedStyle(element).position)).toBe("sticky");
+  expect(await page.locator(".form-actions").evaluate((element) => getComputedStyle(element).position)).toBe("sticky");
   await completeAutoRisk(page);
   await page.getByRole("button", { name: "Continuar" }).click();
   await expect(progress.locator('[aria-current="step"]')).toHaveText("2. Tus datos");
   await expect(page.locator("#quote-form-title")).toBeFocused();
   await expect(page.getByRole("button", { name: "Enviar y continuar por WhatsApp" })).toBeVisible();
-
-  // Simulate the viewport reduction caused by an on-screen keyboard on mobile.
   await page.setViewportSize({ width: 390, height: 500 });
   await page.getByLabel("WhatsApp *").scrollIntoViewIfNeeded();
   await page.getByLabel("WhatsApp *").focus();
@@ -202,14 +195,9 @@ test("el stepper y el botón permanecen accesibles en mobile", async ({ page }) 
   const buttonBox = await stickyButton.boundingBox();
   expect(buttonBox).not.toBeNull();
   expect(buttonBox!.y + buttonBox!.height).toBeLessThanOrEqual(500);
-
   await page.setViewportSize({ width: 320, height: 844 });
   await expect(page.locator(".form-actions .button-secondary")).toBeVisible();
-  const narrowViewport = await page.evaluate(() => ({
-    viewport: window.innerWidth,
-    document: document.documentElement.scrollWidth,
-    actionRight: document.querySelector(".form-actions")!.getBoundingClientRect().right
-  }));
+  const narrowViewport = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth, actionRight: document.querySelector(".form-actions")!.getBoundingClientRect().right }));
   expect(narrowViewport.document).toBe(narrowViewport.viewport);
   expect(narrowViewport.actionRight).toBeLessThanOrEqual(narrowViewport.viewport);
 });
@@ -228,16 +216,11 @@ test("la navegación compartida no desborda en móvil", async ({ page }) => {
   for (const width of [320, 390, 560, 768, 900, 901, 1024]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/");
-    const dimensions = await page.evaluate(() => ({
-      viewport: document.documentElement.clientWidth,
-      document: document.documentElement.scrollWidth,
-      header: document.querySelector("header.site-header")?.scrollWidth ?? 0
-    }));
+    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, document: document.documentElement.scrollWidth, header: document.querySelector("header.site-header")?.scrollWidth ?? 0 }));
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
     expect(dimensions.header).toBeLessThanOrEqual(dimensions.viewport);
   }
 });
-
 
 test("el formulario principal está integrado en la columna derecha del hero", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -248,8 +231,7 @@ test("el formulario principal está integrado en la columna derecha del hero", a
   await expect(hero.locator("#cotizar")).toBeVisible();
   await expect(page.locator("main > #cotizar")).toHaveCount(0);
   await expect(page.locator(".quote-layout")).toHaveCount(0);
-  const columns = await page.locator(".hero-grid").evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
-  expect(columns).toBe(2);
+  expect(await page.locator(".hero-grid").evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(2);
   await expect(page.getByLabel("Tipo de seguro *")).toBeVisible();
 });
 
@@ -266,9 +248,7 @@ test("el consentimiento flota abajo a la izquierda en desktop y en el bottom en 
   expect(placement.left).toBeLessThan(32);
   expect(placement.bottom).toBeGreaterThanOrEqual(20);
   expect(placement.bottom).toBeLessThanOrEqual(28);
-
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.waitForTimeout(0);
   placement = await banner.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     return { position: getComputedStyle(element).position, left: rect.left, right: window.innerWidth - rect.right, bottom: window.innerHeight - rect.bottom };
@@ -278,7 +258,6 @@ test("el consentimiento flota abajo a la izquierda en desktop y en el bottom en 
   expect(placement.right).toBeGreaterThanOrEqual(8);
   expect(placement.bottom).toBeGreaterThanOrEqual(8);
   expect(placement.bottom).toBeLessThanOrEqual(40);
-
 });
 
 test("FAQ en una columna centrada y solo un collapse abierto", async ({ page }) => {
@@ -286,8 +265,7 @@ test("FAQ en una columna centrada y solo un collapse abierto", async ({ page }) 
   const list = page.locator(".faq-list");
   const items = list.locator(":scope > details");
   await expect(items).toHaveCount(8);
-  const tracks = await list.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length);
-  expect(tracks).toBe(1);
+  expect(await list.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(1);
   await expect(items.nth(0)).toHaveAttribute("open", "");
   await items.nth(1).locator("summary").click();
   await expect(items.nth(1)).toHaveAttribute("open", "");

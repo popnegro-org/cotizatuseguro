@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { QuoteForm, type QuoteFormHandle } from "../components/quote-form";
 import { SiteFooter, SiteHeader } from "../components/site-navigation";
+import { useAnalyticsConsent } from "../components/consent-provider";
 import { products, type FormProductId } from "../content/site";
 import { track } from "../lib/analytics";
 
@@ -29,86 +30,15 @@ const companies = [
 export default function Home() {
   const quoteRef = useRef<QuoteFormHandle>(null);
   const [hasStartedQuote, setHasStartedQuote] = useState(false);
-  const [consent, setConsent] = useState<"unknown" | "accepted" | "rejected">("unknown");
-  const [showConsent, setShowConsent] = useState(false);
+  const { bannerVisible, accept, reject } = useAnalyticsConsent();
 
   useEffect(() => {
-    let saved: string | null = null;
-    try {
-      saved = window.localStorage.getItem("analytics-consent");
-    } catch {
-    }
-    if (saved === "accepted" || saved === "rejected") setConsent(saved);
     const params = new URLSearchParams(window.location.search);
     const p = params.get("producto");
     if (p && ["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"].includes(p)) {
       setHasStartedQuote(true);
     }
   }, []);
-
-  useEffect(() => {
-    if (consent !== "unknown") {
-      setShowConsent(false);
-      return;
-    }
-    const id = window.setTimeout(() => setShowConsent(true), 1800);
-    return () => window.clearTimeout(id);
-  }, [consent]);
-
-  useEffect(() => {
-    if (consent !== "accepted") return;
-
-    const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-    if (metaPixelId && !document.getElementById("meta-pixel-loader")) {
-      type MetaPixelFunction = ((...args: unknown[]) => void) & {
-        callMethod?: (...args: unknown[]) => void;
-        queue: unknown[][];
-        push: (...args: unknown[]) => void;
-        loaded?: boolean;
-        version?: string;
-      };
-      const w = window as Window & { fbq?: MetaPixelFunction; _fbq?: MetaPixelFunction };
-      if (!w.fbq) {
-        const fbq = function (...args: unknown[]) {
-          if (fbq.callMethod) fbq.callMethod(...args);
-          else fbq.queue.push(args);
-        } as MetaPixelFunction;
-        fbq.queue = [];
-        fbq.push = fbq;
-        fbq.loaded = true;
-        fbq.version = "2.0";
-        w.fbq = fbq;
-        w._fbq = fbq;
-      }
-      w.fbq("init", metaPixelId);
-      w.fbq("track", "PageView");
-      const pixelScript = document.createElement("script");
-      pixelScript.id = "meta-pixel-loader";
-      pixelScript.async = true;
-      pixelScript.src = "https://connect.facebook.net/en_US/fbevents.js";
-      document.head.appendChild(pixelScript);
-    }
-
-    const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
-    if (!gtmId || document.getElementById("gtm-loader")) return;
-    const w = window as Window & { dataLayer?: Record<string, unknown>[] };
-    w.dataLayer = w.dataLayer || [];
-    w.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-    const script = document.createElement("script");
-    script.id = "gtm-loader";
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`;
-    document.head.appendChild(script);
-  }, [consent]);
-
-  function acceptConsent(value: "accepted" | "rejected") {
-    try {
-      window.localStorage.setItem("analytics-consent", value);
-    } catch {
-    }
-    setConsent(value);
-    track("consent_choice", { consent_choice: value });
-  }
 
   function chooseProduct(product: FormProductId) {
     setHasStartedQuote(true);
@@ -125,15 +55,18 @@ export default function Home() {
         onProductClick={(productId) => chooseProduct(productId)}
       />
 
-      {consent === "unknown" && showConsent && (
+      {bannerVisible ? (
         <aside className="consent-banner" aria-label="Preferencias de privacidad">
-          <p>Usamos medición del sitio. Las etiquetas solo se activan si aceptás. <a href="/privacidad">Más info</a>.</p>
+          <p>
+            Usamos medición del sitio. Las etiquetas solo se activan si aceptás.{" "}
+            <a href="/privacidad">Más info</a>.
+          </p>
           <div className="consent-actions">
-            <button type="button" onClick={() => acceptConsent("rejected")}>Rechazar</button>
-            <button className="accept" type="button" onClick={() => acceptConsent("accepted")}>Aceptar</button>
+            <button type="button" onClick={reject}>Rechazar</button>
+            <button className="accept" type="button" onClick={accept}>Aceptar</button>
           </div>
         </aside>
-      )}
+      ) : null}
 
       <main id="contenido-principal">
         <section className="hero hero-redesign"><div className="container hero-grid hero-grid-redesign">
@@ -207,11 +140,16 @@ export default function Home() {
         onProductClick={(productId) => chooseProduct(productId)}
       />
 
-      {!(consent === "unknown" && showConsent) && (
-        <a className={"floating-cta" + (hasStartedQuote ? " is-whatsapp" : "")} href="#cotizar" onClick={() => track("cta_click", { cta_location: "floating_cta" })}><span aria-hidden="true">{hasStartedQuote ? "↗" : "↓"}</span> {hasStartedQuote ? "WhatsApp · Cotizar" : "Ir a cotizar"}</a>
-      )}
-
-
+      {!bannerVisible ? (
+        <a
+          className={"floating-cta" + (hasStartedQuote ? " is-whatsapp" : "")}
+          href="#cotizar"
+          onClick={() => track("cta_click", { cta_location: "floating_cta" })}
+        >
+          <span aria-hidden="true">{hasStartedQuote ? "↗" : "↓"}</span>{" "}
+          {hasStartedQuote ? "WhatsApp · Cotizar" : "Ir a cotizar"}
+        </a>
+      ) : null}
     </>
   );
 }
