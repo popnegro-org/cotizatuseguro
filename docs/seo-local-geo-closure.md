@@ -19,16 +19,19 @@ Cada guía publica:
 - BreadcrumbList, coherente con la ruta visible.
 - El autor referencia el Person global https://cotizatuseguro.com.ar/#advisor.
 
-La página /seguros-en-mendoza conserva WebPage, BreadcrumbList e ItemList. No se agregó LocalBusiness ni ProfessionalService: todavía no está acreditada la modalidad de atención ni la elegibilidad del establecimiento para un perfil local. No deben agregarse dirección postal, horarios, reseñas ni coordenadas por inferencia.
+La página /seguros-en-mendoza conserva WebPage, BreadcrumbList e ItemList. La página profesional declara además InsuranceAgency con dirección postal y área de servicio provincial. La dirección visible se incorporó porque el titular confirmó que los clientes pueden visitar el domicilio. No se agregaron horarios, reseñas ni coordenadas sin datos verificables.
 
 ### SEO local
 
-La página /seguros-en-mendoza ahora declara explícitamente:
-- Actividad gestionada desde Mendoza.
+La página /seguros-en-mendoza y el perfil profesional declaran:
+- Dirección de atención presencial: Av. San Martín Sur 6996, M5505 Luján de Cuyo, Mendoza, Argentina.
+- Los clientes pueden visitar el domicilio.
+- Atención a domicilio en toda la provincia de Mendoza.
 - Recepción de consultas de alcance nacional.
-- Evaluación de disponibilidad por riesgo, producto y aseguradora.
+- Disponibilidad de cada producto sujeta a evaluación del riesgo y condiciones de cada aseguradora.
+- Enlace de ubicación proporcionado por el titular: https://maps.app.goo.gl/fLzqqbVNFxbpigTb8.
 
-No se crearon páginas por localidad ni se declararon zonas de servicio adicionales sin confirmación. El contenido no implica que exista un local abierto al público.
+No se crearon páginas por localidad. El domicilio se declara como ubicación de atención en el sitio; la visibilidad de la dirección en Google Business Profile requiere verificar además que el establecimiento cumpla las reglas de señalización permanente y personal presente durante los horarios publicados, si se desea mostrar como híbrido.
 
 ## Medición: estado técnico y límites de evidencia
 
@@ -71,13 +74,12 @@ Para cerrar la medición:
 ## Requisitos de decisión del cliente para Google Business Profile
 
 Antes de crear o modificar un perfil local, confirmar documentalmente:
-- Si los clientes pueden visitar un establecimiento durante el horario publicado.
-- Si existe atención presencial o a domicilio y cuál es el alcance real.
-- Si la dirección corresponde a un lugar de atención apto para exhibirse públicamente o debe ocultarse como área de servicio.
-- Categoría profesional y datos de contacto vigentes.
-- Existencia y titularidad de un perfil anterior.
+- Confirmado por el titular: los clientes pueden visitar el domicilio y existe atención a domicilio en toda Mendoza.
+- Pendiente para mostrar la dirección en Google Business Profile como negocio híbrido: confirmar señalización fija y permanente con el nombre comercial en el domicilio y personal del negocio presente para recibir clientes durante los horarios publicados.
+- Pendiente: horarios de atención, teléfono comercial principal y titularidad/estado de un perfil de Google existente.
+- Categoría sugerida para revisar en GBP: Insurance agency / Agencia de seguros, según las categorías disponibles en la interfaz de Google.
 
-Hasta confirmar esos datos, mantener la estrategia local en la página de Mendoza y la identidad profesional existente. No crear reseñas, ubicaciones ni áreas de servicio ficticias.
+No crear reseñas ni horarios ficticios. Si no se cumplen las condiciones de señalización y personal para mostrar la dirección, configurar el perfil como negocio de área de servicio y ocultar el domicilio en el perfil de Google, aunque la web pueda publicar la dirección si el titular desea hacerlo.
 
 ## Criterios de aceptación de esta entrega
 
