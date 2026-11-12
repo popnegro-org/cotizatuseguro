@@ -71,10 +71,10 @@ export default function SobreAgustinPage() {
         postalCode: "M5505",
         addressCountry: "AR"
       },
-      areaServed: {
+      areaServed: ["Ciudad de Mendoza", "Godoy Cruz", "Guaymallén", "Las Heras", "Luján de Cuyo", "Maipú"].map((name) => ({
         "@type": "AdministrativeArea",
-        name: "Provincia de Mendoza"
-      },
+        name
+      })),
       hasMap: "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8"
     },
     breadcrumbList(
@@ -112,7 +112,7 @@ export default function SobreAgustinPage() {
         <div className="container seo-prose">
           <h2>Atención presencial en Luján de Cuyo</h2>
           <address>Av. San Martín Sur 6996, M5505 Luján de Cuyo, Mendoza</address>
-          <p>Los clientes pueden visitar el domicilio y también se ofrece atención a domicilio en toda la provincia de Mendoza.</p>
+          <p>Los clientes pueden visitar el domicilio. También se coordinan visitas a clientes en Ciudad de Mendoza, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú. Las consultas de otras zonas se reciben por canales digitales, sujetas a evaluación del riesgo y disponibilidad del producto.</p>
           <p><a href="https://maps.app.goo.gl/fLzqqbVNFxbpigTb8" target="_blank" rel="noopener noreferrer">Cómo llegar en Google Maps</a></p>
           <h2>Cómo trabajo</h2>
           <p>
