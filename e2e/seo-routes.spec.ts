@@ -121,10 +121,11 @@ test("resource guides show editorial attribution and matching Article/Breadcrumb
   }
 });
 
-test("Mendoza landing describes the verified service scope without inventing a storefront", async ({ page }) => {
+test("Mendoza landing describes the verified in-person and home-visit service scope", async ({ page }) => {
   await page.goto("/seguros-en-mendoza");
-  await expect(page.getByRole("heading", { name: "Atención desde Mendoza y consultas de alcance nacional" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "la página profesional de Agustín Montes" })).toHaveAttribute("href", "/sobre-agustin-montes");
+  await expect(page.getByRole("heading", { name: "Atención presencial y a domicilio en Mendoza" })).toBeVisible();
+  await expect(page.getByText(/Av\. San Martín Sur 6996/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Cómo llegar en Google Maps" })).toHaveAttribute("href", "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8");
 
   const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
     nodes.flatMap((node) => {
@@ -136,6 +137,32 @@ test("Mendoza landing describes the verified service scope without inventing a s
   expect(types).toContain("WebPage");
   expect(types).toContain("BreadcrumbList");
   expect(types).toContain("ItemList");
-  expect(types).not.toContain("LocalBusiness");
-  expect(types).not.toContain("ProfessionalService");
+  expect(types).toContain("InsuranceAgency");
+});
+
+test("professional profile displays the confirmed address and provincial service area", async ({ page }) => {
+  await page.goto("/sobre-agustin-montes");
+  await expect(page.getByRole("heading", { name: "Atención presencial en Luján de Cuyo" })).toBeVisible();
+  await expect(page.locator("address")).toContainText("Av. San Martín Sur 6996");
+  await expect(page.getByText(/atención a domicilio en toda la provincia de Mendoza/i)).toBeVisible();
+  const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+    nodes.flatMap((node) => {
+      const parsed = JSON.parse(node.textContent || "null");
+      return Array.isArray(parsed) ? parsed : [parsed];
+    })
+  );
+  const business = schemas.find((schema) => schema["@type"] === "InsuranceAgency");
+  expect(business).toMatchObject({
+    "@id": "https://cotizatuseguro.com.ar/#local-business",
+    name: "Agustín Montes",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Av. San Martín Sur 6996",
+      addressLocality: "Luján de Cuyo",
+      addressRegion: "Mendoza",
+      postalCode: "M5505",
+      addressCountry: "AR"
+    },
+    areaServed: { "@type": "AdministrativeArea", name: "Provincia de Mendoza" }
+  });
 });
