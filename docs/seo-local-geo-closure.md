@@ -19,14 +19,14 @@ Cada guía publica:
 - BreadcrumbList, coherente con la ruta visible.
 - El autor referencia el Person global https://cotizatuseguro.com.ar/#advisor.
 
-La página /seguros-en-mendoza conserva WebPage, BreadcrumbList e ItemList. La página profesional declara además InsuranceAgency con dirección postal y área de servicio provincial. La dirección visible se incorporó porque el titular confirmó que los clientes pueden visitar el domicilio. No se agregaron horarios, reseñas ni coordenadas sin datos verificables.
+La página /seguros-en-mendoza conserva WebPage, BreadcrumbList e ItemList. La página profesional declara además InsuranceAgency con dirección postal y área de servicio restringida a seis departamentos de Gran Mendoza. La dirección visible se incorporó porque el titular confirmó que los clientes pueden visitar el domicilio. No se agregaron horarios, reseñas ni coordenadas sin datos verificables.
 
 ### SEO local
 
 La página /seguros-en-mendoza y el perfil profesional declaran:
 - Dirección de atención presencial: Av. San Martín Sur 6996, M5505 Luján de Cuyo, Mendoza, Argentina.
 - Los clientes pueden visitar el domicilio.
-- Atención a domicilio en toda la provincia de Mendoza.
+- Visitas coordinadas en Ciudad de Mendoza, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú.\n- Las consultas nacionales se reciben por canales digitales; no implican visitas presenciales fuera del área local.
 - Recepción de consultas de alcance nacional.
 - Disponibilidad de cada producto sujeta a evaluación del riesgo y condiciones de cada aseguradora.
 - Enlace de ubicación proporcionado por el titular: https://maps.app.goo.gl/fLzqqbVNFxbpigTb8.
@@ -74,7 +74,7 @@ Para cerrar la medición:
 ## Requisitos de decisión del cliente para Google Business Profile
 
 Antes de crear o modificar un perfil local, confirmar documentalmente:
-- Confirmado por el titular: los clientes pueden visitar el domicilio y existe atención a domicilio en toda Mendoza.
+- Confirmado por el titular: los clientes pueden visitar el domicilio, existe señalización fija con el nombre comercial y hay personal disponible para recibir clientes durante los horarios de atención.\n- Confirmado por el titular: las visitas se concentran en Gran Mendoza y localidades cercanas; el alcance web y el Schema se limitan a Capital, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú.
 - Pendiente para mostrar la dirección en Google Business Profile como negocio híbrido: confirmar señalización fija y permanente con el nombre comercial en el domicilio y personal del negocio presente para recibir clientes durante los horarios publicados.
 - Pendiente: horarios de atención, teléfono comercial principal y titularidad/estado de un perfil de Google existente.
 - Categoría sugerida para revisar en GBP: Insurance agency / Agencia de seguros, según las categorías disponibles en la interfaz de Google.
@@ -87,5 +87,5 @@ No crear reseñas ni horarios ficticios. Si no se cumplen las condiciones de se�
 - La autoría y las fechas son visibles en HTML y consistentes con Article JSON-LD.
 - Los artículos publican BreadcrumbList.
 - Las pruebas automatizadas comprueban estructura, autor, fechas y serialización.
-- La página local incorpora únicamente el alcance geográfico confirmado.
+- La página local, metadatos y InsuranceAgency JSON-LD limitan las visitas presenciales a seis departamentos de Gran Mendoza.\n- Las consultas nacionales quedan diferenciadas de la cobertura de visitas presenciales.
 - La documentación separa variables configuradas de datos efectivamente recibidos.
