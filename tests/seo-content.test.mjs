@@ -119,6 +119,11 @@ test("professional structured data reflects the confirmed national service area"
   const page = readFileSync(path.join(root, "app/sobre-agustin-montes/page.tsx"), "utf8");
   assert.match(page, /jobTitle: "Productor Asesor de Seguros"/);
   assert.match(page, /"@type": "Country",[\s\S]*name: "Argentina"/);
+  assert.match(page, /"@type": "InsuranceAgency"/);
+  assert.match(page, /streetAddress: "Av\. San Martín Sur 6996"/);
+  assert.match(page, /addressLocality: "Luján de Cuyo"/);
+  assert.match(page, /name: "Provincia de Mendoza"/);
+  assert.match(page, /maps\.app\.goo\.gl\/fLzqqbVNFxbpigTb8/);
   assert.match(page, /consultas de alcance nacional/i);
 });
 
