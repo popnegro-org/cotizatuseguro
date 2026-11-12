@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Documentación habitual para caución de alquiler en Mendoza: datos del inquilino, contrato y requisitos del proveedor. Guía orientativa.",
     formId: "caucion_alquiler",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "Para solicitar una caución de alquiler suele pedirse identificación del inquilino, datos del contrato (monto de alquiler y duración) y documentación personal o laboral que el proveedor de la garantía utilice para evaluar el riesgo. La lista exacta no es universal: cada entidad de caución define sus requisitos y criterios de aprobación.",
     sections: [

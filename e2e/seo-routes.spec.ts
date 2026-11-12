@@ -91,3 +91,85 @@ test("product and resource CTAs have descriptive accessible names", async ({ pag
     await expect(quoteLinks.first()).toHaveAccessibleName(/cotiz|solicitar/i);
   }
 });
+
+
+test("resource guides show editorial attribution and matching Article/Breadcrumb JSON-LD", async ({ page }) => {
+  const resourceRoutes = routes.filter((route) => route.startsWith("/recursos/"));
+  for (const route of resourceRoutes) {
+    await page.goto(route);
+    await expect(page.locator(".seo-article-meta")).toContainText("Agustín Montes");
+    await expect(page.locator('time[datetime="2026-11-06"]')).toContainText("Publicado");
+    await expect(page.locator('time[datetime="2026-11-11"]')).toContainText("Actualizado");
+
+    const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+      nodes.flatMap((node) => {
+        const parsed = JSON.parse(node.textContent || "null");
+        return Array.isArray(parsed) ? parsed : [parsed];
+      })
+    );
+    const article = schemas.find((schema) => schema["@type"] === "Article");
+    expect(article, route + " Article schema").toBeTruthy();
+    expect(article.datePublished).toBe("2026-11-06");
+    expect(article.dateModified).toBe("2026-11-11");
+    expect(article.author).toMatchObject({
+      "@type": "Person",
+      "@id": "https://cotizatuseguro.com.ar/#advisor",
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros"
+    });
+    expect(schemas.some((schema) => schema["@type"] === "BreadcrumbList")).toBeTruthy();
+  }
+});
+
+test("Mendoza landing describes the verified in-person and home-visit service scope", async ({ page }) => {
+  await page.goto("/seguros-en-mendoza");
+  await expect(page.getByRole("heading", { name: "Atención presencial y visitas en Gran Mendoza" })).toBeVisible();
+  await expect(page.getByText(/Av\. San Martín Sur 6996/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Cómo llegar en Google Maps" })).toHaveAttribute("href", "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8");
+
+  const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+    nodes.flatMap((node) => {
+        const parsed = JSON.parse(node.textContent || "null");
+        return Array.isArray(parsed) ? parsed : [parsed];
+      })
+  );
+  const types = schemas.map((schema) => schema["@type"]);
+  expect(types).toContain("WebPage");
+  expect(types).toContain("BreadcrumbList");
+  expect(types).toContain("ItemList");
+  expect(types).toContain("InsuranceAgency");
+});
+
+test("professional profile displays the confirmed address and restricted Gran Mendoza service area", async ({ page }) => {
+  await page.goto("/sobre-agustin-montes");
+  await expect(page.getByRole("heading", { name: "Atención presencial en Luján de Cuyo" })).toBeVisible();
+  await expect(page.locator("address")).toContainText("Av. San Martín Sur 6996");
+  await expect(page.getByText(/Ciudad de Mendoza, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú/)).toBeVisible();
+  const schemas = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+    nodes.flatMap((node) => {
+      const parsed = JSON.parse(node.textContent || "null");
+      return Array.isArray(parsed) ? parsed : [parsed];
+    })
+  );
+  const business = schemas.find((schema) => schema["@type"] === "InsuranceAgency");
+  expect(business).toMatchObject({
+    "@id": "https://cotizatuseguro.com.ar/#local-business",
+    name: "Agustín Montes",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Av. San Martín Sur 6996",
+      addressLocality: "Luján de Cuyo",
+      addressRegion: "Mendoza",
+      postalCode: "M5505",
+      addressCountry: "AR"
+    },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Ciudad de Mendoza" },
+      { "@type": "AdministrativeArea", name: "Godoy Cruz" },
+      { "@type": "AdministrativeArea", name: "Guaymallén" },
+      { "@type": "AdministrativeArea", name: "Las Heras" },
+      { "@type": "AdministrativeArea", name: "Luján de Cuyo" },
+      { "@type": "AdministrativeArea", name: "Maipú" }
+    ]
+  });
+});

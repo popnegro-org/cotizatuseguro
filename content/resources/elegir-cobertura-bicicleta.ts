@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Cómo orientarte al cotizar seguro de bicicleta: valor, uso, robo y daños. Guía práctica para Mendoza.",
     formId: "bicicleta",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "Para elegir una cobertura de bicicleta conviene partir del valor de reposición, del uso (urbano, deportivo o mixto) y del riesgo que más te preocupa, habitualmente el robo. Las condiciones, límites y exclusiones dependen de cada compañía; no hay un único producto estándar para todas las bicicletas.",
     sections: [

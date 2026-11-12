@@ -132,3 +132,24 @@
 .seo-product-icon { display: none !important; }
 .seo-hero { background: var(--paper); }
 .seo-shell .seo-resource-card:hover { box-shadow: none; transform: none; }
+
+
+.seo-article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 1.25rem;
+  color: #52606d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.seo-article-meta p {
+  margin: 0;
+}
+
+.seo-article-meta a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -7,16 +7,24 @@ import { JsonLd, breadcrumbList, webPageSchema } from "../../components/seo/json
 import { SiteChrome } from "../../components/seo/site-chrome";
 
 const path = "/seguros-en-mendoza";
+const localServiceAreas = [
+  "Ciudad de Mendoza",
+  "Godoy Cruz",
+  "Guaymallén",
+  "Las Heras",
+  "Luján de Cuyo",
+  "Maipú"
+];
 
 export const metadata: Metadata = {
   title: "Seguros en Mendoza | CotizaTuSeguro — Agustín Montes",
   description:
-    "Cotizá seguros en Mendoza: auto, moto, hogar, consorcio, bicicleta y caución de alquiler. Asesoramiento local de Agustín Montes, Productor Asesor de Seguros.",
+    "Asesoramiento en seguros desde Luján de Cuyo y atención presencial o a domicilio en Gran Mendoza: Capital, Godoy Cruz, Guaymallén, Las Heras, Luján de Cuyo y Maipú.",
   alternates: { canonical: path },
   openGraph: {
     title: "Seguros en Mendoza | CotizaTuSeguro",
     description:
-      "Cotización de seguros en Mendoza para seis tipos de cobertura. Consultas y seguimiento directo por WhatsApp.",
+      "Atención presencial en Luján de Cuyo y visitas coordinadas en Gran Mendoza. Consultas nacionales sujetas a evaluación del riesgo.",
     locale: "es_AR",
     url: `${SITE_URL}${path}`,
     type: "website"
@@ -30,8 +38,28 @@ export default function SegurosEnMendozaPage() {
       path,
       name: "Seguros en Mendoza",
       description:
-        "Cotizá seguros en Mendoza con asesoramiento local. Auto, moto, hogar, consorcio, bicicleta y caución de alquiler."
+        "Atención presencial en Luján de Cuyo y visitas coordinadas en seis departamentos de Gran Mendoza. Consultas nacionales sujetas a evaluación."
     }),
+    {
+      "@context": "https://schema.org",
+      "@type": "InsuranceAgency",
+      "@id": SITE_URL + "/#local-business",
+      name: "Agustín Montes",
+      url: SITE_URL + "/sobre-agustin-montes",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Av. San Martín Sur 6996",
+        addressLocality: "Luján de Cuyo",
+        addressRegion: "Mendoza",
+        postalCode: "M5505",
+        addressCountry: "AR"
+      },
+      areaServed: localServiceAreas.map((name) => ({
+        "@type": "AdministrativeArea",
+        name
+      })),
+      hasMap: "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8"
+    },
     breadcrumbList(
       [
         { name: "Inicio", path: "/" },
@@ -87,6 +115,32 @@ export default function SegurosEnMendozaPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="section seo-section">
+        <div className="container seo-prose">
+          <h2>Atención presencial y visitas en Gran Mendoza</h2>
+          <p>
+            Agustín Montes atiende presencialmente en Av. San Martín Sur 6996, M5505 Luján de Cuyo,
+            Mendoza. También coordina visitas a clientes en Ciudad de Mendoza, Godoy Cruz,
+            Guaymallén, Las Heras, Luján de Cuyo y Maipú.
+          </p>
+          <p>
+            Se reciben consultas de otras zonas de Argentina por los canales digitales. La
+            posibilidad de cotizar cada producto se confirma según las características del riesgo
+            y las condiciones de cada aseguradora; las consultas nacionales no implican visitas
+            presenciales fuera del área local indicada.
+          </p>
+          <p>
+            <a href="https://maps.app.goo.gl/fLzqqbVNFxbpigTb8" target="_blank" rel="noopener noreferrer">
+              Cómo llegar en Google Maps
+            </a>
+          </p>
+          <p>
+            Para conocer al asesor y cómo gestiona las solicitudes, visitá
+            {" "}<Link href="/sobre-agustin-montes">la página profesional de Agustín Montes</Link>.
+          </p>
         </div>
       </section>
 

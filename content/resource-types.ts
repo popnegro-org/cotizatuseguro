@@ -6,6 +6,13 @@ export type ResourceArticle = {
   title: string;
   metaDescription: string;
   formId: FormProductId;
+  datePublished: string;
+  dateModified: string;
+  author: {
+    name: string;
+    jobTitle: string;
+    url: string;
+  };
   answer: string;
   sections: { heading: string; body: string[] }[];
   faqs: { q: string; a: string }[];

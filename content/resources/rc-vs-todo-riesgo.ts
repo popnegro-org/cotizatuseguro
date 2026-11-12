@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Diferencia entre responsabilidad civil y coberturas amplias (todo riesgo) en seguros de auto. Qué cubre cada enfoque y cómo cotizar en Mendoza.",
     formId: "auto",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "La responsabilidad civil se refiere a la responsabilidad por daños a terceros dentro de los límites de la póliza. Las coberturas que se comercializan como amplias pueden incorporar riesgos sobre el propio vehículo, pero su alcance varía. El nombre comercial no reemplaza la lectura de las condiciones contractuales.",
     sections: [
