@@ -7,10 +7,21 @@ import {
   type ResourceArticle
 } from "../../../content/resources";
 import { SITE_URL } from "../../../content/site";
+import { articleSchema } from "../../../components/seo/article-schema";
 import { Breadcrumb } from "../../../components/seo/breadcrumb";
 import { CtaQuote } from "../../../components/seo/cta-quote";
-import { JsonLd } from "../../../components/seo/json-ld";
+import { JsonLd, breadcrumbList } from "../../../components/seo/json-ld";
 import { SiteChrome } from "../../../components/seo/site-chrome";
+
+function formatEditorialDate(value: string): string {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Intl.DateTimeFormat("es-AR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(Date.UTC(year, month - 1, day, 12)));
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -48,29 +59,21 @@ export default async function ResourceArticlePage({ params }: Props) {
     .map((relatedSlug) => getResourceBySlug(relatedSlug))
     .filter((resource): resource is ResourceArticle => Boolean(resource));
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "@id": `${SITE_URL}${path}#article`,
-    headline: article.title,
-    description: article.metaDescription,
-    mainEntityOfPage: `${SITE_URL}${path}`,
-    inLanguage: "es-AR",
-    author: {
-      "@type": "Person",
-      "@id": `${SITE_URL}/#advisor`,
-      name: "Agustín Montes"
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "CotizaTuSeguro",
-      url: SITE_URL
-    }
-  };
+  const schemas = [
+    articleSchema(article, SITE_URL),
+    breadcrumbList(
+      [
+        { name: "Inicio", path: "/" },
+        { name: "Recursos", path: "/recursos" },
+        { name: article.question, path }
+      ],
+      SITE_URL
+    )
+  ];
 
   return (
     <SiteChrome activePath="/recursos">
-      <JsonLd data={schema} />
+      <JsonLd data={schemas} />
       <section className="seo-hero">
         <div className="container seo-hero-inner">
           <Breadcrumb
@@ -83,6 +86,21 @@ export default async function ResourceArticlePage({ params }: Props) {
           <p className="seo-kicker">Guía orientativa</p>
           <h1>{article.question}</h1>
           <p className="seo-lead">{article.answer}</p>
+          <div className="seo-article-meta" aria-label="Datos editoriales">
+            <p>
+              Por <Link href={article.author.url}>{article.author.name}</Link>
+              {" · "}{article.author.jobTitle}
+            </p>
+            <p>
+              <time dateTime={article.datePublished}>
+                Publicado el {formatEditorialDate(article.datePublished)}
+              </time>
+              {" · "}
+              <time dateTime={article.dateModified}>
+                Actualizado el {formatEditorialDate(article.dateModified)}
+              </time>
+            </p>
+          </div>
           <div className="seo-actions">
             <CtaQuote product={article.formId} />
             <Link className="button-secondary" href="/recursos">
