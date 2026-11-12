@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Riesgos habituales en consorcios y edificios en Mendoza: áreas comunes, responsabilidad civil e infraestructura. Guía para administradores.",
     formId: "consorcio",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "Al consultar por un seguro de consorcio conviene describir el edificio, las áreas comunes, las instalaciones y los riesgos que se desean evaluar. La póliza puede contemplar determinados daños materiales y responsabilidades, pero el alcance depende de las coberturas contratadas, sus límites y exclusiones.",
     sections: [
