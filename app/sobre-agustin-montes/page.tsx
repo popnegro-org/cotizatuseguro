@@ -46,14 +46,36 @@ export default function SobreAgustinPage() {
       },
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Mendoza",
+        streetAddress: "Av. San Martín Sur 6996",
+        addressLocality: "Luján de Cuyo",
         addressRegion: "Mendoza",
+        postalCode: "M5505",
         addressCountry: "AR"
       },
       areaServed: {
         "@type": "Country",
         name: "Argentina"
       }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "InsuranceAgency",
+      "@id": SITE_URL + "/#local-business",
+      name: "Agustín Montes",
+      url: SITE_URL + path,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Av. San Martín Sur 6996",
+        addressLocality: "Luján de Cuyo",
+        addressRegion: "Mendoza",
+        postalCode: "M5505",
+        addressCountry: "AR"
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Provincia de Mendoza"
+      },
+      hasMap: "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8"
     },
     breadcrumbList(
       [
@@ -88,6 +110,10 @@ export default function SobreAgustinPage() {
 
       <section className="section seo-section">
         <div className="container seo-prose">
+          <h2>Atención presencial en Luján de Cuyo</h2>
+          <address>Av. San Martín Sur 6996, M5505 Luján de Cuyo, Mendoza</address>
+          <p>Los clientes pueden visitar el domicilio y también se ofrece atención a domicilio en toda la provincia de Mendoza.</p>
+          <p><a href="https://maps.app.goo.gl/fLzqqbVNFxbpigTb8" target="_blank" rel="noopener noreferrer">Cómo llegar en Google Maps</a></p>
           <h2>Cómo trabajo</h2>
           <p>
             El trabajo consiste en relevar los datos del riesgo, solicitar alternativas disponibles y explicar las diferencias entre coberturas, límites, franquicias y exclusiones. La aceptación y las condiciones finales dependen de cada aseguradora.
