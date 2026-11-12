@@ -7,6 +7,13 @@ export const article: ResourceArticle = {
     metaDescription:
       "Guía orientativa sobre seguros de auto en Mendoza: responsabilidad civil, robo, daños y cómo cotizar. Asesoramiento de Agustín Montes.",
     formId: "auto",
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-11",
+    author: {
+      name: "Agustín Montes",
+      jobTitle: "Productor Asesor de Seguros",
+      url: "/sobre-agustin-montes"
+    },
     answer:
       "El artículo 68 de la Ley 24.449 establece la obligación de contar con un seguro que cubra daños a terceros, transportados o no, para los vehículos alcanzados por la norma. El alcance exigible y las condiciones deben consultarse en el texto legal y en las disposiciones vigentes de la autoridad de control. Las coberturas sobre el propio vehículo, como robo, incendio o daños, dependen de la póliza contratada.",
     sections: [
