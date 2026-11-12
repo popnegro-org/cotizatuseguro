@@ -32,6 +32,26 @@ export default function SegurosEnMendozaPage() {
       description:
         "Asesoramiento en seguros desde Mendoza y consultas de alcance nacional. La disponibilidad depende del riesgo, el producto y la aseguradora."
     }),
+    {
+      "@context": "https://schema.org",
+      "@type": "InsuranceAgency",
+      "@id": SITE_URL + "/#local-business",
+      name: "Agustín Montes",
+      url: SITE_URL + "/sobre-agustin-montes",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Av. San Martín Sur 6996",
+        addressLocality: "Luján de Cuyo",
+        addressRegion: "Mendoza",
+        postalCode: "M5505",
+        addressCountry: "AR"
+      },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Provincia de Mendoza"
+      },
+      hasMap: "https://maps.app.goo.gl/fLzqqbVNFxbpigTb8"
+    },
     breadcrumbList(
       [
         { name: "Inicio", path: "/" },
@@ -92,11 +112,21 @@ export default function SegurosEnMendozaPage() {
 
       <section className="section seo-section">
         <div className="container seo-prose">
-          <h2>Atención desde Mendoza y consultas de alcance nacional</h2>
+          <h2>Atención presencial y a domicilio en Mendoza</h2>
           <p>
-            Agustín Montes desarrolla su actividad desde Mendoza y recibe consultas de alcance nacional.
-            La disponibilidad de cada producto y la posibilidad de avanzar con una propuesta se confirman
-            según las características del riesgo y las condiciones de cada aseguradora.
+            Agustín Montes atiende presencialmente en Av. San Martín Sur 6996, M5505 Luján de Cuyo,
+            Mendoza. Los clientes pueden visitar el domicilio y también solicitar atención a domicilio
+            en toda la provincia.
+          </p>
+          <p>
+            Se reciben además consultas de alcance nacional. La disponibilidad de cada producto y la
+            posibilidad de avanzar con una propuesta se confirman según las características del riesgo
+            y las condiciones de cada aseguradora.
+          </p>
+          <p>
+            <a href="https://maps.app.goo.gl/fLzqqbVNFxbpigTb8" target="_blank" rel="noopener noreferrer">
+              Cómo llegar en Google Maps
+            </a>
           </p>
           <p>
             Para conocer al asesor y cómo gestiona las solicitudes, visitá
