@@ -14,7 +14,7 @@ function makeRequest(url, init) {
   const requestBody = body && typeof body === "object" && !Array.isArray(body)
     ? { privacyAccepted: true, ...body }
     : body;
-  return makeRequest(url, { ...init, body: JSON.stringify(requestBody) });
+  return new NextRequest(url, { ...init, body: JSON.stringify(requestBody) });
 }
 beforeEach(() => {
   storedLeads = new Map();
