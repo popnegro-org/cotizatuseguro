@@ -1,9 +1,9 @@
 name: Retry pending lead deliveries
 
-on:
-  schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+# TEMPORARILY PAUSED — restore triggers only after HubSpot scopes are verified.
+# Previous schedule: */5 * * * *
+# Previous manual trigger: workflow_dispatch
+# No trigger is defined while this workflow is paused.
 
 permissions:
   contents: read
