@@ -8,6 +8,14 @@ import { __setLeadStoreForTests, retryDelayMs } from "../app/api/leads/lead-stor
 
 let storedLeads;
 let claimedLeads;
+
+function makeRequest(url, init, { includeConsent = true } = {}) {
+  const body = typeof init.body === "string" ? JSON.parse(init.body) : init.body;
+  const requestBody = body && typeof body === "object" && !Array.isArray(body)
+    ? { ...(includeConsent ? { privacyAccepted: true } : {}), ...body }
+    : body;
+  return new NextRequest(url, { ...init, body: JSON.stringify(requestBody) });
+}
 beforeEach(() => {
   storedLeads = new Map();
   claimedLeads = new Set();
@@ -58,7 +66,7 @@ test("falls back to Upstash rate limiting when infrastructure mode is not explic
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.9" },
     body: JSON.stringify({
@@ -100,7 +108,7 @@ test("creates a lead using HubSpot properties without calling the live CRM", asy
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.10" },
     body: JSON.stringify({
@@ -134,6 +142,9 @@ test("creates a lead using HubSpot properties without calling the live CRM", asy
   assert.equal(captured.properties.utm_campaign, "p0-validation");
   assert.equal(captured.properties.gclid, "gclid-test");
   assert.equal(captured.properties.fbclid, "fbclid-test");
+  assert.equal(captured.properties.privacy_consent, "true");
+  assert.ok(Number.isFinite(Date.parse(captured.properties.privacy_consent_at)));
+  assert.equal(captured.properties.privacy_policy_version, "2026-10");
   assert.equal(captured.properties.insurance_request_id, payload.requestId);
   assert.match(captured.properties.insurance_request_details, /Producto: Auto/);
   assert.match(captured.properties.insurance_request_details, /Provincia: Mendoza/);
@@ -155,13 +166,56 @@ test("rejects invalid input before contacting HubSpot", async (t) => {
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.11" },
     body: JSON.stringify({ name: "x", phone: "1", city: "Mendoza", product: "invalid" })
   });
   const response = await POST(request);
   assert.equal(response.status, 400);
+  assert.equal(fetchMock.mock.callCount(), 0);
+});
+
+test("rejects missing privacy consent and missing location on the server", async (t) => {
+  const previousToken = process.env.HUBSPOT_ACCESS_TOKEN;
+  process.env.HUBSPOT_ACCESS_TOKEN = "test-token-never-used";
+  t.after(() => {
+    if (previousToken === undefined) delete process.env.HUBSPOT_ACCESS_TOKEN;
+    else process.env.HUBSPOT_ACCESS_TOKEN = previousToken;
+  });
+  const fetchMock = mock.method(globalThis, "fetch", async () => {
+    throw new Error("HubSpot must not be called for invalid consent or location");
+  });
+  t.after(() => fetchMock.mock.restore());
+
+  const base = {
+    name: "QA Consent",
+    phone: "+54 261 555 0101",
+    province: "Mendoza",
+    city: "Godoy Cruz",
+    product: "auto",
+    details: { make: "QA", model: "Test", year: "2024" }
+  };
+  const missingConsent = makeRequest("https://preview.example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-real-ip": "192.0.2.81" },
+    body: JSON.stringify(base)
+  }, { includeConsent: false });
+  assert.equal((await POST(missingConsent)).status, 400);
+
+  const rejectedConsent = makeRequest("https://preview.example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-real-ip": "192.0.2.83" },
+    body: JSON.stringify({ ...base, privacyAccepted: false })
+  });
+  assert.equal((await POST(rejectedConsent)).status, 400);
+
+  const missingLocation = makeRequest("https://preview.example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-real-ip": "192.0.2.82" },
+    body: JSON.stringify({ ...base, city: "" })
+  });
+  assert.equal((await POST(missingLocation)).status, 400);
   assert.equal(fetchMock.mock.callCount(), 0);
 });
 
@@ -197,7 +251,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   t.after(() => fetchMock.mock.restore());
 
   for (const [index, product] of validProducts.entries()) {
-    const request = new NextRequest("https://preview.example.test/api/leads", {
+    const request = makeRequest("https://preview.example.test/api/leads", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -219,7 +273,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   }
 
   for (const [index, product] of unsupportedProducts.entries()) {
-    const request = new NextRequest("https://preview.example.test/api/leads", {
+    const request = makeRequest("https://preview.example.test/api/leads", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -252,7 +306,7 @@ test("accepts only the six PMV products and omits blank attribution", async (t) 
   }
 });
 
-test("accepts optional email and locality while requiring product-specific risk data", async (t) => {
+test("keeps email optional while requiring province, locality, consent, and product-specific risk data", async (t) => {
   const previousToken = process.env.HUBSPOT_ACCESS_TOKEN;
   process.env.HUBSPOT_ACCESS_TOKEN = "test-token-never-used";
   t.after(() => {
@@ -268,12 +322,14 @@ test("accepts optional email and locality while requiring product-specific risk 
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.79" },
     body: JSON.stringify({
       name: "QA Test",
       phone: "+54 261 555 0101",
+      province: "Mendoza",
+      city: "Godoy Cruz",
       product: "auto",
       details: { make: "Fiat", model: "Cronos", year: "2022", version: "Precision", usage: "particular" }
     })
@@ -285,11 +341,11 @@ test("accepts optional email and locality while requiring product-specific risk 
   assert.equal(captured.properties.phone, "542615550101");
   assert.equal(captured.properties.insurance_product, "auto");
   assert.equal("email" in captured.properties, false);
-  assert.equal("state" in captured.properties, false);
-  assert.equal("city" in captured.properties, false);
+  assert.equal(captured.properties.state, "Mendoza");
+  assert.equal(captured.properties.city, "Godoy Cruz");
   assert.equal(fetchMock.mock.callCount(), 2);
 
-  const invalid = new NextRequest("https://preview.example.test/api/leads", {
+  const invalid = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.80" },
     body: JSON.stringify({
@@ -326,7 +382,7 @@ test("keeps transient HubSpot failures queued and marks permanent rejections for
     });
     t.after(() => fetchMock.mock.restore());
 
-    const request = new NextRequest("https://preview.example.test/api/leads", {
+    const request = makeRequest("https://preview.example.test/api/leads", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -369,7 +425,7 @@ test("rejects honeypot submissions before contacting HubSpot", async (t) => {
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.245" },
     body: JSON.stringify({
@@ -408,7 +464,7 @@ test("enforces the shared per-IP limit under concurrent submissions and blocks e
   });
   t.after(() => fetchMock.mock.restore());
 
-  const requests = Array.from({ length: 12 }, (_, index) => new NextRequest("https://preview.example.test/api/leads", {
+  const requests = Array.from({ length: 12 }, (_, index) => makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-real-ip": "192.0.2.200" },
     body: JSON.stringify({
@@ -438,7 +494,7 @@ test("fails closed when Redis rate limiting fails and never contacts HubSpot", a
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-real-ip": "192.0.2.201" },
     body: JSON.stringify({
@@ -471,7 +527,7 @@ test("invalid and honeypot submissions are rejected before rate limiting and Hub
     }
   ];
   for (const body of bodies) {
-    const request = new NextRequest("https://preview.example.test/api/leads", {
+    const request = makeRequest("https://preview.example.test/api/leads", {
       method: "POST",
       headers: { "content-type": "application/json", "x-real-ip": "192.0.2.202" },
       body: JSON.stringify(body)
@@ -503,7 +559,7 @@ test("does not call HubSpot when durable lead persistence fails", async (t) => {
   });
   t.after(() => fetchMock.mock.restore());
 
-  const request = new NextRequest("https://preview.example.test/api/leads", {
+  const request = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.240" },
     body: JSON.stringify({

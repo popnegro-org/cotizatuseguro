@@ -188,6 +188,7 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
           phone: form.phone.replace(/\D/g, ""),
           province: form.province.trim(),
           city: form.city.trim(),
+          privacyAccepted: form.privacyAccepted,
           product: form.product,
           details:
             form.product === "auto" || form.product === "moto"
@@ -246,13 +247,23 @@ export const QuoteForm = forwardRef<QuoteFormHandle, QuoteFormProps>(function Qu
         }
         throw new Error(data.error || "No pudimos registrar tu solicitud. Intentá nuevamente.");
       }
-      track("generate_lead", { insurance_product: form.product, event_id: data.requestId || "" });
+      const delivered = data.status === "sent";
+      if (delivered) {
+        track("generate_lead", { insurance_product: form.product, event_id: data.requestId || "" });
+      } else {
+        track("lead_submission_pending", { insurance_product: form.product, lead_status: data.status || "pending" });
+      }
+      const confirmationMessage = delivered
+        ? "Tu solicitud quedó registrada correctamente."
+        : data.status === "needs_review"
+          ? "Recibimos tu solicitud. Estamos revisando su registro y te contactaremos; no hace falta enviarla nuevamente."
+          : "Recibimos tu solicitud y estamos procesando su registro. No hace falta enviarla nuevamente.";
       const number = process.env.NEXT_PUBLIC_WHATSAPP_BUSINESS_NUMBER;
       if (!number) {
-        setSuccess("Recibimos tu solicitud. En breve te vamos a contactar para continuar con la cotización.");
+        setSuccess(confirmationMessage + " En breve te vamos a contactar para continuar con la cotización.");
         return;
       }
-      setSuccess("Solicitud registrada. Ahora podés continuar por WhatsApp.");
+      setSuccess(confirmationMessage + " Ahora podés continuar por WhatsApp.");
       const productLabels: Record<Product, string> = { auto: "Auto", moto: "Moto", hogar: "Hogar", consorcio: "Consorcio", bicicleta: "Bicicleta", caucion_alquiler: "Caución alquiler" };
       const label = productLabels[form.product] || landingProducts.find((item) => item.id === form.product)?.title || form.product;
       const detailLabels: Record<string, string> = {

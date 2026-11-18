@@ -22,8 +22,9 @@ const schema = z.object({
   name: z.string().trim().min(2).max(100).refine((value) => value.split(/\s+/).length >= 2, "Ingresá nombre y apellido"),
   email: z.string().trim().max(254).optional().default("").refine((value) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), "Ingresá un email válido"),
   phone: z.string().trim().min(8).max(30),
-  province: z.string().trim().max(100).optional().default(""),
-  city: z.string().trim().max(100).optional().default(""),
+  province: z.string().trim().min(2).max(100),
+  city: z.string().trim().min(2).max(100),
+  privacyAccepted: z.literal(true),
   product: z.enum(["auto", "moto", "hogar", "consorcio", "bicicleta", "bicicletas", "caucion_alquiler"]),
   details: z.record(z.string(), z.string().trim().max(200)).optional().default({}),
   attribution: attributionSchema
@@ -66,6 +67,8 @@ const schema = z.object({
   }
 });
 
+
+const PRIVACY_POLICY_VERSION = "2026-10";
 
 const productLabels: Record<string, string> = {
   auto: "Auto",
@@ -181,12 +184,15 @@ export async function POST(request: NextRequest) {
     insurance_product: data.product === "bicicleta" ? "bicicletas" : data.product,
     insurance_request_id: requestId,
     insurance_request_details: formatInsuranceRequestDetails(data),
-    lead_source: data.attribution.utm_source?.trim() || "direct"
+    lead_source: data.attribution.utm_source?.trim() || "direct",
+    privacy_consent: "true",
+    privacy_consent_at: new Date().toISOString(),
+    privacy_policy_version: PRIVACY_POLICY_VERSION
   };
   if (lastname) properties.lastname = lastname;
   if (data.email) properties.email = data.email;
-  if (data.province) properties.state = data.province;
-  if (data.city) properties.city = data.city;
+  properties.state = data.province;
+  properties.city = data.city;
 
   for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "gclid", "fbclid"] as const) {
     const value = data.attribution[key]?.trim();
@@ -232,7 +238,7 @@ export async function POST(request: NextRequest) {
   try {
     const delivered = await deliverStoredLead(requestId);
     if (delivered?.status === "sent") {
-      return NextResponse.json({ ok: true, requestId, contactId: delivered.contactId }, {
+      return NextResponse.json({ ok: true, status: "sent", requestId, contactId: delivered.contactId }, {
         status: 201,
         headers: { "Cache-Control": "no-store" }
       });
