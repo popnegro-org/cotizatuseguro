@@ -27,17 +27,20 @@ Antes de probar, confirmar en el portal de HubSpot que existan las propiedades p
 - `insurance_request_details`: texto de varias líneas legible en la ficha del contacto. Incluye producto, provincia, localidad y los datos específicos del riesgo con etiquetas en español; límite de 900 caracteres.
 - `lead_source`: texto o lista con opción `direct` y las fuentes que la organización use.
 - `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `fbclid`: propiedades de texto si se desea conservar esta atribución. Los valores vacíos se omiten.
+- `privacy_consent`: casilla booleana; la API solo acepta solicitudes con aceptación explícita y envía `true`.
+- `privacy_consent_at`: fecha y hora ISO 8601 generada por el servidor al recibir la solicitud.
+- `privacy_policy_version`: versión de la política publicada al momento del consentimiento. Actualmente `2026-10` (última actualización: octubre de 2026).
 
 La disponibilidad y los tipos de las propiedades deben confirmarse en el portal; este repositorio no puede verificar la configuración de una cuenta HubSpot.
 
 ## Tipologías y validación
 
-El frontend solicita nombre y apellido, WhatsApp, provincia y localidad en el paso 2; el email es opcional. La API mantiene provincia y localidad opcionales para compatibilidad con integraciones anteriores, y valida los detalles específicos de Autos, Motos, Hogar, Consorcio, Bicicleta y Caución alquiler. Los detalles se guardan en `insurance_request_details`; no se crean automáticamente propiedades individuales por cada detalle.
+El frontend y la API requieren nombre y apellido, WhatsApp, provincia, localidad y aceptación explícita de la política de privacidad; el email es opcional. La API vuelve a validar el consentimiento en el servidor y rechaza solicitudes directas que no lo incluyan como `true`. La fecha y la versión de política se generan en el servidor; no se confía en marcas de tiempo ni versiones enviadas por el navegador. También valida los detalles específicos de Autos, Motos, Hogar, Consorcio, Bicicleta y Caución alquiler. Los detalles se guardan en `insurance_request_details`; no se crean automáticamente propiedades individuales por cada detalle.
 
 ## Verificación segura
 
 1. Usar un contacto ficticio claramente identificado como QA y un entorno de Preview autorizado.
-2. Confirmar que la API responde `201` e incluye `requestId` y `contactId`.
+2. Confirmar que una entrega efectivamente creada en HubSpot responde `201`, `status: "sent"` e incluye `requestId` y `contactId`. Las respuestas `202` con estado `pending` o `needs_review` significan que la solicitud quedó persistida, pero todavía no confirman la creación del contacto.
 3. Buscar el contacto en HubSpot y verificar email, nombre, apellido, teléfono, provincia (`state`), localidad (`city`), producto, resumen legible del riesgo y atribución. Los campos estándar se muestran en Propiedades del contacto; el resumen se muestra en “Detalles de solicitud de seguro”.
 4. No usar datos de clientes reales para pruebas ni desactivar la protección del deployment para sortear restricciones de acceso.
-5. Las pruebas automatizadas simulan `fetch`: no crean contactos en HubSpot y no validan que las propiedades existan en el portal.
+5. Las pruebas automatizadas simulan `fetch`: no crean contactos en HubSpot y no validan que las propiedades existan en el portal. El evento de conversión `generate_lead` solo se dispara cuando la API confirma `status: "sent"`; las respuestas pendientes o para revisión no se cuentan como leads entregados.
