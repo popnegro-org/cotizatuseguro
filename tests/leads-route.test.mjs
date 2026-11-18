@@ -9,10 +9,10 @@ import { __setLeadStoreForTests, retryDelayMs } from "../app/api/leads/lead-stor
 let storedLeads;
 let claimedLeads;
 
-function makeRequest(url, init) {
+function makeRequest(url, init, { includeConsent = true } = {}) {
   const body = typeof init.body === "string" ? JSON.parse(init.body) : init.body;
   const requestBody = body && typeof body === "object" && !Array.isArray(body)
-    ? { privacyAccepted: true, ...body }
+    ? { ...(includeConsent ? { privacyAccepted: true } : {}), ...body }
     : body;
   return new NextRequest(url, { ...init, body: JSON.stringify(requestBody) });
 }
@@ -199,9 +199,16 @@ test("rejects missing privacy consent and missing location on the server", async
   const missingConsent = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
     headers: { "content-type": "application/json", "x-real-ip": "192.0.2.81" },
+    body: JSON.stringify(base)
+  }, { includeConsent: false });
+  assert.equal((await POST(missingConsent)).status, 400);
+
+  const rejectedConsent = makeRequest("https://preview.example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-real-ip": "192.0.2.83" },
     body: JSON.stringify({ ...base, privacyAccepted: false })
   });
-  assert.equal((await POST(missingConsent)).status, 400);
+  assert.equal((await POST(rejectedConsent)).status, 400);
 
   const missingLocation = makeRequest("https://preview.example.test/api/leads", {
     method: "POST",
