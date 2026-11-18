@@ -31,10 +31,10 @@ La autorización OAuth del conector HubSpot no demuestra los scopes de la Privat
 El workflow requiere simultáneamente:
 
 - `LEAD_RETRY_ENABLED=true`
-- `HUBSPOT_CONTACTS_READ_SCOPE_VERIFIED=true`
+- `HUBSPOT_CONTACTS_READ_SCOPE_VERIFIED=verified-2026-11-18`
 - Secreto `LEAD_RETRY_SECRET` configurado.
 
-La segunda variable es un bloqueo de liberación explícito: no configurarla como `true` hasta verificar los scopes reales y validar la búsqueda de solo lectura. La ejecución manual también respeta ambas condiciones.
+La segunda variable es un bloqueo de liberación explícito: no configurarla con el valor `verified-2026-11-18` hasta verificar los scopes reales y validar la búsqueda de solo lectura. La ejecución manual también respeta ambas condiciones.
 
 El cron es cada cinco minutos; GitHub Actions serializa ejecuciones con `cancel-in-progress: false`. El endpoint procesa como máximo tres registros por llamada y tiene un límite HTTP de 60 segundos. Los errores de reconciliación mantienen el registro pendiente y no permiten crear un posible duplicado.
 
