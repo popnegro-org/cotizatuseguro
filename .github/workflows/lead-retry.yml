@@ -18,7 +18,7 @@ jobs:
   retry:
     # Two independent release latches: normal operation and verified HubSpot
     # contacts.read permission. Missing variables evaluate to false.
-    if: ${{ vars.LEAD_RETRY_ENABLED == 'true' && vars.HUBSPOT_CONTACTS_READ_SCOPE_VERIFIED == 'true' }}
+    if: ${{ vars.LEAD_RETRY_ENABLED == 'true' && vars.HUBSPOT_CONTACTS_READ_SCOPE_VERIFIED == 'verified-2026-11-18' }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
