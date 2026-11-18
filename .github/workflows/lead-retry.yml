@@ -1,20 +1,24 @@
 name: Retry pending lead deliveries
 
-# TEMPORARILY PAUSED — restore triggers only after HubSpot scopes are verified.
-# Previous schedule: */5 * * * *
-# Previous manual trigger: workflow_dispatch
-# No trigger is defined while this workflow is paused.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# Prevent overlapping retries. Do not cancel an in-flight batch because it may
+# already be reconciling or delivering a contact.
 concurrency:
   group: lead-delivery-retry
   cancel-in-progress: false
 
 jobs:
   retry:
-    if: ${{ vars.LEAD_RETRY_ENABLED == 'true' }}
+    # Two independent release latches: normal operation and verified HubSpot
+    # contacts.read permission. Missing variables evaluate to false.
+    if: ${{ vars.LEAD_RETRY_ENABLED == 'true' && vars.HUBSPOT_CONTACTS_READ_SCOPE_VERIFIED == 'verified-2026-11-18' }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

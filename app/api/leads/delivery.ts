@@ -30,7 +30,9 @@ async function findExistingContact(lead: StoredLead, token: string): Promise<
           }]
         }],
         properties: ["insurance_request_id"],
-        limit: 1
+        // Fetch two matches so duplicate request IDs fail closed instead of
+        // silently selecting the first contact.
+        limit: 2
       }),
       cache: "no-store",
       signal: AbortSignal.timeout(5_000)
@@ -41,7 +43,11 @@ async function findExistingContact(lead: StoredLead, token: string): Promise<
     }
 
     const result = await response.json() as { results?: Array<{ id?: string }> };
-    const existing = result.results?.[0];
+    const matches = result.results ?? [];
+    if (matches.length > 1) {
+      return { status: "unavailable", errorCode: "hubspot_reconciliation_multiple_matches" };
+    }
+    const existing = matches[0];
     return existing ? { status: "found", contactId: existing.id } : { status: "not_found" };
   } catch (error) {
     return {

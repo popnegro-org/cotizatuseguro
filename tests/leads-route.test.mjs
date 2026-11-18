@@ -577,3 +577,42 @@ test("does not call HubSpot when durable lead persistence fails", async (t) => {
   assert.equal(fetchMock.mock.callCount(), 0);
   assert.match((await response.json()).error, /guardar la solicitud/i);
 });
+
+test("fails closed when reconciliation finds multiple contacts for one request ID", async (t) => {
+  const previousToken = process.env.HUBSPOT_ACCESS_TOKEN;
+  process.env.HUBSPOT_ACCESS_TOKEN = "test-token-never-used";
+  t.after(() => {
+    if (previousToken === undefined) delete process.env.HUBSPOT_ACCESS_TOKEN;
+    else process.env.HUBSPOT_ACCESS_TOKEN = previousToken;
+  });
+
+  const fetchMock = mock.method(globalThis, "fetch", async (url, init) => {
+    assert.ok(String(url).endsWith("/contacts/search"));
+    const search = JSON.parse(init.body);
+    assert.equal(search.limit, 2, "reconciliation must detect duplicate matches");
+    return new Response(JSON.stringify({ results: [{ id: "contact-1" }, { id: "contact-2" }] }), { status: 200 });
+  });
+  t.after(() => fetchMock.mock.restore());
+
+  const request = makeRequest("https://preview.example.test/api/leads", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-forwarded-for": "192.0.2.246" },
+    body: JSON.stringify({
+      name: "QA Duplicate",
+      email: "qa.duplicate@example.test",
+      phone: "+54 261 555 0101",
+      province: "Mendoza",
+      city: "Godoy Cruz",
+      product: "auto",
+      details: { make: "QA", model: "Duplicate", year: "2024" }
+    })
+  });
+
+  const response = await POST(request);
+  assert.equal(response.status, 202);
+  assert.equal((await response.json()).status, "pending");
+  assert.equal(storedLeads.size, 1);
+  assert.equal([...storedLeads.values()][0].status, "pending");
+  assert.equal([...storedLeads.values()][0].lastErrorCode, "hubspot_reconciliation_multiple_matches");
+  assert.equal(fetchMock.mock.callCount(), 1, "ambiguous reconciliation must never create another contact");
+});
