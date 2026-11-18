@@ -19,12 +19,13 @@ La autorización OAuth del conector HubSpot no demuestra los scopes de la Privat
 2. Confirmar en la Private App los dos scopes anteriores. Si falta `contacts.read`, agregar solo ese permiso; renovar el token únicamente si HubSpot lo exige y actualizarlo directamente en Vercel Production/Preview.
 3. Validar la credencial con una operación autenticada de solo lectura sobre el endpoint de búsqueda de contactos. No llamar a `POST /crm/v3/objects/contacts` ni al formulario público.
 4. Para cada registro pendiente, consultar por su `insurance_request_id`:
-   - **HTTP 200 y exactamente un resultado:** registrar la coincidencia y el ID del contacto; reconciliar el estado a `sent` y quitarlo del índice pendiente.
+   - **HTTP 200 y exactamente un resultado:** clasificar como `matched`. El worker existente podrá reconciliarlo a `sent` después de la habilitación controlada; no modificar Redis manualmente.
    - **HTTP 200 y cero resultados:** conservarlo como `pending`. No crear durante esta fase de auditoría; el worker normal podrá procesarlo luego de una nueva búsqueda exitosa.
    - **Más de un resultado:** detener ese registro y derivarlo a revisión manual; no elegir un contacto automáticamente.
    - **HTTP 401/403, timeout, 429 o 5xx:** detener toda la recuperación. No interpretar un error de búsqueda como ausencia de contacto.
 5. Comparar el total inicial con los resultados clasificados. No revelar propiedades personales en reportes; registrar únicamente conteos, códigos HTTP, estados y referencias internas protegidas.
-6. Solo después de que los cinco registros tengan una búsqueda concluyente, habilitar la ejecución programada. La entrega sigue protegida por la búsqueda previa del worker, el lease Redis y el lote secuencial.
+6. Si aparece cualquier coincidencia múltiple o respuesta no concluyente, mantener el scheduler bloqueado y escalar ese registro. No modificar Redis manualmente.
+7. Solo después de que los cinco registros tengan una búsqueda concluyente (uno o cero resultados por ID), habilitar la ejecución programada. El worker repetirá la búsqueda antes de cada creación, aplicará el lease Redis y procesará el lote secuencial.
 
 ## Controles del scheduler
 
